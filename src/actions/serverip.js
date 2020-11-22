@@ -1,0 +1,1 @@
+export const serverip="http://192.168.29.101:8000"

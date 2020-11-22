@@ -1,0 +1,15 @@
+/* @import "../node_modules/antd/dist/antd.less"; */
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+.App {
+  margin: 0 auto;
+  height: 100%;
+  font-family: 'Roboto'; }
+
+body, html {
+  margin: 0;
+  height: 100%; }
+
+@media only screen and (max-width: 390px) {
+  .header .header-wrap .right ul li button {
+    font-size: 60%; } }
