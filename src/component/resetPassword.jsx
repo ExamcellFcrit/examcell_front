@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from "prop-types"
+import {serverip} from '../actions/serverip'
 import $ from "jquery"
 import { Link } from 'react-router-dom'
 import logo from '../assets/fcritlogo.png'
@@ -59,7 +60,7 @@ export class resetPassword extends Component {
     resetPass = () => {
     
         if (this.state.credentials.password === this.state.credentials.password2) {
-            fetch(`http://192.168.29.101:8000/api/password_reset/confirm/`, {
+            fetch(`${serverip}/api/password_reset/confirm/`, {
                 method: 'Post',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(

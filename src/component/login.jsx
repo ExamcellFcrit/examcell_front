@@ -29,7 +29,7 @@ export class Login extends Component {
     sendLink=()=>{
         $('button').addClass('is-loading');
         const email=this.state.credentials.email
-        fetch(`http://192.168.171.4:8000/api/password_reset/`,{
+        fetch(`${serverip}/api/password_reset/`,{
             method: 'Post',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(
@@ -227,13 +227,13 @@ export class Login extends Component {
                                     </div>
 
                                     <div className="submit">
-                                        <p>Don't have an account? <Link to="/register" >Register</Link></p>
+                                       {/*  <p>Don't have an account? <Link to="/register" >Register</Link></p> */}
                                         <button className="button is-success  " onClick={this.handlesubmit}>Login</button>
                                     </div>
                                     <Link onClick={this.openPasswordModal}>Forgot password?</Link>
-                                    <hr />
+                                   {/*  <hr /> */}
                                     {/* <Link to="/" style={{ color: '#48c774' }}>Home</Link> */}
-                                    <Link to="/admin_login" style={{ color: '#48c774' }}>Admin Login</Link>
+                                    {/* <Link to="/admin_login" style={{ color: '#48c774' }}>Admin Login</Link> */}
 
                                 </div>
                             </div>

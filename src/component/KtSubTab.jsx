@@ -5,6 +5,7 @@ import dp from '../assets/dp.jpg'
 import sign from '../assets/sign.png'
 import { toast } from 'react-toastify';
 import { PDFExport } from "@progress/kendo-react-pdf";
+import {serverip} from '../actions/serverip'
 import download from '../assets/download.png'
 export class KtSubTab extends Component {
 
@@ -21,7 +22,7 @@ export class KtSubTab extends Component {
             const kt3scheme = this.props.kt3data.scheme
             const kt3sem = this.props.kt3data.semester
             const kt3branch = this.props.kt3data.branch
-            fetch(`http://192.168.171.4:8000/scheme/${kt3scheme}/branch/${kt3branch}${kt3scheme}/semester/${kt3sem}${kt3branch}${kt3scheme}/course/`, {
+            fetch(`http://${serverip}/scheme/${kt3scheme}/branch/${kt3branch}${kt3scheme}/semester/${kt3sem}${kt3branch}${kt3scheme}/course/`, {
                 method: 'Get'
             }).then(res => res.json())
                 .then(data => {
@@ -47,7 +48,7 @@ export class KtSubTab extends Component {
             const kt4scheme = this.props.kt4data.scheme
             const kt4sem = this.props.kt4data.semester
             const kt4branch = this.props.kt4data.branch
-            fetch(`http://192.168.171.4:8000/scheme/${kt4scheme}/branch/${kt4branch}${kt4scheme}/semester/${kt4sem}${kt4branch}${kt4scheme}/course/`, {
+            fetch(`http://${serverip}/scheme/${kt4scheme}/branch/${kt4branch}${kt4scheme}/semester/${kt4sem}${kt4branch}${kt4scheme}/course/`, {
                 method: 'Get'
             }).then(res => res.json())
                 .then(data => {
@@ -74,7 +75,7 @@ export class KtSubTab extends Component {
             const kt5scheme = this.props.kt5data.scheme
             const kt5sem = this.props.kt5data.semester
             const kt5branch = this.props.kt5data.branch
-            fetch(`http://192.168.171.4:8000/scheme/${kt5scheme}/branch/${kt5branch}${kt5scheme}/semester/${kt5sem}${kt5branch}${kt5scheme}/course/`, {
+            fetch(`http://${serverip}/scheme/${kt5scheme}/branch/${kt5branch}${kt5scheme}/semester/${kt5sem}${kt5branch}${kt5scheme}/course/`, {
                 method: 'Get'
             }).then(res => res.json())
                 .then(data => {
@@ -99,7 +100,7 @@ export class KtSubTab extends Component {
             const kt6scheme = this.props.kt6data.scheme
             const kt6sem = this.props.kt6data.semester
             const kt6branch = this.props.kt6data.branch
-            fetch(`http://192.168.171.4:8000/scheme/${kt6scheme}/branch/${kt6branch}${kt6scheme}/semester/${kt6sem}${kt6branch}${kt6scheme}/course/`, {
+            fetch(`http://${serverip}/scheme/${kt6scheme}/branch/${kt6branch}${kt6scheme}/semester/${kt6sem}${kt6branch}${kt6scheme}/course/`, {
                 method: 'Get'
             }).then(res => res.json())
                 .then(data => {

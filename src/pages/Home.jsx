@@ -7,6 +7,7 @@ import ReactTooltip from 'react-tooltip';
 import Timetable from '../component/Timetable'
 import { logout } from '../actions/auth'
 import $ from "jquery"
+import { serverip } from '../actions/serverip'
 import { Link, Redirect } from 'react-router-dom'
 import _ from 'lodash'
 import dp from '../assets/dp.jpg'
@@ -27,6 +28,7 @@ export class Home extends Component {
       showtimetable: null,
       profile: '',
       data: [],
+      studentprofile: { email: '', username: '', id: '', first_name: '' },
       credentials: { branch: '', semester: '', revscheme: null },
       sort: [
         { field: 'code', dir: 'asc' }
@@ -39,6 +41,7 @@ export class Home extends Component {
     $('.pageloader').removeClass('is-active')
   }
   componentDidMount = async (e) => {
+
 
     //fetch Images
     fetch(`https://picsum.photos/v2/list`)
@@ -62,29 +65,30 @@ export class Home extends Component {
 
 
     const { user } = this.props.auth
+    console.log(user.username)
 
     //get halltkt switch status
     if (user.username !== 'admin') {
-    fetch(`http://192.168.29.101:8000/controls/freezelink/`, {
-      method: "get",
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Token ${this.props.auth.token}`
-      }
-    }).then(res => {
-      console.log(res)
-      return res.json()
-    }).then(data => {
-      console.log(data.freezelink)
-      this.setState({ freezelink: data.freezelink, showtimetable: data.showtimetable })
-    })
-  }
+      fetch(`${serverip}/controls/freezelink/`, {
+        method: "get",
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Token ${this.props.auth.token}`
+        }
+      }).then(res => {
+        console.log(res)
+        return res.json()
+      }).then(data => {
+        console.log(data.freezelink)
+        this.setState({ freezelink: data.freezelink, showtimetable: data.showtimetable })
+      })
+    }
 
 
 
     //Get notice
     if (user.username !== 'admin') {
-      fetch("http://192.168.29.101:8000/notice/", {
+      fetch(`${serverip}/notice/`, {
         method: "get",
         headers: {
           'Content-Type': 'application/json',
@@ -98,7 +102,7 @@ export class Home extends Component {
 
     /* Fetch Students Regular profile */
     if (user.username !== 'admin') {
-      fetch(`http://192.168.29.101:8000/student/${user ? `${user.username}/` : null}`, {
+      fetch(`${serverip}/student/${user ? `${user.username}/` : null}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Token ${this.props.auth.token}`
@@ -136,7 +140,7 @@ export class Home extends Component {
           const semester = data.semester;
           const branch = data.branch;
           const scheme = data.scheme;
-          const api_call = await fetch(`http://192.168.29.101:8000/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/course/`, {
+          const api_call = await fetch(`${serverip}/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/course/`, {
             headers: {
               'Authorization': `Token ${this.props.auth.token}`
             }
@@ -157,7 +161,7 @@ export class Home extends Component {
 
     /* Check Sem3 ktprofile */
     if (user.username !== 'admin') {
-      fetch(`http://192.168.29.101:8000/student/${user ? `${user.username}KT3/` : `asdsad`}`, {
+      fetch(`${serverip}/student/${user ? `${user.username}KT3/` : `asdsad`}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Token ${this.props.auth.token}`
@@ -180,7 +184,7 @@ export class Home extends Component {
           const kt3sem = data.semester
           const kt3branch = data.branch
           const kt3scheme = data.scheme
-          fetch(`http://192.168.29.101:8000/scheme/${kt3scheme}/branch/${kt3branch}${kt3scheme}/semester/${kt3sem}${kt3branch}${kt3scheme}/course/`, {
+          fetch(`${serverip}/scheme/${kt3scheme}/branch/${kt3branch}${kt3scheme}/semester/${kt3sem}${kt3branch}${kt3scheme}/course/`, {
             method: 'Get'
           })
             .then(res => res.json())
@@ -210,7 +214,7 @@ export class Home extends Component {
         });
 
       /* Check Sem4 Ktprofile */
-      fetch(`http://192.168.29.101:8000/student/${user ? `${user.username}KT4/` : `asdsad`}`, {
+      fetch(`${serverip}/student/${user ? `${user.username}KT4/` : `asdsad`}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Token ${this.props.auth.token}`
@@ -235,7 +239,7 @@ export class Home extends Component {
           const kt4sem = data.semester
           const kt4branch = data.branch
           const kt4scheme = data.scheme
-          fetch(`http://192.168.29.101:8000/scheme/${kt4scheme}/branch/${kt4branch}${kt4scheme}/semester/${kt4sem}${kt4branch}${kt4scheme}/course/`, {
+          fetch(`${serverip}/scheme/${kt4scheme}/branch/${kt4branch}${kt4scheme}/semester/${kt4sem}${kt4branch}${kt4scheme}/course/`, {
             method: 'Get'
           })
             .then(res => res.json())
@@ -265,7 +269,7 @@ export class Home extends Component {
         });
 
       /* Check Sem5 Ktprofile */
-      fetch(`http://192.168.29.101:8000/student/${user ? `${user.username}KT5/` : `asdsad`}`, {
+      fetch(`${serverip}/student/${user ? `${user.username}KT5/` : `asdsad`}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Token ${this.props.auth.token}`
@@ -288,7 +292,7 @@ export class Home extends Component {
           const kt5sem = data.semester
           const kt5branch = data.branch
           const kt5scheme = data.scheme
-          fetch(`http://192.168.29.101:8000/scheme/${kt5scheme}/branch/${kt5branch}${kt5scheme}/semester/${kt5sem}${kt5branch}${kt5scheme}/course/`, {
+          fetch(`${serverip}/scheme/${kt5scheme}/branch/${kt5branch}${kt5scheme}/semester/${kt5sem}${kt5branch}${kt5scheme}/course/`, {
             method: 'Get'
           })
             .then(res => res.json())
@@ -319,7 +323,7 @@ export class Home extends Component {
 
 
       /* Check sem6 ktprofile */
-      fetch(`http://192.168.29.101:8000/student/${user ? `${user.username}KT6/` : `asdsad`}`, {
+      fetch(`${serverip}/student/${user ? `${user.username}KT6/` : `asdsad`}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Token ${this.props.auth.token}`
@@ -342,7 +346,7 @@ export class Home extends Component {
           const kt6sem = data.semester
           const kt6branch = data.branch
           const kt6scheme = data.scheme
-          fetch(`http://192.168.29.101:8000/scheme/${kt6scheme}/branch/${kt6branch}${kt6scheme}/semester/${kt6sem}${kt6branch}${kt6scheme}/course/`, {
+          fetch(`${serverip}/scheme/${kt6scheme}/branch/${kt6branch}${kt6scheme}/semester/${kt6sem}${kt6branch}${kt6scheme}/course/`, {
             method: 'Get'
           })
             .then(res => res.json())
@@ -617,6 +621,14 @@ export class Home extends Component {
     $(".modal").removeClass("not-active");
   }
 
+  handleChange = async (e) => {
+    const cred = this.state.studentprofile
+    cred[e.target.name] = e.target.value;
+    this.setState({
+      studentprofile: cred,
+    })
+  }
+
   noticeModal = () => {
     return (
       <div className="modal not-active">
@@ -634,6 +646,49 @@ export class Home extends Component {
     )
   }
 
+  handleChange = async (e) => {
+    const prof = this.props.auth.user
+    prof[e.target.name] = e.target.value;
+    this.setState({
+      studentprofile: prof,
+    })
+  }
+
+  updateProfile = () => {
+    const user = this.props.auth.user
+    fetch(`${serverip}/update_profile/${user.id}/`, {
+      method: 'Put',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Token ${this.props.auth.token}` },
+      body: JSON.stringify(
+        {
+          "first_name": user.first_name,
+          "email": user.email
+        }
+      )
+    })
+      .then(res => {
+        if (res.status === 400) {
+          this.setState({ updateError: true })
+        }
+        else {
+          this.setState({ updateError: false })
+        }
+        return res.json()
+      }).then(data => {
+        this.setState({
+          msg: data
+        })
+        if (this.state.updateError) {
+          alert(data.email)
+        }
+        else {
+          alert("Updated")
+          window.location.reload();
+        }
+      })
+     
+  }
+
 
 
 
@@ -645,7 +700,6 @@ export class Home extends Component {
     if (this.props.auth.user.username === 'admin') {
       return <Redirect to="/admin_home" />
     }
-
 
     return (
       <div >
@@ -666,14 +720,35 @@ export class Home extends Component {
                   </marquee>
 
                   <div>
-                    <div className='box' style={{ margin: '0 auto', marginTop: '30px', maxWidth: '700px' }}>
-                      <div class="pageloader is-active "><span class="title" style={{ fontSize: '2em' }}></span></div>
-                      {this.renderStudentProfile()}
-                    </div>
-
+                   
                     <div className="box" style={{ margin: '0 auto', marginTop: '30px', maxWidth: '700px' }}>
                       <div className="title">My Profile</div>
                       <Link to="/change_password"><button className="button is-success">Change Password</button></Link>
+                      {profile && profile.changedPassword===false?<p className="help is-danger">Change your password</p>:null}
+                      
+                      <div class="field">
+                        <label class="label">Full name ( as in marksheets )</label>
+                        <div class="control">
+                          <input class="input" type="text" autoComplete="off" onChange={this.handleChange} name="first_name" value={user.first_name} placeholder="Full name" />
+                        </div>
+                        {user.first_name===''?<p className="help is-danger">Please fill your name before filling form</p>:null}
+                      </div>
+
+                      <div class="field">
+                        <label class="label">Email address </label>
+                        <p className="help" style={{animation:'none'}}>This email will be used to send password reset links, notifications etc.</p>
+                        <div class="control">
+                          <input class="input" type="text" autoComplete="off" onChange={this.handleChange} name="email" value={user.email} placeholder="Email address" />
+                        </div>
+                        {user.email===''?<p className="help is-danger">Please fill you email before filling form</p>:null}
+                      </div>
+
+                      <button className="button is-success" onClick={this.updateProfile} >Update Profile</button>
+                    </div>
+
+                    <div className='box' style={{ margin: '0 auto', marginTop: '30px', maxWidth: '700px' }}>
+                      <div class="pageloader is-active "><span class="title" style={{ fontSize: '2em' }}></span></div>
+                      {this.renderStudentProfile()}
                     </div>
 
                   </div>
@@ -682,12 +757,12 @@ export class Home extends Component {
             </section>
           </div>
 
-          {this.state.showtimetable && user.username !== 'admin' ? (
+          {this.state.showtimetable && user.username !== 'admin  ' ? (
             <div className="column " style={{ padding: '0' }}>
               <section className="hero first  " >
                 <div className="section">
                   <div className="container">
-                    <div className="title has-text-white" style={{ fontSize: '3em' }}>Time Table</div>
+                    <div className="title has-text-white" style={{ fontSize: '3em' }}>Exam Time Table</div>
                     <Timetable profile={this.state.profile} data={this.state.data} />
                   </div>
                 </div>

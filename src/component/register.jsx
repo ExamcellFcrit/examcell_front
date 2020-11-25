@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {serverip} from '../actions/serverip'
 import logo from '../assets/fcritlogo.png'
 
 export class Register extends Component {
@@ -46,7 +47,7 @@ export class Register extends Component {
     register = async (e) => {
         e.preventDefault()
         {this.notify()}
-        fetch(' http://192.168.29.101:8000/api/auth/register', {
+        fetch(`${serverip}/api/auth/register`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(this.state.credentials)

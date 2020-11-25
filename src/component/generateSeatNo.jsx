@@ -7,6 +7,7 @@ import CsvParse from '@vtex/react-csv-parse'
 import CSVReader from 'react-csv-reader'
 import { connect } from 'react-redux'
 import ReactFileReader from 'react-file-reader';
+import {serverip} from '../actions/serverip'
 import { MyCommandCell } from './other.jsx';
 import $ from "jquery"
 import PropTypes from 'prop-types';
@@ -108,7 +109,7 @@ export class hallticket extends Component {
         })
 
         console.log(cred)
-        const api_call = await fetch(`http://192.168.29.101:8000/student/?branch=${this.state.credentials.branch}&semester=${this.state.credentials.semester[0]}`, {
+        const api_call = await fetch(`${serverip}/student/?branch=${this.state.credentials.branch}&semester=${this.state.credentials.semester[0]}`, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Token ${this.props.auth.token}`
@@ -274,7 +275,7 @@ export class hallticket extends Component {
 
         for (var i = 0; i < this.state.final.length; i++) {
             const rollno = this.state.final[i].rollno;
-            fetch(`http://192.168.29.101:8000/student/${rollno}/`, {
+            fetch(`${serverip}/student/${rollno}/`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',

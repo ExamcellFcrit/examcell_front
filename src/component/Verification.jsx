@@ -3,6 +3,7 @@ import Header from '../pages/Header';
 import ReactDOM from 'react-dom';
 import './styles/styles.css'
 import dp from '../assets/dp.jpg'
+import {serverip} from '../actions/serverip'
 import { logout } from '../actions/auth'
 import CsvParse from '@vtex/react-csv-parse'
 import CSVReader from 'react-csv-reader'
@@ -43,7 +44,7 @@ export class verification extends Component {
         })
 
         console.log(cred)
-        const api_call = await fetch(`http://192.168.29.101:8000/student/?branch=${this.state.credentials.branch}&semester=${this.state.credentials.semester[0]}`, {
+        const api_call = await fetch(`${serverip}/student/?branch=${this.state.credentials.branch}&semester=${this.state.credentials.semester[0]}`, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Token ${this.props.auth.token}`
@@ -221,7 +222,7 @@ export class verification extends Component {
             profileid: id
         })
 
-        fetch(`http://192.168.29.101:8000/student/${id}/`, {
+        fetch(`${serverip}/student/${id}/`, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Token ${this.props.auth.token}`
@@ -232,7 +233,7 @@ export class verification extends Component {
                 const scheme = this.state.profile.scheme;
                 const branch = this.state.profile.branch;
                 const semester = this.state.profile.semester;
-                fetch(`http://192.168.29.101:8000/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/course/`, {
+                fetch(`${serverip}/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/course/`, {
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Token ${this.props.auth.token}`
@@ -295,7 +296,7 @@ export class verification extends Component {
 
     verifyProfile = async () => {
         let id = localStorage.getItem('test')
-        fetch(`http://192.168.29.101:8000/student/${id}/`, {
+        fetch(`${serverip}/student/${id}/`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
@@ -303,7 +304,7 @@ export class verification extends Component {
             },
             body: JSON.stringify({ "verified": true })
         }).then(() => {
-            fetch(`http://192.168.29.101:8000/student/?branch=${this.state.credentials.branch}&semester=${this.state.credentials.semester[0]}`, {
+            fetch(`${serverip}/student/?branch=${this.state.credentials.branch}&semester=${this.state.credentials.semester[0]}`, {
                 method: 'get',
                 headers: {
                     'Content-Type': 'application/json',
@@ -322,7 +323,7 @@ export class verification extends Component {
 
     rejectProfile = async () => {
         let id = localStorage.getItem('test')
-        fetch(`http://192.168.29.101:8000/student/${id}/`, {
+        fetch(`${serverip}/student/${id}/`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
@@ -330,7 +331,7 @@ export class verification extends Component {
             },
             body: JSON.stringify({ "verified": false })
         }).then(() => {
-            fetch(`http://192.168.29.101:8000/student/?branch=${this.state.credentials.branch}&semester=${this.state.credentials.semester[0]}`, {
+            fetch(`${serverip}/student/?branch=${this.state.credentials.branch}&semester=${this.state.credentials.semester[0]}`, {
                 method: 'get',
                 headers: {
                     'Content-Type': 'application/json',

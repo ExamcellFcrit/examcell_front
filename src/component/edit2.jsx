@@ -8,6 +8,7 @@ import { orderBy } from '@progress/kendo-data-query'
 import { sampleProducts } from './sample-products.jsx';
 import { insertItem, getItems, updateItem, deleteItem } from "./services.jsx";
 import { connect } from 'react-redux'
+import {serverip} from '../actions/serverip'
 import PropTypes from 'prop-types';
 
 let toastId = null;
@@ -47,6 +48,22 @@ export class edit extends Component {
         />
     );
 
+    componentDidMount = async () => {
+        var branch = sessionStorage.getItem("branch")
+        var semester = sessionStorage.getItem("semester")
+        var scheme = sessionStorage.getItem("scheme")
+        const api_call = await fetch(`${serverip}/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/course`, {
+            headers: {
+                'Authorization': `Token ${this.props.auth.token}`
+            }
+        });
+        const response = await api_call.json();
+        this.setState({
+            data: response,
+            initial: response,
+        })
+    }
+
     enterEdit = (dataItem) => {
         this.setState({
             data: this.state.data.map(item =>
@@ -70,12 +87,12 @@ export class edit extends Component {
         const code = dataItem.code;
         console.log(code)
         dataItem.id = semester + branch + scheme + code;
-        fetch(`http://192.168.29.101:8000/scheme/${scheme}/branch/${branch}${scheme}/`, {
+        fetch(`${serverip}/scheme/${scheme}/branch/${branch}${scheme}/`, {
             method: 'Get'
         }).then((res) => {
             console.log(res.status)
             if (res.status == 404 || res.status == 200) {
-                fetch(`http://192.168.29.101:8000/scheme/${scheme}/branch/`, {
+                fetch(`${serverip}/scheme/${scheme}/branch/`, {
                     method: 'Post',
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Token ${this.props.auth.token}` },
                     body: JSON.stringify(
@@ -87,12 +104,12 @@ export class edit extends Component {
                     )
                 })
                     .then(() => {
-                        fetch(`http://192.168.29.101:8000/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/`, {
+                        fetch(`${serverip}/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/`, {
                             method: 'Get'
                         }).then((res) => {
                             console.log(res.status)
                             if (res.status == 404 || res.status == 200) {
-                                fetch(`http://192.168.29.101:8000/scheme/${scheme}/branch/${branch}${scheme}/semester/`, {
+                                fetch(`${serverip}/scheme/${scheme}/branch/${branch}${scheme}/semester/`, {
                                     method: 'Post',
                                     headers: { 'Content-Type': 'application/json', 'Authorization': `Token ${this.props.auth.token}` },
                                     body: JSON.stringify(
@@ -104,7 +121,7 @@ export class edit extends Component {
                                     )
                                 })
                                     .then(() => {
-                                        fetch(`http://192.168.29.101:8000/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/course/`, {
+                                        fetch(`${serverip}/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/course/`, {
                                             method: 'Post',
                                             headers: { 'Content-Type': 'application/json', 'Authorization': `Token ${this.props.auth.token}` },
                                             body: JSON.stringify(dataItem)
@@ -140,7 +157,7 @@ export class edit extends Component {
                     })
             }
             else {
-                fetch(`http://192.168.29.101:8000/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/course/`, {
+                fetch(`${serverip}/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/course/`, {
                     method: 'Post',
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Token ${this.props.auth.token}` },
                     body: JSON.stringify(dataItem)
@@ -175,13 +192,49 @@ export class edit extends Component {
 
 
     update = (dataItem) => {
+        { loading() }
         const data = [...this.state.data];
-        const updatedItem = { ...dataItem, inEdit: undefined };
-
+        const updatedItem = { ...dataItem, inEdit: undefined }
         this.updateItem(data, updatedItem);
-        this.updateItem(sampleProducts, updatedItem);
-
         this.setState({ data });
+        if (dataItem.start_time == "") {
+            dataItem.start_time = null
+        }
+        if (dataItem.end_time == "") {
+            dataItem.end_time = null
+        }
+        if (dataItem.date == "") {
+            dataItem.date = null
+        }
+        const semester = this.state.credentials.semester;
+        const branch = this.state.credentials.branch;
+        const scheme = this.state.credentials.revscheme;
+        const id = dataItem.id;
+        const error = this.state.error
+        console.log("Id is: ", id)
+        fetch(`http://${serverip}/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/course/${id}/`, {
+            method: "Put",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${this.props.auth.token}`
+            },
+            body: JSON.stringify(dataItem)
+        })
+            .then(data => data.json())
+            .then(
+                data => {
+                    this.setState({
+                        error: data
+                    })
+                    if (!data.date) {
+                        console.log("not error")
+                        const success = () => toast.update(toastId, { type: toast.TYPE.SUCCESS, autoClose: 2000, render: `${dataItem.course} Updated!` });
+                        { success() }
+                    }
+                    this.checkTime(dataItem.end_time, dataItem.start_time, dataItem.course, dataItem)
+
+                }
+            ).catch(error => console.log(error))
     }
 
     updateItem = (data, item) => {
@@ -214,7 +267,7 @@ export class edit extends Component {
         const scheme = this.state.credentials.revscheme;
         const id = dataItem.id;
 
-        fetch(`http://192.168.29.101:8000/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/course/${id}/`, {
+        fetch(`${serverip}/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/course/${id}/`, {
             method: 'Delete',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Token ${this.props.auth.token}` },
         }).then(msg => {
@@ -224,7 +277,7 @@ export class edit extends Component {
             const semester = this.state.credentials.semester;
             const branch = this.state.credentials.branch;
             const scheme = this.state.credentials.revscheme;
-            const api_call = await fetch(`http://192.168.29.101:8000/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/course`, {
+            const api_call = await fetch(`${serverip}/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/course`, {
                 headers: {
                     'Authorization': `Token ${this.props.auth.token}`
                 }
@@ -279,7 +332,7 @@ export class edit extends Component {
         sessionStorage.setItem("branch", branch)
         sessionStorage.setItem("scheme", scheme)
         sessionStorage.setItem("semester", semester)
-        const api_call = await fetch(`http://192.168.29.101:8000/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/course`, {
+        const api_call = await fetch(`${serverip}/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/course`, {
             headers: {
                 'Authorization': `Token ${this.props.auth.token}`
             }

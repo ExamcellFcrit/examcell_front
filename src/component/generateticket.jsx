@@ -4,6 +4,7 @@ import fcritlogo from '../assets/fcritlogo.png'
 import download from '../assets/download.png'
 import dp from '../assets/dp.jpg';
 import sign from '../assets/sign.png'
+import {serverip} from '../actions/serverip'
 import PropTypes from "prop-types"
 import Footer from './Footer'
 import { HashLink as Link } from 'react-router-hash-link';
@@ -107,7 +108,7 @@ export class generateticket extends Component {
         })
         const { user } = this.props.auth;
         console.log(user)
-        fetch(`http://192.168.29.101:8000/student/${user ? user.username : null}/`, {
+        fetch(`${serverip}/student/${user ? user.username : null}/`, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Token ${this.props.auth.token}`
@@ -130,7 +131,7 @@ export class generateticket extends Component {
                 const scheme = this.state.data.scheme;
                 const branch = this.state.data.branch;
                 const semester = this.state.data.semester;
-                return fetch(`http://192.168.29.101:8000/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/course/`, {
+                return fetch(`${serverip}/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/course/`, {
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Token ${this.props.auth.token}`
@@ -179,7 +180,7 @@ export class generateticket extends Component {
             })
 
         /* Fetch KT3 profile */
-        fetch(`http://192.168.29.101:8000/student/${user ? `${user.username}KT3` : null}/`, {
+        fetch(`${serverip}/student/${user ? `${user.username}KT3` : null}/`, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Token ${this.props.auth.token}`
@@ -206,7 +207,7 @@ export class generateticket extends Component {
             })
 
         /* Fetch KT4 profile */
-        fetch(`http://192.168.29.101:8000/student/${user ? `${user.username}KT4` : null}/`, {
+        fetch(`${serverip}/student/${user ? `${user.username}KT4` : null}/`, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Token ${this.props.auth.token}`
@@ -237,7 +238,7 @@ export class generateticket extends Component {
 
 
         /* Fetch KT5 profile */
-        fetch(`http://192.168.29.101:8000/student/${user ? `${user.username}KT5` : null}/`, {
+        fetch(`${serverip}/student/${user ? `${user.username}KT5` : null}/`, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Token ${this.props.auth.token}`
@@ -264,7 +265,7 @@ export class generateticket extends Component {
             })
 
         /* Fetch kt6 profile */
-        fetch(`http://192.168.29.101:8000/student/${user ? `${user.username}KT6` : null}/`, {
+        fetch(`${serverip}/student/${user ? `${user.username}KT6` : null}/`, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Token ${this.props.auth.token}`

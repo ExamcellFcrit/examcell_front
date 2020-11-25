@@ -9,6 +9,7 @@ import AdminLogin from './component/AdminLogin'
 import resetPassword from './component/resetPassword'
 import Form from './component/form2'
 import Register from './component/register'
+import createaccount from './component/createaccount'
 import { Provider } from 'react-redux'
 import Home from './pages/Home'
 import store from './store';
@@ -42,15 +43,14 @@ class App extends Component{
                     <Route path="/register" exact component={Register}/>
                     <PrivateRoute path="/form" exact component={Form}/>
                     <Route path="/login" component={Login}/>
+                    <Route path="/createaccount" component={createaccount}/>
                     <Route path="/admin_login" component={AdminLogin}/>
                     <PrivateRoute path="/admin_home" component={AdminHome}/>
-                    <Route path="/change_password" component={changePassword}/>
+                    <PrivateRoute path="/change_password" component={changePassword}/>
                     <Route path="/password_reset_confirm" component={resetPassword}/>
-                    <Route path="/developers" component={Developers}/>
                     <PrivateRoute path="/adminpanel" component={AdminPanel}/>
                     <PrivateRoute path="/hallticket" component={GenerateTicket}/>
-                  </Switch>
-                  
+                  </Switch>  
         </div>
         </Router>
     </Provider>

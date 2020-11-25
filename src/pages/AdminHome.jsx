@@ -3,6 +3,7 @@ import Header from './Header'
 import { connect } from 'react-redux'
 import qrcode from '../assets/qrcode.png';
 import Footer from '../component/Footer'
+import {serverip} from '../actions/serverip'
 import $ from "jquery"
 import PropTypes from "prop-types"
 import { Link, Redirect } from 'react-router-dom'
@@ -43,7 +44,7 @@ export class AdminHome extends Component {
         
 
         //get halltkt switch status
-        fetch(`http://192.168.29.101:8000/controls/freezelink/`, {
+        fetch(`${serverip}/controls/freezelink/`, {
             method: "get",
             headers: {
                 'Content-Type': 'application/json',
@@ -60,7 +61,7 @@ export class AdminHome extends Component {
         
 
         //Get notice
-        fetch("http://192.168.29.101:8000/notice/", {
+        fetch(`${serverip}/notice/`, {
             method: "get",
             headers: {
                 'Content-Type': 'application/json',
@@ -73,7 +74,7 @@ export class AdminHome extends Component {
     handleTimeTableLinkChange = async (e) => {
         this.setState({ showtimetable: !this.state.showtimetable });
         console.log(e.target.value);
-        fetch(`http://192.168.29.101:8000/controls/freezelink/`, {
+        fetch(`${serverip}/controls/freezelink/`, {
             method: "Put",
             headers: {
                 'Content-Type': 'application/json',
@@ -86,7 +87,7 @@ export class AdminHome extends Component {
     handleLinkChange = async (e) => {
         this.setState({ freezelink: !this.state.freezelink });
         console.log(e.target.value);
-        fetch(`http://192.168.29.101:8000/controls/freezelink/`, {
+        fetch(`${serverip}/controls/freezelink/`, {
             method: "Put",
             headers: {
                 'Content-Type': 'application/json',
@@ -105,7 +106,7 @@ export class AdminHome extends Component {
     }
 
     sendNotice = () => {
-        fetch(`http://192.168.29.101:8000/notice/`, {
+        fetch(`${serverip}/notice/`, {
             method: "Post",
             headers: {
                 'Content-Type': 'application/json',
@@ -118,7 +119,7 @@ export class AdminHome extends Component {
     }
 
     getNotice = () => {
-        fetch("http://192.168.29.101:8000/notice/", {
+        fetch(`${serverip}/notice/`, {
             method: "get",
             headers: {
                 'Content-Type': 'application/json',
@@ -139,7 +140,7 @@ export class AdminHome extends Component {
         }).get();
         console.log(choices.length)
         for (var i = 0; i < choices.length; i++) {
-            fetch(`http://192.168.29.101:8000/notice/${choices[i].id}/`, {
+            fetch(`${serverip}/notice/${choices[i].id}/`, {
                 method: "delete",
                 headers: {
                     'Content-Type': 'application/json',

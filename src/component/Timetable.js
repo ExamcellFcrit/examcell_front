@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import { logout } from '../actions/auth'
+import {serverip} from '../actions/serverip'
 import { orderBy } from '@progress/kendo-data-query'
 import { Grid, GridColumn as Column, GridToolbar } from '@progress/kendo-react-grid';
 
@@ -22,7 +23,7 @@ export class Timetable extends Component {
         const branch = this.state.credentials.branch;
         const scheme = this.state.credentials.revscheme;
     
-        const api_call = await fetch(`http://192.168.29.101:8000/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/course/`, {
+        const api_call = await fetch(`${serverip}/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/course/`, {
           headers: {
             'Authorization': `Token ${this.props.auth.token}`
           }
@@ -46,7 +47,7 @@ export class Timetable extends Component {
         const branch = this.state.credentials.branch;
         const scheme = this.state.credentials.revscheme;
     
-        const api_call = await fetch(`http://192.168.29.101:8000/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/course`, {
+        const api_call = await fetch(`${serverip}/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/course`, {
           headers: {
             'Authorization': `Token ${this.props.auth.token}`
           }

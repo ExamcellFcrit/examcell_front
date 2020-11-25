@@ -123,7 +123,7 @@ export class AdminLogin extends Component {
     sendLink = () => {
         $('button').addClass('is-loading');
         const email = this.state.credentials.email
-        fetch(`http://192.168.29.101:8000/api/password_reset/`, {
+        fetch(`http://192.168.161.9:8000/api/password_reset/`, {
             method: 'Post',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(

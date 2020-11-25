@@ -1,1 +1,1 @@
-export const serverip="http://192.168.29.101:8000"
+export const serverip="http://115.243.75.84:8090"

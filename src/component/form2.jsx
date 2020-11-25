@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Header from '../pages/Header'
 import _ from 'lodash'
 import Footer from './Footer'
+import {serverip} from '../actions/serverip'
 import { connect } from 'react-redux'
 import PropTypes from "prop-types"
 import { HashLink as Link } from 'react-router-hash-link';
@@ -142,7 +143,7 @@ export class form extends Component {
     componentDidMount = () => {
 
         const { user } = this.props.auth;
-        fetch(`http://192.168.29.101:8000/student/${user ? `${user.username}/` : `null`}`, {
+        fetch(`${serverip}/student/${user ? `${user.username}/` : `null`}`, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Token ${this.props.auth.token}`
@@ -175,7 +176,7 @@ export class form extends Component {
             });
 
         /* Check Sem3 ktprofile */
-        fetch(`http://192.168.29.101:8000/student/${user ? `${user.username}KT3/` : `null`}`, {
+        fetch(`${serverip}/student/${user ? `${user.username}KT3/` : `null`}`, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Token ${this.props.auth.token}`,
@@ -210,7 +211,7 @@ export class form extends Component {
 
 
         /* Check Sem4 Ktprofile */
-        fetch(`http://192.168.29.101:8000/student/${user ? `${user.username}KT4/` : `null`}`, {
+        fetch(`${serverip}/student/${user ? `${user.username}KT4/` : `null`}`, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Token ${this.props.auth.token}`
@@ -243,7 +244,7 @@ export class form extends Component {
             });
 
         /* Check sem5 ktprofile */
-        fetch(`http://192.168.29.101:8000/student/${user ? `${user.username}KT5/` : `null`}`, {
+        fetch(`${serverip}/student/${user ? `${user.username}KT5/` : `null`}`, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Token ${this.props.auth.token}`
@@ -276,7 +277,7 @@ export class form extends Component {
             });
 
         /* Check sem6 ktprofile */
-        fetch(`http://192.168.29.101:8000/student/${user ? `${user.username}KT6/` : `null`}`, {
+        fetch(`${serverip}/student/${user ? `${user.username}KT6/` : `null`}`, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Token ${this.props.auth.token}`
@@ -325,7 +326,7 @@ export class form extends Component {
         const semester = this.state.credentials.ktsemester;
         const branch = this.state.credentials.branch;
         const scheme = this.state.credentials.revscheme;
-        const api_call = await fetch(`http://192.168.29.101:8000/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/course/`, {
+        const api_call = await fetch(`${serverip}/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/course/`, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Token ${this.props.auth.token}`
@@ -361,7 +362,7 @@ export class form extends Component {
         else {
             this.setState({ isElective: false })
         }
-        const api_call = await fetch(`http://192.168.29.101:8000/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/course/`, {
+        const api_call = await fetch(`${serverip}/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/course/`, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Token ${this.props.auth.token}`
@@ -440,7 +441,7 @@ export class form extends Component {
         form_data.append('scheme', this.state.credentials.revscheme);
         form_data.append('ktsemester', this.state.credentials.ktsemester);
         e.preventDefault()
-        fetch('http://192.168.29.101:8000/student/', {
+        fetch(`${serverip}/student/`, {
             method: 'POST',
             headers: {
                 /* 'Content-Type': 'multipart/form-data', */
@@ -490,7 +491,7 @@ export class form extends Component {
                 ktform_data.append('dob', this.state.credentials.dob);
                 ktform_data.append('scheme', this.state.credentials.revscheme);
                 e.preventDefault()
-                fetch('http://192.168.29.101:8000/student/', {
+                fetch(`${serverip}/student/`, {
                     method: 'POST',
                     headers: {
                         /* 'Content-Type': 'multipart/form-data', */
@@ -516,7 +517,7 @@ export class form extends Component {
                     .then(() => {
                         console.log(this.state.mychoices.length)
                         for (var i = 0; i < this.state.mychoices.length; i++) {
-                            fetch('http://192.168.29.101:8000/ktsubjects/', {
+                            fetch(`${serverip}/ktsubjects/`, {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
@@ -862,7 +863,7 @@ export class form extends Component {
                         <div className="section" >
                             <div className="container form-filled">
                                 <div id="status" className="title " style={{ color: 'white', display: 'flex', alignItems: 'center' }}>{this.state.kt3filled || this.state.kt4filled || this.state.kt5filled || this.state.kt6filled ? (<div>{`KT Exam Form filled`}<span class="material-icons material-icons has-text-white  ml-2"> done_all</span></div>) : null}</div>
-                                <div id="status" className="title " style={{ color: 'white', display: 'flex', alignItems: 'center' }}>{profile && this.state.isRegular == true ? (<div>{`Current Exam Form filled`}<span class="material-icons has-text-white  ml-2"> done_all</span></div>) : null}</div>
+                                <div id="status" className="title " style={{ color: 'white', display: 'flex', alignItems: 'center' }}>{profile && this.state.isRegular == true ? (<div>{`Regular Exam Form filled`}<span class="material-icons has-text-white  ml-2"> done_all</span></div>) : null}</div>
                                 <div className="notification is-light is-success">
                                     <p>Hallticket can be downloaded once the admin has verified your form and generated seat number. Print hallticket tab will be activated later.</p>
                                 </div>
@@ -906,12 +907,12 @@ export class form extends Component {
                                                     <Ripple>
                                                         <div className="field">
                                                             <div className="control" >
-                                                                <label className="k-radio-label" htmlFor="c1"><input type="radio" onChange={this.handleChange} id="c1" name="studentType" value="Regular" className="k-radio" />Current Examination</label>
+                                                                <label className="k-radio-label" htmlFor="c1"><input type="radio" onChange={this.handleChange} id="c1" name="studentType" value="Regular" className="k-radio" />Regular Examination</label>
                                                             </div>
                                                         </div>
                                                         <div className="field">
                                                             <div className="control">
-                                                                <label className="k-radio-label" htmlFor="c2"><input type="radio" onChange={this.handleChange} id="c2" name="studentType" value="KT" className="k-radio" />KT + Current Examination</label>
+                                                                <label className="k-radio-label" htmlFor="c2"><input type="radio" onChange={this.handleChange} id="c2" name="studentType" value="KT" className="k-radio" />KT + Regular Examination</label>
                                                             </div>
                                                         </div>
                                                         <div className="field">
