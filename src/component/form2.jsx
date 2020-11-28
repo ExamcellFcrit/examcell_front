@@ -407,10 +407,18 @@ export class form extends Component {
 
 
     register = async (e) => {
-        const branch = this.state.credentials.branch
-        const semester = this.state.credentials.semester
+        const branch = this.state.credentials.branch;
+        const semester = this.state.credentials.semester;
+        const scheme = this.state.credentials.revscheme;
         const { user } = this.props.auth;
         let form_data = new FormData();
+        if(semester==="5" || semester==="6"){
+            if(this.state.credentials.elective===''){
+                console.log("enter elective")
+                alert("Enter elective")
+                return;
+            }  
+        }
         if (this.state.credentials.studentType == 'KT') {
             form_data.append('studentType', 'Regular')
             form_data.append('semester', this.state.credentials.semester)
@@ -579,10 +587,11 @@ export class form extends Component {
                                 <label htmlFor="d1" className="label">Elective:</label>
                                 <div className="select">
                                     <select onChange={this.handleChange} name="elective">
-                                        <option>Select Elective</option>
+                                        <option value="">Select Elective</option>
                                         {this.state.electives.map((item) => <option value={item.course}>{item.course}</option>)}
                                     </select>
                                 </div>
+                            {this.state.credentials.elective===''?<p className="help is-danger">Select your elective</p>:null}
                             </div> : null
                         }
                     </div>
@@ -910,16 +919,16 @@ export class form extends Component {
                                                                 <label className="k-radio-label" htmlFor="c1"><input type="radio" onChange={this.handleChange} id="c1" name="studentType" value="Regular" className="k-radio" />Regular Examination</label>
                                                             </div>
                                                         </div>
-                                                        <div className="field">
+                                                        {/* <div className="field">
                                                             <div className="control">
-                                                                <label className="k-radio-label" htmlFor="c2"><input type="radio" onChange={this.handleChange} id="c2" name="studentType" value="KT" className="k-radio" />KT + Regular Examination</label>
+                                                                <label className="k-radio-label" htmlFor="c2"><input type="radio" disabled onChange={this.handleChange} id="c2" name="studentType" value="KT" className="k-radio" />KT + Regular Examination</label>
                                                             </div>
                                                         </div>
                                                         <div className="field">
                                                             <div className="control">
-                                                                <label className="k-radio-label" htmlFor="c3"><input type="radio" onChange={this.handleChange} id="c3" name="studentType" value="Dropout" className="k-radio" />Only KT Examination(Dropouts)</label>
+                                                                <label className="k-radio-label" htmlFor="c3"><input type="radio" disabled  onChange={this.handleChange} id="c3" name="studentType" value="Dropout" className="k-radio" />Only KT Examination(Dropouts)</label>
                                                             </div>
-                                                        </div>
+                                                        </div> */}
                                                     </Ripple>
                                                 </div>
                                             ) : null}
@@ -957,6 +966,7 @@ export class form extends Component {
                                                 <div className="content">
                                                     <div className="box" style={{ maxWidth: "500px", margin: '0 auto' }}>
                                                         <div className="container" style={{ maxWidth: "300px", paddingBottom: "1em" }}>
+                                                            
                                                             {/* <div class="field" style={{ background: "", display: "flex", alignItems: "center"}}> */}
                                                             <div className="field">
                                                                 <label className="label">Year</label>
@@ -1005,7 +1015,7 @@ export class form extends Component {
                                                                 <label class="label">Student Name</label>
                                                                 <div class="control">
                                                                     {user ? <input className="input" disabled autoComplete="off" type="text" onChange={this.handleChange} name="studentname" value={user.first_name} placeholder="Student Name" /> :
-                                                                        <input className="input" disabled autoComplete="off" type="text" onChange={this.handleChange} name="studentname" value={this.state.credentials.studentname} placeholder="Student Name" />}
+                                                                        <input className="input" disabled autoComplete="off" type="text" onChange={this.handleChange} name="studentname" value={this.state.credentials.studentname} placeholder="Student Name" style={{textTransform:'uppercase'}} />}
                                                                 </div>
                                                                 <div className="help is-danger">
                                                                     {this.state.error.studentname ? <span>{this.state.error.studentname}</span> : null}
@@ -1035,7 +1045,7 @@ export class form extends Component {
                                                             <div class="field">
                                                                 <label class="label">Father's Name</label>
                                                                 <div class="control">
-                                                                    <input class="input" type="text" autoComplete="off" onChange={this.handleChange} name="fathername" value={this.state.credentials.fathername} placeholder="Fathers' name" />
+                                                                    <input class="input" type="text" autoComplete="off" onChange={this.handleChange} name="fathername" value={this.state.credentials.fathername} placeholder="Fathers' name" style={{textTransform:'uppercase'}} />
                                                                 </div>
                                                                 <div className="help is-danger">
                                                                     {this.state.error.fathername ? <span><i className="fas fa-exclamation-circle"></i> {this.state.error.fathername}</span> : null}
@@ -1045,7 +1055,7 @@ export class form extends Component {
                                                             <div class="field">
                                                                 <label class="label">Mother's Name</label>
                                                                 <div class="control">
-                                                                    <input class="input" type="text" autoComplete="off" onChange={this.handleChange} name="mothername" value={this.state.credentials.mothername} placeholder="Mothers' name" />
+                                                                    <input class="input" type="text" autoComplete="off" onChange={this.handleChange} name="mothername" value={this.state.credentials.mothername} placeholder="Mothers' name" style={{textTransform:'uppercase'}}/>
                                                                 </div>
                                                                 <div className="help is-danger">
                                                                     {this.state.error.mothername ? <span><i className="fas fa-exclamation-circle"></i> {this.state.error.mothername}</span> : null}
@@ -1077,7 +1087,7 @@ export class form extends Component {
                                                             <div class="field">
                                                                 <label class="label">Address</label>
                                                                 <div class="control">
-                                                                    <textarea class="textarea" autoComplete="off" value={this.state.credentials.address} name="address" onChange={this.handleChange} placeholder="Address"></textarea>
+                                                                    <textarea class="textarea" autoComplete="off" value={this.state.credentials.address} name="address" onChange={this.handleChange} placeholder="Address" style={{textTransform:'uppercase'}}></textarea>
                                                                 </div>
                                                                 <div className="help is-danger">
                                                                     {this.state.error.address ? <span>{this.state.error.address}</span> : null}

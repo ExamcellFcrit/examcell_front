@@ -39,7 +39,8 @@ class App extends Component{
         <Router >
         <div className="App" id="bgsvg">
                   <Switch>
-                    <PrivateRoute path="/" exact component={Home}/>
+                    <Route exact path='/'><Redirect to='/home'></Redirect></Route>
+                    <PrivateRoute path="/home" exact component={Home}/>
                     <Route path="/register" exact component={Register}/>
                     <PrivateRoute path="/form" exact component={Form}/>
                     <Route path="/login" component={Login}/>

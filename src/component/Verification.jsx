@@ -27,6 +27,7 @@ export class verification extends Component {
         super(props);
         this.state = {
             data: [],
+            image:'',
             ktstudentsubj: '',
             csvdata: [],
             credentials: { branch: '', semester: '', starting_seatno: undefined },
@@ -132,15 +133,16 @@ export class verification extends Component {
             gender = "Male"
         }
         var patt=new RegExp("KT");
-      
+        const studentImage=this.state.image
 
         return (
             <div>
-                {data ? (<div><div class="modal not-active " style={{ zIndex: '100' }}>
+                {data ? (<div>
+                    <div class="modal not-active " style={{ zIndex: '100',display:'flex !important',height:'100%',margin:'auto' }}>
                     <div class="modal-background " onClick={this.closeProfile}></div>
                     <div class="modal-card profileModal">
                         <header class="modal-card-head">
-                            <p class="modal-card-title">{data.studentname} {data.surname}  {data.rollno}</p>
+                            <p class="modal-card-title">{data.studentname} {data.rollno}</p>
 
                             <button className="delete" aria-label="close" onClick={this.closeProfile}></button>
                         </header>
@@ -150,7 +152,7 @@ export class verification extends Component {
                                 <div className="media-content">
                                     <table>
                                         <tr><th>Branch:</th><td>{data.branch}</td> </tr>
-                                        <tr><th>Semester:</th><td>{data.semster}</td> </tr>
+                                        <tr><th>Semester:</th><td>{data.semester}</td> </tr>
                                         <tr><th>Scheme:</th><td>{data.scheme}</td> </tr>
                                         <tr><th>Session:</th><td>{data.session}</td> </tr>
                                         <tr><th>Exam Type:</th><td>{data.studentType}</td> </tr>
@@ -167,7 +169,7 @@ export class verification extends Component {
                                 </div>
                                 <div className="media-right">
                                     <figure className="image is-150x150">
-                                        <img className="is-rounded" style={{ width: "150px", height: '150px', display: 'block', margin: 'auto', marginBottom: '10px' }} src="https://bulma.io/images/placeholders/128x128.png" alt="" />
+                                        <img className="is-rounded" style={{ width: "150px", height: '150px', display: 'block', margin: 'auto', marginBottom: '10px' }} src={studentImage.image} alt="" />
                                     </figure>
                                 </div>
                             </article>
@@ -178,7 +180,8 @@ export class verification extends Component {
                                 <tr><th>Name:</th><td>{data.studentname} </td></tr>
                                 <tr><th>Father's name:</th><td>{data.fathername} </td></tr>
                                 <tr><th>Mother's Name:</th><td>{data.mothername} </td></tr>
-                                <tr><th>Gender:</th><td>{data.studentname} </td></tr>
+                                <tr><th>Gender:</th><td>{gender} </td></tr>
+                                <tr><th>Date of Birth:</th><td>{data.dob} </td></tr>
                                 <tr><th>Address:</th><td>{data.address}</td></tr>
                                 <tr><th>Student phone no:</th><td>{data.studentphone} </td></tr>
                                 <tr><th>Parent phone no:</th><td>{data.parentphone} </td></tr>
@@ -210,6 +213,8 @@ export class verification extends Component {
             $(".modal").removeClass("is-active");
             $(".modal").addClass("not-active");
         })
+
+        
     }
 
 
@@ -222,6 +227,19 @@ export class verification extends Component {
             profileid: id
         })
 
+        //get student image
+        fetch(`${serverip}/api/image/${id}/`, {
+            method: 'get',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${this.props.auth.token}`
+            },
+        }).then(res=>res.json())
+        .then(data=>{
+            this.setState({image:data})
+        })
+
+        //get student profile
         fetch(`${serverip}/student/${id}/`, {
             headers: {
                 'Content-Type': 'application/json',
@@ -355,8 +373,10 @@ export class verification extends Component {
             });
         });
 
+        const filledno=this.state.data.length
         return (
             <div >
+                {this.modalProfile()}
                 <div className="columns">
                     <div className="column is-one-fifth">
                         <div className="section-small"  >
@@ -392,7 +412,7 @@ export class verification extends Component {
                     <div className="column">
                         <div className="hero">
                             <div className="section-small">
-                                <div className="container"><div className="title has-text-white">Verify Forms</div></div>
+                                <div className="container"><div className="title has-text-white">Verify Forms</div><p className="has-text-white">Filled:{filledno}</p></div>
                             </div>
                         </div>
                         {this.state.credentials.branch && this.state.credentials.semester ?
@@ -408,7 +428,7 @@ export class verification extends Component {
                                         {this.state.data.map(x =>
                                             <tr>
                                                 <td className="nr">{x.rollno}</td>
-                                                <td contenteditable="true">{x.studentname} {x.surname}</td>
+                                                <td contenteditable="true">{x.studentname}</td>
                                                 <td style={{ padding: '0' }}> <button className="use-address" onClick={this.openProfile} style={{ background: 'none', margin: '0', height: '35px', cursor: 'pointer', color: '#48c774', fontWeight: 'bold', border: 'none' }}>Open Profile</button></td>
                                                 {x.verified ? <td style={{ background: '#34a85c', color: 'white' }}>Verified</td> : <td style={{ background: '#ff4242', color: 'white' }}>Not verified</td>}
                                             </tr>
@@ -416,7 +436,7 @@ export class verification extends Component {
 
                                     </tbody>
                                 </table>
-                                {this.modalProfile()}
+                               
                             </div>
                             : <div className="hero">
                                 <div className="title has-text-centered">-</div>

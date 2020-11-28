@@ -74,12 +74,12 @@ export class edit extends Component {
         const code = dataItem.code;
         console.log(code)
         dataItem.id = semester + branch + scheme + code;
-        fetch(`http://192.168.29.101:8000/scheme/${scheme}/branch/${branch}${scheme}/`, {
+        fetch(`${serverip}/scheme/${scheme}/branch/${branch}${scheme}/`, {
             method: 'Get'
         }).then((res) => {
             console.log(res.status)
             if (res.status == 404 || res.status == 200) {
-                fetch(`http://192.168.29.101:8000/scheme/${scheme}/branch/`, {
+                fetch(`${serverip}/scheme/${scheme}/branch/`, {
                     method: 'Post',
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Token ${this.props.auth.token}` },
                     body: JSON.stringify(
@@ -91,12 +91,12 @@ export class edit extends Component {
                     )
                 })
                     .then(() => {
-                        fetch(`http://192.168.29.101:8000/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/`, {
+                        fetch(`${serverip}/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/`, {
                             method: 'Get'
                         }).then((res) => {
                             console.log(res.status)
                             if (res.status == 404 || res.status == 200) {
-                                fetch(`http://192.168.29.101:8000/scheme/${scheme}/branch/${branch}${scheme}/semester/`, {
+                                fetch(`${serverip}/scheme/${scheme}/branch/${branch}${scheme}/semester/`, {
                                     method: 'Post',
                                     headers: { 'Content-Type': 'application/json', 'Authorization': `Token ${this.props.auth.token}` },
                                     body: JSON.stringify(
@@ -108,7 +108,7 @@ export class edit extends Component {
                                     )
                                 })
                                     .then(() => {
-                                        fetch(`http://192.168.29.101:8000/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/course/`, {
+                                        fetch(`${serverip}/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/course/`, {
                                             method: 'Post',
                                             headers: { 'Content-Type': 'application/json', 'Authorization': `Token ${this.props.auth.token}` },
                                             body: JSON.stringify(dataItem)
@@ -148,7 +148,7 @@ export class edit extends Component {
                     })
             }
             else {
-                fetch(`http://192.168.29.101:8000/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/course/`, {
+                fetch(`${serverip}/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/course/`, {
                     method: 'Post',
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Token ${this.props.auth.token}` },
                     body: JSON.stringify(dataItem)
@@ -220,7 +220,7 @@ export class edit extends Component {
         const id = dataItem.id;
         const error = this.state.error
         console.log("Id is: ", id)
-        fetch(`http://192.168.29.101:8000/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/course/${id}/`, {
+        fetch(`${serverip}/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/course/${id}/`, {
             method: "Put",
             headers: {
                 'Content-Type': 'application/json',
@@ -273,7 +273,7 @@ export class edit extends Component {
         const scheme = this.state.credentials.revscheme;
         const id = dataItem.id;
 
-        fetch(`http://192.168.29.101:8000/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/course/${id}/`, {
+        fetch(`${serverip}/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/course/${id}/`, {
             method: 'Delete',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Token ${this.props.auth.token}` },
         }).then(msg => {
@@ -283,7 +283,7 @@ export class edit extends Component {
             const semester = this.state.credentials.semester;
             const branch = this.state.credentials.branch;
             const scheme = this.state.credentials.revscheme;
-            const api_call = await fetch(`http://192.168.29.101:8000/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/course`, {
+            const api_call = await fetch(`${serverip}/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/course`, {
                 headers: {
                     'Authorization': `Token ${this.props.auth.token}`
                 }
@@ -333,7 +333,7 @@ export class edit extends Component {
         var branch = sessionStorage.getItem("branch")
         var semester = sessionStorage.getItem("semester")
         var scheme = sessionStorage.getItem("scheme")
-        const api_call = await fetch(`http://192.168.29.101:8000/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/course`, {
+        const api_call = await fetch(`${serverip}/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/course`, {
             headers: {
                 'Authorization': `Token ${this.props.auth.token}`
             }
@@ -360,7 +360,7 @@ export class edit extends Component {
         sessionStorage.setItem("branch", branch)
         sessionStorage.setItem("scheme", scheme)
         sessionStorage.setItem("semester", semester)
-        const api_call = await fetch(`http://192.168.29.101:8000/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/course`, {
+        const api_call = await fetch(`${serverip}/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/course`, {
             headers: {
                 'Authorization': `Token ${this.props.auth.token}`
             }

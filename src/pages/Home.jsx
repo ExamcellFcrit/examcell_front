@@ -42,12 +42,17 @@ export class Home extends Component {
   }
   componentDidMount = async (e) => {
 
+    if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
+      console.log("dev")
+    } else {
+      console.log("prod")
+    }
 
     //fetch Images
     fetch(`https://picsum.photos/v2/list`)
       .then(res => res.json())
       .then(data => {
-        console.log(data)
+      /*   console.log(data) */
         this.setState({ images: data })
         sessionStorage.setItem("image", data[4].download_url)
       })
@@ -65,7 +70,7 @@ export class Home extends Component {
 
 
     const { user } = this.props.auth
-    console.log(user.username)
+   /*  console.log(user.username) */
 
     //get halltkt switch status
     if (user.username !== 'admin') {
@@ -76,7 +81,7 @@ export class Home extends Component {
           'Authorization': `Token ${this.props.auth.token}`
         }
       }).then(res => {
-        console.log(res)
+       /*  console.log(res) */
         return res.json()
       }).then(data => {
         console.log(data.freezelink)
@@ -393,11 +398,11 @@ export class Home extends Component {
           {this.stopLoader()}
           <ReactTooltip effect="solid" />
           <div className="columns">
-            <div className="column is-one-third" style={{ textAlign: 'center' }} >
+            <div className="column is-half" style={{ textAlign: 'center' }} >
               <figure className="image is-100x100">
                 <img className="is-rounded" style={{ width: "100px", height: '100px', display: 'block', margin: 'auto', marginBottom: '10px' }} src={studentdp} alt="" />
               </figure>
-              <div className="title" style={{ fontSize: '1.5em' }}>{user.first_name} </div>
+              <div className="title is-uppercase" style={{ fontSize: '1.5em' }}>{user.first_name} </div>
             </div>
             <div className="column">
               <p ><b>Branch: </b>{profile.branch}</p>
@@ -686,7 +691,7 @@ export class Home extends Component {
           window.location.reload();
         }
       })
-     
+
   }
 
 
@@ -720,33 +725,43 @@ export class Home extends Component {
                   </marquee>
 
                   <div>
-                   
+
                     <div className="box" style={{ margin: '0 auto', marginTop: '30px', maxWidth: '700px' }}>
                       <div className="title">My Profile</div>
-                      <Link to="/change_password"><button className="button is-success">Change Password</button></Link>
-                      {profile && profile.changedPassword===false?<p className="help is-danger">Change your password</p>:null}
-                      
-                      <div class="field">
-                        <label class="label">Full name ( as in marksheets )</label>
-                        <div class="control">
-                          <input class="input" type="text" autoComplete="off" onChange={this.handleChange} name="first_name" value={user.first_name} placeholder="Full name" />
-                        </div>
-                        {user.first_name===''?<p className="help is-danger">Please fill your name before filling form</p>:null}
-                      </div>
+                      <ul style={{ listStyle: 'decimal' }} className='ml-4'>
+                        <li>
+                          <Link to="/change_password" style={{ color: '#48c774' }}>Change Password</Link>
+                          <p className="help" style={{ animation: 'none' }}>Change the default password before filling form.</p>
+                        </li>
 
-                      <div class="field">
-                        <label class="label">Email address </label>
-                        <p className="help" style={{animation:'none'}}>This email will be used to send password reset links, notifications etc.</p>
-                        <div class="control">
-                          <input class="input" type="text" autoComplete="off" onChange={this.handleChange} name="email" value={user.email} placeholder="Email address" />
-                        </div>
-                        {user.email===''?<p className="help is-danger">Please fill you email before filling form</p>:null}
-                      </div>
+                        <li>
+                          <div class="field">
+                            <label class="label">Full name ( as in marksheets )</label>
+                            
+                            <div class="control">
+                              <input class="input" type="text" autoComplete="off" onChange={this.handleChange} name="first_name" value={user.first_name} placeholder="Full name" style={{textTransform:'uppercase'}} />
+                            </div>
+                            {user.first_name === '' ? <p className="help is-danger">Please fill your name before filling form</p> : null}
+                          </div>
+                        </li>
+
+                        <li>
+                          <div class="field">
+                            <label class="label">Email address </label>
+                            <p className="help" style={{ animation: 'none' }}>This email will be used to send password reset links, notifications etc.</p>
+                            <div class="control">
+                              <input class="input" type="text" autoComplete="off" onChange={this.handleChange} name="email" value={user.email} placeholder="Email address" />
+                            </div>
+                            {user.email === '' ? <p className="help is-danger">Please fill you email before filling form</p> : null}
+                          </div>
+                        </li>
+                      </ul>
 
                       <button className="button is-success" onClick={this.updateProfile} >Update Profile</button>
                     </div>
 
                     <div className='box' style={{ margin: '0 auto', marginTop: '30px', maxWidth: '700px' }}>
+                      <div className='title'>Exam Details</div>
                       <div class="pageloader is-active "><span class="title" style={{ fontSize: '2em' }}></span></div>
                       {this.renderStudentProfile()}
                     </div>

@@ -123,7 +123,7 @@ export class Header extends Component {
                 {user && user.username !== 'admin' ? <li><NavLink exact activeClassName="active" to="/hallticket">{printbutton}</NavLink></li> : null}
                 {user && user.username === 'admin' ? <li><NavLink exact activeClassName="active" to="/adminpanel"><button>ADMIN</button></NavLink></li> : null}
                 {user && user.username === 'admin' ? <li><NavLink exact activeClassName="active" to="/createaccount"><button>CREATE ACCOUNT</button></NavLink></li> : null}
-                <li><NavLink exact activeClassName="active" to="/form">{user && profile && user.username !== 'admin' ? user.first_name === '' && user.email === '' &&  profile.changedPassword===false ? (<button type="button" id="printbutton" disabled style={{ background: '#efefef0', color: '#cfcfcf' }}>EXAM FORM</button>) : (<button>EXAM FORM</button>) : null}</NavLink></li>
+                <li><NavLink exact activeClassName="active" to="/form">{user && profile && user.username !== 'admin' ? user.first_name === '' && user.email === ''  ? (<button type="button" id="printbutton" disabled style={{ background: '#efefef0', color: '#cfcfcf' }}>EXAM FORM</button>) : (<button>EXAM FORM</button>) : null}</NavLink></li>
                 {user ? <li><span className="material-icons" onClick={this.props.logout} style={{ background: 'white', borderRadius: '100vh', color: '#34a85c', cursor: 'pointer', fontSize: '1.5em' }} data-tip="Logout">exit_to_app</span></li> : <li><Link to="/login"><button >LOGIN</button></Link></li>}
               </ul>
             </div>

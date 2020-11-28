@@ -6,6 +6,13 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {serverip} from "./serverip"
 
+
+export const changedPassword = () =>{
+    return(dispatch)=>{
+        dispatch({type:"CHANGED_PASSWORD"})
+    }
+}
+
 export const loadUser = () => {
 
     return (dispatch, getState) => {
@@ -29,7 +36,7 @@ export const loadUser = () => {
 
         axios.get(`${serverip}/api/auth/user`, config)
             .then(res => {
-                if (res.data.username == "admin" && ts_diff > 6000000) {
+                /* if (res.data.username == "admin" && ts_diff > 6000000) {
                     dispatch({
                         type: 'USER_LOADING', user: res.data
                     });
@@ -59,8 +66,8 @@ export const loadUser = () => {
                     dispatch({
                         type: 'USER_LOADED', user: res.data
                     });
-                }
-                else if(res.data.username!='admin'){
+                } */
+               /*  else if(res.data.username!='admin'){ */
                     dispatch({
                         type: 'USER_LOADED', user: res.data
                     });
@@ -70,7 +77,7 @@ export const loadUser = () => {
                         autoClose: 2000,
                         position: toast.POSITION.BOTTOM_RIGHT,
                     })
-                }
+                
                 { loginsuccess() }
                 }
             }).catch(err => {

@@ -2,8 +2,8 @@ const initialState = {
     token: localStorage.getItem("token"),
     isAuthenticated: null,
     isLoading: false,
-    user: null,
-    filledform:false,
+    user: null, 
+    changedPassword:false,
     errors: {},
   };
 
@@ -11,6 +11,8 @@ export default function auth(state=initialState, action) {
 
     switch (action.type) {
   
+      case 'CHANGED_PASSWORD':
+        return {...state, changedPassword: true};
       case 'USER_LOADING':
         return {...state, isLoading: true};
   

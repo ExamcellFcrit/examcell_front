@@ -147,7 +147,7 @@ export class Login extends Component {
 
     render() {
         if (this.props.isAuthenticated) {
-            return <Redirect to="/" />;
+            return <Redirect to="/home" />;
         }
         const { error } = this.props;
         function openCity(evt, cityName) {
@@ -230,7 +230,7 @@ export class Login extends Component {
                                        {/*  <p>Don't have an account? <Link to="/register" >Register</Link></p> */}
                                         <button className="button is-success  " onClick={this.handlesubmit}>Login</button>
                                     </div>
-                                    <Link onClick={this.openPasswordModal}>Forgot password?</Link>
+                                    <Link onClick={this.openPasswordModal} style={{ color: '#48c774' }}>Forgot password?</Link>
                                    {/*  <hr /> */}
                                     {/* <Link to="/" style={{ color: '#48c774' }}>Home</Link> */}
                                     {/* <Link to="/admin_login" style={{ color: '#48c774' }}>Admin Login</Link> */}

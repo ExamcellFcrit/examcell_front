@@ -88,7 +88,8 @@ export class edit extends Component {
         console.log(code)
         dataItem.id = semester + branch + scheme + code;
         fetch(`${serverip}/scheme/${scheme}/branch/${branch}${scheme}/`, {
-            method: 'Get'
+            method: 'Get',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Token ${this.props.auth.token}` },
         }).then((res) => {
             console.log(res.status)
             if (res.status == 404 || res.status == 200) {
@@ -105,7 +106,8 @@ export class edit extends Component {
                 })
                     .then(() => {
                         fetch(`${serverip}/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/`, {
-                            method: 'Get'
+                            method: 'Get',
+                            headers: { 'Content-Type': 'application/json', 'Authorization': `Token ${this.props.auth.token}` },
                         }).then((res) => {
                             console.log(res.status)
                             if (res.status == 404 || res.status == 200) {
@@ -212,7 +214,7 @@ export class edit extends Component {
         const id = dataItem.id;
         const error = this.state.error
         console.log("Id is: ", id)
-        fetch(`http://${serverip}/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/course/${id}/`, {
+        fetch(`${serverip}/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/course/${id}/`, {
             method: "Put",
             headers: {
                 'Content-Type': 'application/json',
@@ -226,11 +228,10 @@ export class edit extends Component {
                     this.setState({
                         error: data
                     })
-                    if (!data.date) {
-                        console.log("not error")
+                   
                         const success = () => toast.update(toastId, { type: toast.TYPE.SUCCESS, autoClose: 2000, render: `${dataItem.course} Updated!` });
                         { success() }
-                    }
+                   
                     this.checkTime(dataItem.end_time, dataItem.start_time, dataItem.course, dataItem)
 
                 }

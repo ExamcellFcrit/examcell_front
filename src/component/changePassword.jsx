@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
+import { changedPassword } from '../actions/auth';
 import PropTypes from "prop-types"
 import { Link } from 'react-router-dom'
+import store from '../store';
 import { serverip } from '../actions/serverip'
 import { logout } from '../actions/auth'
 import { toast } from 'react-toastify';
@@ -57,10 +59,11 @@ export class changePassword extends Component {
                     }
                 )
             })
-            /*  setTimeout(()=>{
-                 window.location.href="/"
-             },2000) */
+           setTimeout(()=>{
+               window.location.href='/';
+           },2000)
         }
+
 
     }
 
@@ -185,6 +188,8 @@ export class changePassword extends Component {
 const mapStateToProps = state => ({
     auth: state.auth
 });
+
+
 
 
 export default connect(mapStateToProps, { logout })(changePassword);
