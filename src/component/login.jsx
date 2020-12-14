@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Link, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types';
+import Footer from './Footer';
 import './styles/styles.css'
 import {serverip} from "../actions/serverip"
 import $ from "jquery"
@@ -166,10 +167,10 @@ export class Login extends Component {
 
         $('button').removeClass('is-loading');
         return (
-            <div id="bgsvg">
+            <div >
                 {this.passwordModal()}
 
-                <div className="section" style={{ height: '100vh'}} >
+                <div className="section"  >
                     <div className="container is-widescreen">
                         <div className="columns">
                             <div className="column is-half is-offset-one-quarter">
@@ -241,10 +242,10 @@ export class Login extends Component {
                         </div>
                     </div>
 
-
+               
 
                 </div>
-
+                <Footer/>
             </div>
         )
     }

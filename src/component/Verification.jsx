@@ -9,7 +9,8 @@ import CsvParse from '@vtex/react-csv-parse'
 import CSVReader from 'react-csv-reader'
 import { PDFExport, savePDF } from "@progress/kendo-react-pdf";
 import { connect } from 'react-redux'
-import ReactFileReader from 'react-file-reader';
+import { Dialog, DialogActionsBar } from '@progress/kendo-react-dialogs';
+
 import $ from "jquery"
 import { toast } from 'react-toastify';
 import PropTypes from 'prop-types';
@@ -60,6 +61,8 @@ export class verification extends Component {
 
     }
 
+    
+
     exportPDFWithComponent = () => {
         this.pdfExportComponent.save()
     }
@@ -94,11 +97,12 @@ export class verification extends Component {
                     forcePageBreak=".page-break"
                     paperSize="A4"
                     margin="2cm"
-                    fileName={user ? `Duplicate Hallticket:${data.studentname} ${data.surname}:Sem${data.semester}:(${data.session} ${data.year})` : null}
+                    fileName={user ? `Duplicate Hallticket:${data.studentname}:Sem${data.semester}:(${data.session} ${data.year})` : null}
                     ref={(component) => this.pdfExportComponent = component}
                 >
                     <DuplicateHalltkt
                         user={user}
+                        studentdp={this.state.image.image}
                         data={this.state.profile}
                         examsem={examsem}
                         session={session}
@@ -132,73 +136,61 @@ export class verification extends Component {
         } else {
             gender = "Male"
         }
-        var patt=new RegExp("KT");
-        const studentImage=this.state.image
+        var patt = new RegExp("KT");
+
+        const studentdp=this.state.image.image
 
         return (
             <div>
-                {data ? (<div>
-                    <div class="modal not-active " style={{ zIndex: '100',display:'flex !important',height:'100%',margin:'auto' }}>
-                    <div class="modal-background " onClick={this.closeProfile}></div>
-                    <div class="modal-card profileModal">
-                        <header class="modal-card-head">
-                            <p class="modal-card-title">{data.studentname} {data.rollno}</p>
-
-                            <button className="delete" aria-label="close" onClick={this.closeProfile}></button>
-                        </header>
-                        <section class="modal-card-body">
-                            <div className="title">Academic Details</div>
-                            <article className="media" style={{ marginRight: '20px' }}>
-                                <div className="media-content">
-                                    <table>
-                                        <tr><th>Branch:</th><td>{data.branch}</td> </tr>
-                                        <tr><th>Semester:</th><td>{data.semester}</td> </tr>
-                                        <tr><th>Scheme:</th><td>{data.scheme}</td> </tr>
-                                        <tr><th>Session:</th><td>{data.session}</td> </tr>
-                                        <tr><th>Exam Type:</th><td>{data.studentType}</td> </tr>
-                                        <tr><th>Seat no:</th><td>{data.seatNo}</td> </tr>
-                                        <tr><th>Year of Exam:</th><td>{data.year}</td> </tr>
-                                    </table>
-                                    <br />
-                                    {this.state.profile && this.state.ktstudentsubj && this.state.profile.studentType === 'KT' ? (<div>
-                                        <p>{`KT subjects (Semester ${this.state.profile.semester})`}:</p>
-                                        {this.state.ktstudentsubj.map(x => (
-                                            <li key={x.id} style={{ listStyle: 'circle' }} >{x.course} on  {x.date}</li>
-                                        ))}
-                                    </div>) : null}
-                                </div>
-                                <div className="media-right">
-                                    <figure className="image is-150x150">
-                                        <img className="is-rounded" style={{ width: "150px", height: '150px', display: 'block', margin: 'auto', marginBottom: '10px' }} src={studentImage.image} alt="" />
-                                    </figure>
-                                </div>
-                            </article>
-
-                            <hr />
-                            <div className="title">Personal Details</div>
+                {this.state.visible && <Dialog title={`${data.studentname} ${data.rollno}`} onClose={this.closeProfile} width={800} height={600}>
+                    <div className="title">Academic Details</div>
+                    <article className="media" style={{ marginRight: '20px' }}>
+                        <div className="media-content">
                             <table>
-                                <tr><th>Name:</th><td>{data.studentname} </td></tr>
-                                <tr><th>Father's name:</th><td>{data.fathername} </td></tr>
-                                <tr><th>Mother's Name:</th><td>{data.mothername} </td></tr>
-                                <tr><th>Gender:</th><td>{gender} </td></tr>
-                                <tr><th>Date of Birth:</th><td>{data.dob} </td></tr>
-                                <tr><th>Address:</th><td>{data.address}</td></tr>
-                                <tr><th>Student phone no:</th><td>{data.studentphone} </td></tr>
-                                <tr><th>Parent phone no:</th><td>{data.parentphone} </td></tr>
-                                <tr><th>Student Email:</th><td>{data.email}</td></tr>
-                               
+                                <tr><th>Branch:</th><td>{data.branch}</td> </tr>
+                                <tr><th>Semester:</th><td>{data.semester}</td> </tr>
+                                <tr><th>Scheme:</th><td>{data.scheme}</td> </tr>
+                                <tr><th>Session:</th><td>{data.session}</td> </tr>
+                                <tr><th>Exam Type:</th><td>{data.studentType}</td> </tr>
+                                <tr><th>Seat no:</th><td>{data.seatNo}</td> </tr>
+                                <tr><th>Year of Exam:</th><td>{data.year}</td> </tr>
                             </table>
-                            {this.duplicate()}
-                        </section>
-                        <footer class="modal-card-foot">
-                            <button class="button is-success" onClick={this.verifyProfile}>Verify Form</button>
-                            <button class="button is-danger" onClick={this.rejectProfile}>Reject Form</button>
-                            <button class="button" onClick={this.exportPDFWithComponent}>Download Duplicate Hallticket</button>
-                        </footer>
-                    </div>
-                </div>
-                </div>) : null}
+                            <br />
+                            {this.state.profile && this.state.ktstudentsubj && this.state.profile.studentType === 'KT' ? (<div>
+                                <p>{`KT subjects (Semester ${this.state.profile.semester})`}:</p>
+                                {this.state.ktstudentsubj.map(x => (
+                                    <li key={x.id} style={{ listStyle: 'circle' }} >{x.course} on  {x.date}</li>
+                                ))}
+                            </div>) : null}
+                        </div>
+                        <div className="media-right">
+                            <figure className="image is-150x150">
+                                <img className="is-rounded" style={{ width: "150px", height: '150px', display: 'block', margin: 'auto', marginBottom: '10px' }} src={studentdp} alt="" />
+                            </figure>
+                        </div>
+                    </article>
+                    <hr />
+                    <div className="title">Personal Details</div>
+                    <table>
+                        <tr><th>Name:</th><td>{data.studentname} </td></tr>
+                        <tr><th>Father's name:</th><td>{data.fathername} </td></tr>
+                        <tr><th>Mother's Name:</th><td>{data.mothername} </td></tr>
+                        <tr><th>Gender:</th><td>{gender} </td></tr>
+                        <tr><th>DOB:</th><td>{data.dob} </td></tr>
+                        <tr><th>Address:</th><td>{data.address}</td></tr>
+                        <tr><th>Student phone no:</th><td>{data.studentphone} </td></tr>
+                        <tr><th>Parent phone no:</th><td>{data.parentphone} </td></tr>
+                        <tr><th>Student Email:</th><td>{data.email}</td></tr>
 
+                    </table>
+                    {this.duplicate()}
+                    <DialogActionsBar>
+                        <button class="button is-success" onClick={this.verifyProfile}>Verify Form</button>
+                        <button class="button is-danger" onClick={this.rejectProfile}>Reject Form</button>
+                        <button class="button" onClick={this.exportPDFWithComponent}>Download Duplicate Hallticket</button>
+
+                    </DialogActionsBar>
+                </Dialog>}
             </div>
         )
     }
@@ -220,8 +212,9 @@ export class verification extends Component {
 
     openProfile = () => {
         const { user } = this.props.auth
-        $(".modal").addClass("is-active")
-        $(".modal").removeClass("not-active");
+        this.setState({
+            visible: !this.state.visible
+        });
         let id = localStorage.getItem('test')
         this.setState({
             profileid: id
@@ -307,8 +300,7 @@ export class verification extends Component {
     }
 
     closeProfile = () => {
-        $(".modal").removeClass("is-active");
-        $(".modal").addClass("not-active");
+        this.setState({ visible: !this.state.visible })
         localStorage.removeItem('test')
     }
 
@@ -336,13 +328,13 @@ export class verification extends Component {
         })
 
 
-        $(".modal").removeClass("is-active");
+        
     }
 
     rejectProfile = async () => {
         let id = localStorage.getItem('test')
         fetch(`${serverip}/student/${id}/`, {
-            method: 'PATCH',
+            method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Token ${this.props.auth.token}`
@@ -362,7 +354,7 @@ export class verification extends Component {
                 })
         })
 
-        $(".modal").removeClass("is-active");
+       
     }
     render() {
 
@@ -376,73 +368,88 @@ export class verification extends Component {
         const filledno=this.state.data.length
         return (
             <div >
-                {this.modalProfile()}
-                <div className="columns">
-                    <div className="column is-one-fifth">
-                        <div className="section-small"  >
-                            <div className="field" >
-                                <label className="has-text-white">Branch</label>
-                                <div className="select">
-                                    <select name="branch" onChange={this.handleChange}>
-                                        <option>Select Branch</option>
-                                        <option>Computer</option>
-                                        <option >Mechanical</option>
-                                        <option >Electrical</option>
-                                        <option >Extc</option>
-                                        <option >IT</option>
-                                    </select>
-                                </div>
-                            </div>
-
-
-                            <div className="field" >
-                                <label className="has-text-white">Semester</label>
-                                <div className="select is-hoverable" >
-                                    <select name="semester" onChange={this.handleChange}>
-                                        <option>Select Semester</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
-                                        <option value="6">6</option>
-                                    </select>
-                                </div>
+               
+               
+                <div className="columns" style={{ maxWidth: '800px', margin: '0 auto' }}>
+                    <div className="column" >
+                        <div className="field" >
+                            <label className="has-text-white">Branch</label>
+                            <div className="select">
+                                <select name="branch" onChange={this.handleChange}>
+                                    <option>Select Branch</option>
+                                    <option>Computer</option>
+                                    <option >Mechanical</option>
+                                    <option >Electrical</option>
+                                    <option >Extc</option>
+                                    <option >IT</option>
+                                </select>
                             </div>
                         </div>
                     </div>
+
                     <div className="column">
+                        <div className="field" >
+                            <label className="has-text-white">Semester</label>
+                            <div className="select is-hoverable" >
+                                <select name="semester" onChange={this.handleChange}>
+                                    <option>Select Semester</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                   
                         <div className="hero">
                             <div className="section-small">
                                 <div className="container"><div className="title has-text-white">Verify Forms</div><p className="has-text-white">Filled:{filledno}</p></div>
                             </div>
+                       
+                            {this.state.credentials.branch && this.state.credentials.semester ?
+                        <div>
+
+                            <table id="thisTable" width="100%" className="table" style={{display:'block',overflowX:'auto',whiteSpace:'nowrap'}}>
+                                <tbody>
+                                    <td><b>Roll no.</b></td>
+                                    <td><b>Name</b></td>
+                                    <td><b>Scheme</b></td>
+                                    <td><b>Session</b></td>
+                                    <td><b>Elective</b></td>
+                                    <td><b>Seat No.</b></td>
+                                    <td><b>Profile</b></td>
+                                    <td><b>Actions</b></td>
+                                    <td><b>Status</b></td>
+
+                                    {this.state.data.map(x =>
+                                        <tr>
+                                            <td className="nr">{x.rollno}</td>
+                                            <td>{x.studentname}</td>
+                                            <td>{x.scheme}</td>
+                                            <td>{x.session}</td>
+                                            <td>{x.elective}</td>
+                                            <td>{x.seatNo}</td>
+                                            <td style={{ padding: '0' }}> <button className="use-address" onClick={this.openProfile} style={{ background: 'none', margin: '0', height: '35px', cursor: 'pointer', color: '#48c774', fontWeight: 'bold', border: 'none' }}>Open Profile</button></td>
+                                            <td>
+                                                <button class="use-address button is-success is-small" onClick={this.verifyProfile}>Verify Form</button>
+                                                <button className="use-address button is-danger is-small"  onClick={this.rejectProfile}>Reject Form</button>
+                                            </td>
+                                            {x.verified ? <td style={{ background: '#34a85c', color: 'white' }}>Verified</td> : <td style={{ background: '#ff4242', color: 'white' }}>Not verified</td>}
+                                        </tr>
+                                    )}
+
+                                </tbody>
+                            </table>
+                            {this.modalProfile()}
                         </div>
-                        {this.state.credentials.branch && this.state.credentials.semester ?
-                            <div>
+                        : <div className="hero">
+                            <div className="title has-text-centered">-</div>
+                        </div>}
 
-                                <table id="thisTable" width="100%" className="table" >
-                                    <tbody>
-                                        <td><b>Roll no.</b></td>
-                                        <td><b>Name</b></td>
-                                        <td><b>Profile</b></td>
-                                        <td><b>Status</b></td>
-
-                                        {this.state.data.map(x =>
-                                            <tr>
-                                                <td className="nr">{x.rollno}</td>
-                                                <td contenteditable="true">{x.studentname}</td>
-                                                <td style={{ padding: '0' }}> <button className="use-address" onClick={this.openProfile} style={{ background: 'none', margin: '0', height: '35px', cursor: 'pointer', color: '#48c774', fontWeight: 'bold', border: 'none' }}>Open Profile</button></td>
-                                                {x.verified ? <td style={{ background: '#34a85c', color: 'white' }}>Verified</td> : <td style={{ background: '#ff4242', color: 'white' }}>Not verified</td>}
-                                            </tr>
-                                        )}
-
-                                    </tbody>
-                                </table>
-                               
-                            </div>
-                            : <div className="hero">
-                                <div className="title has-text-centered">-</div>
-                            </div>}
-
-                    </div>
+                    
                 </div>
 
             </div>

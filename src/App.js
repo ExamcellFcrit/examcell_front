@@ -14,7 +14,7 @@ import { Provider } from 'react-redux'
 import Home from './pages/Home'
 import store from './store';
 import { loadUser } from './actions/auth'
-import Pdfconvert from './component/Verification'
+import developer from './component/Developers'
 import AdminPanel from './component/adminpanel'
 import AdminHome from './pages/AdminHome'
 import GenerateTicket from './component/generateticket'
@@ -45,6 +45,7 @@ class App extends Component{
                     <PrivateRoute path="/form" exact component={Form}/>
                     <Route path="/login" component={Login}/>
                     <Route path="/createaccount" component={createaccount}/>
+                    <Route path="/developers" component={developer}/>
                     <Route path="/admin_login" component={AdminLogin}/>
                     <PrivateRoute path="/admin_home" component={AdminHome}/>
                     <PrivateRoute path="/change_password" component={changePassword}/>

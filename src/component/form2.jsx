@@ -141,6 +141,20 @@ export class form extends Component {
     }
 
     componentDidMount = () => {
+        //get control status
+        fetch(`${serverip}/controls/freezelink/`, {
+            method: "get",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${this.props.auth.token}`
+            }
+        }).then(res=>{
+          console.log(res)
+          return res.json()
+        }).then(data=>{
+          console.log(data.freezelink)
+          this.setState({studentPortal:data.studentPortal})
+        })
 
         const { user } = this.props.auth;
         fetch(`${serverip}/student/${user ? `${user.username}/` : `null`}`, {
@@ -861,6 +875,13 @@ export class form extends Component {
         for (let i = minOffset; i <= maxOffset; i++) {
             const year = thisYear + i;
             options.push(<option value={year}>{year}</option>);
+        }
+        if( this.state.studentPortal===false){
+            return (
+                
+                <div className="title has-text-white">Form filling has been stopped by admin.</div>
+                    
+            )
         }
         return (
             <div >

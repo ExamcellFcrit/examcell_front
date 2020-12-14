@@ -6,6 +6,7 @@ import { logout } from '../actions/auth'
 import download from '../assets/download.png'
 import PropTypes from 'prop-types';
 import ExamNotice from './ExamNotice';
+import { serverip } from '../actions/serverip'
 import { connect } from 'react-redux'
 
 
@@ -18,6 +19,7 @@ export class DuplicateHalltkt extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            image:this.props.studentdp,
             data: this.props.data,
             courses: this.props.courses,
             credentials: { branch: '', semester: '', starting_seatno: undefined },
@@ -30,6 +32,12 @@ export class DuplicateHalltkt extends Component {
         this.props.exportPDFWithComponent()
     }
 
+    
+
+    componentWillUnmount=()=>{
+        console.log("duli unmounted")
+    }
+
 
 
     render() {
@@ -37,6 +45,8 @@ export class DuplicateHalltkt extends Component {
         const data = this.props.data
         const examsem = this.props.examsem
         const session = this.props.session
+        const studentdp=this.props.studentdp;
+        console.log(studentdp)
         const ktsubject=this.props.ktstudentsubj
         return (
             <div >
@@ -69,10 +79,10 @@ export class DuplicateHalltkt extends Component {
 
                         <tr class="sd">
                             <td className="tdleft" width="20%" ><p>Student Name</p></td>
-                            <td colspan="2"><p>{user ? `${data.studentname} ${data.surname}` : null}</p></td>
+                            <td colspan="2"><p>{user ? `${data.studentname} ` : null}</p></td>
                             <td rowspan="5" style={{ textAlign: "center", alignContent: 'center' }}>
                                 {/* <img src={this.state.photo ? this.state.photo[9].download_url : 'Loading...'}></img> */}
-                                <img src={dp} alt="" />
+                                <img src={studentdp} alt="" />
                             </td>
                         </tr>
                         <tr class="sd">

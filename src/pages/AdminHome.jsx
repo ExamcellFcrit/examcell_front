@@ -20,6 +20,7 @@ export class AdminHome extends Component {
             filled: '',
             notice_msg: '',
             notice: '',
+            studentPortal:true,
             freezelink: false,
             showtimetable: null,
             profile: '',
@@ -41,6 +42,15 @@ export class AdminHome extends Component {
 
         const { user } = this.props.auth
 
+        //get studentportal link
+        fetch(`${serverip}/controls/freezelink`, {
+            method: "get",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${this.props.auth.token}`
+            }
+        }).then(res => res.json())
+            .then(data => this.setState({ studentPortal: data.studentPortal }))
         
 
         //get halltkt switch status
@@ -117,17 +127,22 @@ export class AdminHome extends Component {
             { this.getNotice() }
         })
     }
-
-    getNotice = () => {
-        fetch(`${serverip}/notice/`, {
-            method: "get",
+    handleStudentPortal= async(e) =>{
+        this.setState({ studentPortal: !this.state.studentPortal });
+        console.log(e.target.value);
+        fetch(`${serverip}/controls/freezelink/`, {
+            method: "Put",
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Token ${this.props.auth.token}`
-            }
-        }).then(res => res.json())
-            .then(data => this.setState({ notice: data }))
+            },
+            body: JSON.stringify({ studentPortal: `${!this.state.studentPortal}`, id: 'freezelink' })
+        })
     }
+
+  
+
+   
 
     jqccOnClick = () => {
         var tableControl = document.getElementById('mytable');
@@ -184,6 +199,9 @@ export class AdminHome extends Component {
                                     </div>
                                     <div className="field">
                                         <span style={{ marginRight: '10px' }} >Time table visibility: </span><Switch onChange={this.handleTimeTableLinkChange} checked={this.state.showtimetable} />
+                                    </div>
+                                    <div className="field">
+                                        <span style={{ marginRight: '10px' }} >Student Portal: </span><Switch onChange={this.handleStudentPortal} checked={this.state.studentPortal} />
                                     </div>
                                     </div>
                                     

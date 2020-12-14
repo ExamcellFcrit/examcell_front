@@ -26,6 +26,7 @@ export class Home extends Component {
       notice: '',
       freezelink: false,
       showtimetable: null,
+      image:'',
       profile: '',
       data: [],
       studentprofile: { email: '', username: '', id: '', first_name: '' },
@@ -48,14 +49,8 @@ export class Home extends Component {
       console.log("prod")
     }
 
-    //fetch Images
-    fetch(`https://picsum.photos/v2/list`)
-      .then(res => res.json())
-      .then(data => {
-      /*   console.log(data) */
-        this.setState({ images: data })
-        sessionStorage.setItem("image", data[4].download_url)
-      })
+   
+    
 
 
     //passwordModal open,close Jquery
@@ -72,8 +67,21 @@ export class Home extends Component {
     const { user } = this.props.auth
    /*  console.log(user.username) */
 
+    //get student image
+    fetch(`${serverip}/api/image/${user.username}/`, {
+      method: 'get',
+      headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Token ${this.props.auth.token}`
+      },
+  }).then(res=>res.json())
+  .then(data=>{
+      this.setState({image:data})
+  })
+
     //get halltkt switch status
     if (user.username !== 'admin') {
+
       fetch(`${serverip}/controls/freezelink/`, {
         method: "get",
         headers: {
@@ -165,7 +173,7 @@ export class Home extends Component {
 
 
     /* Check Sem3 ktprofile */
-    if (user.username !== 'admin') {
+    /* if (user.username !== 'admin') {
       fetch(`${serverip}/student/${user ? `${user.username}KT3/` : `asdsad`}`, {
         headers: {
           'Content-Type': 'application/json',
@@ -216,10 +224,10 @@ export class Home extends Component {
         })
         .catch(function (error) {
           console.log(error);
-        });
+        }); */
 
       /* Check Sem4 Ktprofile */
-      fetch(`${serverip}/student/${user ? `${user.username}KT4/` : `asdsad`}`, {
+      /* fetch(`${serverip}/student/${user ? `${user.username}KT4/` : `asdsad`}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Token ${this.props.auth.token}`
@@ -271,10 +279,10 @@ export class Home extends Component {
         })
         .catch(function (error) {
           console.log(error);
-        });
+        }); */
 
       /* Check Sem5 Ktprofile */
-      fetch(`${serverip}/student/${user ? `${user.username}KT5/` : `asdsad`}`, {
+      /* fetch(`${serverip}/student/${user ? `${user.username}KT5/` : `asdsad`}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Token ${this.props.auth.token}`
@@ -324,11 +332,11 @@ export class Home extends Component {
         })
         .catch(function (error) {
           console.log(error);
-        });
+        }); */
 
 
       /* Check sem6 ktprofile */
-      fetch(`${serverip}/student/${user ? `${user.username}KT6/` : `asdsad`}`, {
+      /* fetch(`${serverip}/student/${user ? `${user.username}KT6/` : `asdsad`}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Token ${this.props.auth.token}`
@@ -378,20 +386,21 @@ export class Home extends Component {
         })
         .catch(function (error) {
           console.log(error);
-        });
-    }
+        }); */
+    
 
 
   }
 
   renderStudentProfile = () => {
     const { user } = this.props.auth;
+    const studentdp=this.state.image.image;
     const profile = this.state.profile;
     const kt3profile = this.state.kt3profile;
     const kt4profile = this.state.kt4profile;
     const kt5profile = this.state.kt5profile;
     const kt6profile = this.state.kt6profile;
-    const studentdp = sessionStorage.getItem("image")
+   
     if (profile) {   /* Check profile of Regular,KT exam student and render Kt if exists*/
       return (
         <div>
@@ -399,8 +408,8 @@ export class Home extends Component {
           <ReactTooltip effect="solid" />
           <div className="columns">
             <div className="column is-half" style={{ textAlign: 'center' }} >
-              <figure className="image is-100x100">
-                <img className="is-rounded" style={{ width: "100px", height: '100px', display: 'block', margin: 'auto', marginBottom: '10px' }} src={studentdp} alt="" />
+              <figure className="image is-150x150">
+                <img className="is-rounded" style={{ width: "150px", height: '150px', display: 'block', margin: 'auto', marginBottom: '10px' }} src={studentdp} alt="" />
               </figure>
               <div className="title is-uppercase" style={{ fontSize: '1.5em' }}>{user.first_name} </div>
             </div>
@@ -721,7 +730,7 @@ export class Home extends Component {
                   <marquee loop="infinite" behaviour="scroll" id="maq" scrollamount="10" scrolldelay="0" onClick={this.oepnNoticeModal} data-tip="Click to open Notices">
                     {this.state.notice.length > 0 ? this.state.notice.map((i, index) => {
                       return <span style={{ margin: '0 1em' }} className="tag is-medium is-danger is-light "><span className="tag is-small is-danger mr-2">{index + 1}</span> {i.notice}</span>
-                    }) : <p>No notice from admin yet. Keep a watch in future.</p>}
+                    }) : <p className="tag is-medium is-danger is-light ">No notice from admin yet. Keep a watch in future.</p>}
                   </marquee>
 
                   <div>
@@ -736,8 +745,8 @@ export class Home extends Component {
 
                         <li>
                           <div class="field">
-                            <label class="label">Full name ( as in marksheets )</label>
-                            
+                            <label class="label">Full name ( LASTNAME FIRSTNAME FATHERNAME MOTHERNAME )</label>
+                            <p className="help" style={{ animation: 'none' }}>Fill in uppercase</p>
                             <div class="control">
                               <input class="input" type="text" autoComplete="off" onChange={this.handleChange} name="first_name" value={user.first_name} placeholder="Full name" style={{textTransform:'uppercase'}} />
                             </div>

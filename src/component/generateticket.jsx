@@ -30,6 +30,7 @@ export class generateticket extends Component {
         this.state = {
             isKT: null,
             data: [],
+            image:'',
             courses: {},
             kt3profile: {},
             kt4profile: {},
@@ -89,15 +90,19 @@ export class generateticket extends Component {
     }
 
     componentDidMount = () => {
-
-        //fetch Images
-        fetch(`https://picsum.photos/v2/list`)
-            .then(res => res.json())
-            .then(data => {
-                console.log(data)
-                this.setState({ images: data })
-                sessionStorage.setItem("image", data[4].download_url)
-            })
+        const { user } = this.props.auth;
+      
+       //get student image
+    fetch(`${serverip}/api/image/${user.username}/`, {
+        method: 'get',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Token ${this.props.auth.token}`
+        },
+    }).then(res=>res.json())
+    .then(data=>{
+        this.setState({image:data})
+    })
 
         $(".delete").click(function () {
             $(".modal").toggleClass("is-active");
@@ -106,7 +111,7 @@ export class generateticket extends Component {
         $(".modal-background").click(function () {
             $(".modal").toggleClass("is-active");
         })
-        const { user } = this.props.auth;
+       
         console.log(user)
         fetch(`${serverip}/student/${user ? user.username : null}/`, {
             headers: {
@@ -314,7 +319,7 @@ export class generateticket extends Component {
         const kt6data = this.state.kt6profile;
         const data = this.state.data;
         let session = this.state.data.session;
-        const studentdp=sessionStorage.getItem("image")
+        const studentdp=this.state.image.image;
         if (session === 'FH') {
             session = 'First Half';
         }
@@ -470,7 +475,7 @@ export class generateticket extends Component {
                                         <td colspan="2"><p>{user ? `${this.props.auth.user.first_name}` : null}</p></td>
                                         <td rowspan="5" style={{ textAlign: "center", alignContent: 'center' }}>
                                             {/* <img src={this.state.photo ? this.state.photo[2].download_url : 'Loading...'}></img> */}
-                                            <img src={dp} alt="" />
+                                            <img src={studentdp} alt="" />
                                         </td>
                                     </tr>
                                     <tr class="sd">
@@ -577,7 +582,7 @@ export class generateticket extends Component {
                                     <td colspan="2"><p>{user ? `${this.props.auth.user.first_name}` : null}</p></td>
                                     <td rowspan="5" style={{ textAlign: "center", alignContent: 'center' }}>
                                         {/* <img src={this.state.photo ? this.state.photo[9].download_url : 'Loading...'}></img> */}
-                                        <img src={dp} alt="" />
+                                        <img src={studentdp} alt="" />
                                     </td>
                                 </tr>
                                 <tr class="sd">

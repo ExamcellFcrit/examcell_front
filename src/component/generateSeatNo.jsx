@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Header from '../pages/Header';
 import './styles/styles.css'
+import axios from 'axios';
 import { logout } from '../actions/auth'
 import CsvDownload from 'react-json-to-csv'
 import CsvParse from '@vtex/react-csv-parse'
@@ -56,7 +57,35 @@ export class hallticket extends Component {
 
     }
 
+    uploadSheet=()=>{
+        const branch=this.state.credentials.branch;
+        const semester=this.state.credentials.semester;
+
+        const formdata=new FormData();
+        formdata.append('id',`${branch}${semester}`)
+        formdata.append('file',this.state.selectedSheet)
+        formdata.append('branch',branch);
+        formdata.append('semester',semester);
+        console.log(formdata)
+        fetch(`${serverip}/api/file/`,{
+            method:'Post',
+            headers: {
+                /* 'Content-Type': 'multipart/form-data', */
+                'Authorization': `Token ${this.props.auth.token}`
+            },
+            body:formdata
+        })
+    }
+
+    componentDidMount=()=>{
+        const branch=this.state.credentials.branch;
+        const semester=this.state.credentials.semester;
+        
+    }
+
     handleData = data => {
+
+        console.log(data)
         this.setState({ csvdata: data })
         console.log(this.state.csvdata)
         let not_filled = {}
@@ -107,6 +136,22 @@ export class hallticket extends Component {
         this.setState({
             credentials: cred,
         })
+
+
+        fetch(`${serverip}/api/file/${this.state.credentials.branch}${this.state.credentials.semester}`,{
+            method:'Get',
+            headers: {
+                /* 'Content-Type': 'multipart/form-data', */
+                'Authorization': `Token ${this.props.auth.token}`
+            },
+        }).then(res=>res.json())
+        .then(data=>{
+            console.log(data)
+            this.setState({
+                csvdata:data.file
+            })
+        })
+        
 
         console.log(cred)
         const api_call = await fetch(`${serverip}/student/?branch=${this.state.credentials.branch}&semester=${this.state.credentials.semester[0]}`, {
@@ -303,6 +348,14 @@ export class hallticket extends Component {
 
     }
 
+    onChangeHandler=(event)=>{
+        console.log(event.target.files[0])
+        this.setState({
+            selectedSheet:event.target.files[0],
+            loaded:0
+        })
+    }
+
     resetSeatNo = () => {
         this.setState({
             filled: this.state.dup_filled
@@ -310,6 +363,7 @@ export class hallticket extends Component {
     }
 
     onInputClick = (event) => {
+        console.log(event.target.files[0])
         event.target.value = ''
     }
 
@@ -400,11 +454,18 @@ export class hallticket extends Component {
                                     keys={keys}
                                     onDataUploaded={this.handleData}
                                     onError={this.handleError}
-                                    render={onChange => <input type="file" id='file' className="inputfile" onChange={onChange} onClick={this.onInputClick} />}
-                                />
+                                    render={onChange=>
+                                        <input type="file" id='file' className="inputfile" onChange={onChange
+                                        } onClick={this.onInputClick} />
+                                
+                                    }
+                                    
+                                    />
 
+                                <input type="file" onChange={this.onChangeHandler} name="file"/>
+                                <button className="button" onClick={this.uploadSheet}>Upload Sheet</button>
 
-                                <label for="file" class="has-text-white">Upload class sheet</label>
+                                <label for="file" class="has-text-white" /* onClick={this.handleData} */>Check status</label>
                                 {/* <button className="button" onClick={this.refresh}>Refresh List</button> */}
 
                             </div>
@@ -451,7 +512,7 @@ export class hallticket extends Component {
                                             <div className="column">
                                                 {/*  <div className="box" style={{ padding: "10px" }}> */}
                                                 <span style={{ display: 'flex' }}><div className="subtitle" style={{ marginBottom: "0px", color: '#e62626', display: 'flex', alignItems: 'center' }}>Pending <span><i class="material-icons"> warning</i> {this.state.notfilledcount}</span> </div></span>
-
+                                                <CsvDownload data={this.state.notfilled} filename={`${this.state.credentials.branch}${this.state.credentials.semester}_Pending.csv`}>Download pending list</CsvDownload>
                                                 <table style={{ fontSize: '14px', width: '100%' }}>
                                                     {this.state.credentials.branch && this.state.credentials.semester ?
                                                         <Grid

@@ -1,27 +1,33 @@
 {
   "files": {
-    "main.css": "/static/css/main.c06b299f.chunk.css",
-    "main.js": "/static/js/main.f69beeed.chunk.js",
-    "main.js.map": "/static/js/main.f69beeed.chunk.js.map",
+    "main.css": "/static/css/main.814f4909.chunk.css",
+    "main.js": "/static/js/main.7a30a3f2.chunk.js",
+    "main.js.map": "/static/js/main.7a30a3f2.chunk.js.map",
     "runtime-main.js": "/static/js/runtime-main.c8a21426.js",
     "runtime-main.js.map": "/static/js/runtime-main.c8a21426.js.map",
     "static/css/2.2b79f114.chunk.css": "/static/css/2.2b79f114.chunk.css",
-    "static/js/2.39aa6b80.chunk.js": "/static/js/2.39aa6b80.chunk.js",
-    "static/js/2.39aa6b80.chunk.js.map": "/static/js/2.39aa6b80.chunk.js.map",
+    "static/js/2.84d96c9e.chunk.js": "/static/js/2.84d96c9e.chunk.js",
+    "static/js/2.84d96c9e.chunk.js.map": "/static/js/2.84d96c9e.chunk.js.map",
     "index.html": "/index.html",
-    "precache-manifest.2034e9e897e49b72384a14c5f7efad50.js": "/precache-manifest.2034e9e897e49b72384a14c5f7efad50.js",
+    "precache-manifest.339713300a86bc464fd247e89440857b.js": "/precache-manifest.339713300a86bc464fd247e89440857b.js",
     "service-worker.js": "/service-worker.js",
     "static/css/2.2b79f114.chunk.css.map": "/static/css/2.2b79f114.chunk.css.map",
-    "static/css/main.c06b299f.chunk.css.map": "/static/css/main.c06b299f.chunk.css.map",
-    "static/js/2.39aa6b80.chunk.js.LICENSE.txt": "/static/js/2.39aa6b80.chunk.js.LICENSE.txt",
+    "static/css/main.814f4909.chunk.css.map": "/static/css/main.814f4909.chunk.css.map",
+    "static/js/2.84d96c9e.chunk.js.LICENSE.txt": "/static/js/2.84d96c9e.chunk.js.LICENSE.txt",
     "static/media/fcritlogo.png": "/static/media/fcritlogo.637c320c.png",
-    "static/media/sign.png": "/static/media/sign.688306dc.png"
+    "static/media/github.svg": "/static/media/github.ec5bc1b3.svg",
+    "static/media/instagram.svg": "/static/media/instagram.e75317fa.svg",
+    "static/media/linkedin.svg": "/static/media/linkedin.d9049f46.svg",
+    "static/media/romik.jpeg": "/static/media/romik.bca0750b.jpeg",
+    "static/media/rutvik.jpg": "/static/media/rutvik.1605f4e8.jpg",
+    "static/media/sign.png": "/static/media/sign.688306dc.png",
+    "static/media/srividya.JPG": "/static/media/srividya.9c73bddd.JPG"
   },
   "entrypoints": [
     "static/js/runtime-main.c8a21426.js",
     "static/css/2.2b79f114.chunk.css",
-    "static/js/2.39aa6b80.chunk.js",
-    "static/css/main.c06b299f.chunk.css",
-    "static/js/main.f69beeed.chunk.js"
+    "static/js/2.84d96c9e.chunk.js",
+    "static/css/main.814f4909.chunk.css",
+    "static/js/main.7a30a3f2.chunk.js"
   ]
 }

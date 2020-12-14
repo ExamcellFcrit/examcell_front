@@ -1,53 +1,113 @@
-/* import React from 'react'
-import { Header } from '../pages/Header'
-import { HashLink as Link } from 'react-router-hash-link';
+import React, { Component } from 'react'
+import rutvik from '../assets/rutvik.jpg'
+import romik from '../assets/romik.jpeg'
+import srividya from '../assets/srividya.JPG'
+import github from '../assets/icons/github.svg'
+import linkedin from '../assets/icons/linkedin.svg'
+import instagram from '../assets/icons/instagram.svg'
+import Tilt from 'react-tilt'
 
+export class developer extends Component {
+    render() {
+        return (
+            <div>
+                <div className="hero">
+                    <div className="section">
 
-
-
-export default function Developers() {
-    return (
-        <div >
-            <Link to="/">Home</Link>
-            <div className="hero" >
-                    <div className="container is-desktop is-fluid " style={{justifyContent:'left'}}>
-                        <div className="title has-text-white" style={{ fontSize: '3em' }}>Mentors</div>
-                        <div className="is-flex-tablet" style={{justifyContent:'center'}}>
-                    
-                                <Tilt className="card" options={{ max:10,scale:1 }}style={{width:250,margin:'1em'}}  >
-                                    <div class="card-image">
-                                        <figure class="image is-4by3">
-                                            <img src="https://bulma.io/images/placeholders/1280x960.png" alt="Placeholder image" />
-                                        </figure>
+                        <div className="title has-text-white is-size-1 ">Developers</div>
+                        <div className="columns">
+                       
+                            <div className="column is-4">
+                            <Tilt className="Tilt" options={{ max: 5,scale:1 }} >
+                                <div className="card">
+                                    <header class="card-header">
+                                        <p class="card-header-title">
+                                            <div className="title">Rutvik Kokate</div>
+                                        </p>
+                                    </header>
+                                    <div className="card-content">
+                                        <div class="card-image">
+                                            <figure className="image is-150x150">
+                                                <img className="is-rounded" style={{ width: "150px", height: '150px', display: 'block', margin: 'auto', marginBottom: '10px' }} src={rutvik} alt="" />
+                                            </figure>
+                                        </div>
+                                        <div class="media-content">
+                                            <p class="title is-5">Computer Engineering (2017-2021)</p>
+                                            
+                                        </div>
                                     </div>
-                                    <div class="card-content">
-                                        <h1 className="title is-4 mb-0">Rutvik Kokate</h1>
-                                        <p >Computer Enggineering (2017-2021)</p>
-                                    </div>
-                                   
+                                    <footer class="card-footer">
+                                        <a href="#" class="card-footer-item"><span class="icon"><i class="fab fa-github"></i>GitHub</span></a>
+                                        <a href="#" class="card-footer-item"><span class="icon"><i class="fab fa-linkedin"></i>Linkedin</span></a>
+                                        <a href="#" class="card-footer-item"><span class="icon"><i class="fab fa-instagram"></i>Instagram</span></a>
+                                    </footer>
+                                </div>
                                 </Tilt>
-
-                                <Tilt className="card" options={{ max:10,scale:1 }}style={{width:250,margin:'1em'}}  >
-                                    <div class="card-image">
-                                        <figure class="image is-4by3">
-                                            <img src="https://bulma.io/images/placeholders/1280x960.png" alt="Placeholder image" />
-                                        </figure>
-                                    </div>
-                                    <div class="card-content">
-                                        <h1 className="title is-4 mb-0">Rutvik Kokate</h1>
-                                        <p >Computer Enggineering (2017-2021)</p>
-                                    </div>
-                                
-                                </Tilt>
-
-                               
-                            
+                            </div>
                            
+                            <div className="column is-4">
+                            <Tilt className="Tilt" options={{ max: 5,scale:1}} >
+                                <div className="card">
+                                    <header class="card-header">
+                                        <p class="card-header-title">
+                                            <div className="title">Romik Amipara</div>
+                                        </p>
+                                    </header>
+                                    <div className="card-content">
+                                        <div class="card-image">
+                                            <figure className="image is-150x150">
+                                                <img className="is-rounded" style={{ width: "150px", height: '150px', display: 'block', margin: 'auto', marginBottom: '10px' }} src={romik} alt="" />
+                                            </figure>
+                                        </div>
+                                        <div class="media-content">
+                                            <p class="title is-5">Computer Engineering (2017-2021)</p>
+                                            
+                                        </div>
+                                    </div>
+                                    <footer class="card-footer">
+                                        <a href="#" class="card-footer-item"><span class="icon"><i class="fab fa-github"></i></span>Github</a>
+                                        <a href="#" class="card-footer-item"><span class="icon"><i class="fab fa-linkedin"></i></span>Linkedin</a>
+                                        <a href="#" class="card-footer-item"><span class="icon"><i class="fab fa-instagram"></i></span>Instagram</a>
+                                    </footer>
+                                </div>
+                                </Tilt>
+                            </div>
+
+                            <div className="column is-4">
+                            <Tilt className="Tilt" options={{ max: 5,scale:1}} >
+                                <div className="card">
+                                    <header class="card-header">
+                                        <p class="card-header-title">
+                                            <div className="title">Srividya Inampudi</div>
+                                        </p>
+                                    </header>
+                                    <div className="card-content">
+                                        <div class="card-image">
+                                            <figure className="image is-150x150">
+                                                <img className="is-rounded" style={{ width: "150px", height: '150px', display: 'block', margin: 'auto', marginBottom: '10px' }} src={srividya} alt="" />
+                                            </figure>
+                                        </div>
+                                        <div class="media-content">
+                                            <p class="title is-5">Computer Engineering (2017-2021)</p>
+                                            
+                                        </div>
+                                    </div>
+                                    <footer class="card-footer">
+                                        <a href="#" class="card-footer-item"><span class="icon"><i class="fab fa-github"></i></span>Github</a>
+                                        <a href="#" class="card-footer-item"><span class="icon"><i class="fab fa-linkedin"></i></span>Linkedin</a>
+                                        <a href="#" class="card-footer-item"><span class="icon"><i class="fab fa-instagram"></i></span>Instagram</a>
+                                    </footer>
+                                </div>
+                                </Tilt>
+                            </div>
+
                         </div>
-                        
+
                     </div>
-              
+                </div>
             </div>
-        </div>
-    )
-} */
+        )
+    }
+}
+
+export default (developer)
