@@ -2,12 +2,21 @@ import React, { Component } from 'react'
 import ExamNotice from './ExamNotice';
 import fcritlogo from '../assets/fcritlogo.png'
 import dp from '../assets/dp.jpg'
+import { logout } from '../actions/auth'
 import sign from '../assets/sign.png'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
-import { PDFExport } from "@progress/kendo-react-pdf";
 import {serverip} from '../actions/serverip'
+import { PDFExport } from "@progress/kendo-react-pdf";
 import download from '../assets/download.png'
 export class KtSubTab extends Component {
+
+    static propTypes = {
+        logout: PropTypes.func.isRequired,
+        auth: PropTypes.object.isRequired,
+    }
+
 
     constructor(props) {
         super(props);
@@ -16,14 +25,26 @@ export class KtSubTab extends Component {
         }
     }
 
-    UNSAFE_componentWillReceiveProps = () => {
+    sortByCode(code){return function(a,b){
+        if(a[code]>b[code])
+            return 1;
+        else if(a[code]<b[code])
+            return -1;
+        return 0;
+    }}
+
+    componentDidMount = () => {
         
         if (Object.keys(this.props.kt3data).length>1) {
             const kt3scheme = this.props.kt3data.scheme
             const kt3sem = this.props.kt3data.semester
             const kt3branch = this.props.kt3data.branch
-            fetch(`http://${serverip}/scheme/${kt3scheme}/branch/${kt3branch}${kt3scheme}/semester/${kt3sem}${kt3branch}${kt3scheme}/course/`, {
-                method: 'Get'
+            fetch(`${serverip}/scheme/${kt3scheme}/branch/${kt3branch}${kt3scheme}/semester/${kt3sem}${kt3branch}${kt3scheme}/course/`, {
+                method: 'Get',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${this.props.auth.token}`
+                }
             }).then(res => res.json())
                 .then(data => {
                     this.setState({ kt3subjects: data })
@@ -37,6 +58,9 @@ export class KtSubTab extends Component {
                         for (let j = 0; j < this.state.kt3subjects.length; j++) {
                             if (kt3codes[i] === this.state.kt3subjects[j].code) {
                                 kt3student.push(this.state.kt3subjects[j])
+                                
+                                kt3student.sort(this.sortByCode("code"))
+                                console.log(kt3student)
                                 this.setState({ kt3studentsubj: kt3student })
                             }
                         }
@@ -48,8 +72,12 @@ export class KtSubTab extends Component {
             const kt4scheme = this.props.kt4data.scheme
             const kt4sem = this.props.kt4data.semester
             const kt4branch = this.props.kt4data.branch
-            fetch(`http://${serverip}/scheme/${kt4scheme}/branch/${kt4branch}${kt4scheme}/semester/${kt4sem}${kt4branch}${kt4scheme}/course/`, {
-                method: 'Get'
+            fetch(`${serverip}/scheme/${kt4scheme}/branch/${kt4branch}${kt4scheme}/semester/${kt4sem}${kt4branch}${kt4scheme}/course/`, {
+                method: 'Get',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${this.props.auth.token}`
+                }
             }).then(res => res.json())
                 .then(data => {
                     this.setState({ kt4subjects: data })
@@ -63,6 +91,7 @@ export class KtSubTab extends Component {
                         for (let j = 0; j < this.state.kt4subjects.length; j++) {
                             if (kt4codes[i] === this.state.kt4subjects[j].code) {
                                 kt4student.push(this.state.kt4subjects[j])
+                                kt4student.sort(this.sortByCode("code"))
                                 this.setState({ kt4studentsubj: kt4student })
                             }
                         }
@@ -75,7 +104,7 @@ export class KtSubTab extends Component {
             const kt5scheme = this.props.kt5data.scheme
             const kt5sem = this.props.kt5data.semester
             const kt5branch = this.props.kt5data.branch
-            fetch(`http://${serverip}/scheme/${kt5scheme}/branch/${kt5branch}${kt5scheme}/semester/${kt5sem}${kt5branch}${kt5scheme}/course/`, {
+            fetch(`${serverip}/scheme/${kt5scheme}/branch/${kt5branch}${kt5scheme}/semester/${kt5sem}${kt5branch}${kt5scheme}/course/`, {
                 method: 'Get'
             }).then(res => res.json())
                 .then(data => {
@@ -90,6 +119,7 @@ export class KtSubTab extends Component {
                         for (let j = 0; j < this.state.kt5subjects.length; j++) {
                             if (kt5codes[i] === this.state.kt5subjects[j].code) {
                                 kt5student.push(this.state.kt5subjects[j])
+                                kt5student.sort(this.sortByCode("code"))
                                 this.setState({ kt5studentsubj: kt5student })
                             }
                         }
@@ -100,7 +130,7 @@ export class KtSubTab extends Component {
             const kt6scheme = this.props.kt6data.scheme
             const kt6sem = this.props.kt6data.semester
             const kt6branch = this.props.kt6data.branch
-            fetch(`http://${serverip}/scheme/${kt6scheme}/branch/${kt6branch}${kt6scheme}/semester/${kt6sem}${kt6branch}${kt6scheme}/course/`, {
+            fetch(`${serverip}/scheme/${kt6scheme}/branch/${kt6branch}${kt6scheme}/semester/${kt6sem}${kt6branch}${kt6scheme}/course/`, {
                 method: 'Get'
             }).then(res => res.json())
                 .then(data => {
@@ -115,6 +145,7 @@ export class KtSubTab extends Component {
                         for (let j = 0; j < this.state.kt6subjects.length; j++) {
                             if (kt6codes[i] === this.state.kt6subjects[j].code) {
                                 kt6student.push(this.state.kt6subjects[j])
+                                kt6student.sort(this.sortByCode("code"))
                                 this.setState({ kt6studentsubj: kt6student })
                             }
                         }
@@ -178,16 +209,19 @@ export class KtSubTab extends Component {
         const user = this.props.user;
         const kt3data = this.props.kt3data;
         const kt4data = this.props.kt4data;
+        
+        
+console.log(React.version)
         const kt5data = this.props.kt5data;
         const kt6data = this.props.kt6data;
         const data = this.props.data;
         const examsem = this.props.examsem;
-        const kt3sem = this.props.kt3sem;
-        const kt4sem = this.props.kt4sem;
-        const kt5sem = this.props.kt5sem;
-        const kt6sem = this.props.kt6sem;
+        const kt3sem = "Second Year Engineering";
+        const kt4sem =  "Second Year Engineering";
+        const kt5sem =  "Third Year Engineering";
+        const kt6sem =  "Third Year Engineering";
         const session = this.props.session;
-
+        const studentdp=this.props.studentdp
         return (
             <div>
                 <div className="hallticket-tabs" style={{ paddingTop: '20px', marginBottom: '0px', border: '1px #e6e6e6 solid' }}>
@@ -247,7 +281,7 @@ export class KtSubTab extends Component {
                                     <td colspan="2"><p>{user ? `${user.first_name}` : null}</p></td>
                                     <td rowspan="5" style={{ textAlign: "center", alignContent: 'center' }}>
                                         {/* <img src={this.state.photo ? this.state.photo[0].download_url : 'Loading...'}></img> */}
-                                        <img src={dp} alt="" />
+                                        <img src={studentdp} alt="" />
                                     </td>
                                 </tr>
                                 <tr class="sd">
@@ -344,7 +378,7 @@ export class KtSubTab extends Component {
                                     <td colspan="2" ><p>{user ? `${user.first_name} ` : null}</p></td>
                                     <td rowspan="5" style={{ textAlign: "center", alignContent: 'center' }}>
                                         {/* <img src={this.state.photo ? this.state.photo[0].download_url : 'Loading...'}></img> */}
-                                        <img src={dp} alt="" />
+                                        <img src={studentdp} alt="" />
                                     </td>
                                 </tr>
                                 <tr class="sd">
@@ -440,7 +474,7 @@ export class KtSubTab extends Component {
                                     <td colspan="2" ><p>{user ? `${user.first_name} ` : null}</p></td>
                                     <td rowspan="5" style={{ textAlign: "center", alignContent: 'center' }}>
                                         {/* <img src={this.state.photo ? this.state.photo[0].download_url : 'Loading...'}></img> */}
-                                        <img src={dp} alt="" />
+                                        <img src={studentdp} alt="" />
                                     </td>
                                 </tr>
                                 <tr class="sd">
@@ -537,7 +571,7 @@ export class KtSubTab extends Component {
                                     <td colspan="2" ><p>{user ? `${user.first_name} ` : null}</p></td>
                                     <td rowspan="5" style={{ textAlign: "center", alignContent: 'center' }}>
                                         {/* <img src={this.state.photo ? this.state.photo[0].download_url : 'Loading...'}></img> */}
-                                        <img src={dp} alt="" />
+                                        <img src={studentdp} alt="" />
                                     </td>
                                 </tr>
                                 <tr class="sd">
@@ -596,4 +630,7 @@ export class KtSubTab extends Component {
     }
 }
 
-export default KtSubTab
+const mapStateToProps = state => ({
+    auth: state.auth
+});
+export default connect(mapStateToProps, { logout })(KtSubTab)

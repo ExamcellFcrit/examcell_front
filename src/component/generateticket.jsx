@@ -329,44 +329,14 @@ export class generateticket extends Component {
         /* console.log(session); */
 
         let examsem = data.semester;
-        if (examsem === 3 || examsem === 4) {
+        if (examsem == 3 || examsem == 4) {
             examsem = 'Second Year Engineering'
         }
         else {
             examsem = 'Third Year Engineering'
         }
 
-        let kt3sem = kt3data.semester;
-        if (kt3sem === 3 || kt3sem === 4) {
-            kt3sem = 'Second Year Engineering'
-        }
-        else {
-            kt3sem = 'Third Year Engineering'
-        }
-
-        let kt4sem = kt4data.semester;
-        if (kt4sem === 3 || kt4sem === 4) {
-            kt4sem = 'Second Year Engineering'
-        }
-        else {
-            kt4sem = 'Third Year Engineering'
-        }
-
-        let kt5sem = kt5data.semester;
-        if (kt5sem === 3 || kt5sem === 4) {
-            kt5sem = 'Second Year Engineering'
-        }
-        else {
-            kt5sem = 'Third Year Engineering'
-        }
-
-        let kt6sem = kt6data.semester;
-        if (kt6sem === 3 || kt6sem === 4) {
-            kt6sem = 'Second Year Engineering'
-        }
-        else {
-            kt6sem = 'Third Year Engineering'
-        }
+        
 
         if (this.state.isRegular === false && (this.state.kt3filled || this.state.kt4filled || this.state.kt5filled || this.state.kt6filled)) {
             return (
@@ -379,11 +349,7 @@ export class generateticket extends Component {
                         kt5data={kt5data}
                         kt6data={kt6data}
                         session={session}
-                        examsem={examsem}
-                        kt3sem={kt3sem}
-                        kt4sem={kt4sem}
-                        kt5sem={kt5sem}
-                        kt6sem={kt6sem}
+                        examsem={examsem}s
                         filled={this.state.filled}
                         isKT={this.state.isKT}
                         isRegular={this.state.isRegular}
@@ -418,10 +384,7 @@ export class generateticket extends Component {
                             kt6data={kt6data}
                             session={session}
                             examsem={examsem}
-                            kt3sem={kt3sem}
-                            kt4sem={kt4sem}
-                            kt5sem={kt5sem}
-                            kt6sem={kt6sem}
+                           
                             filled={this.state.filled}
                             isKT={this.state.isKT}
                             isRegular={this.state.isRegular}
@@ -430,6 +393,7 @@ export class generateticket extends Component {
                             kt5filled={this.state.kt5filled}
                             kt6filled={this.state.kt6filled}
                             openCity={this.openCity}
+                            studentdp={this.state.studentdp}
                             pdfExportComponentKt={this.pdfExportComponentKt}
                         />
 

@@ -10,6 +10,7 @@ import { login } from '../actions/auth'
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import logo from '../assets/fcritlogo.png'
+import pdf from '../assets/Form filling instructions for KT Exam.pdf'
 
 
 export class Login extends Component {
@@ -239,6 +240,10 @@ export class Login extends Component {
                                 </div>
                             </div>
 
+                            <div className="column">
+                                <div className="title has-text-white">References</div>
+                                <a href={pdf} target="_blank" className="has-text-white">How to fill KT Exam Form</a>
+                            </div>
                         </div>
                     </div>
 

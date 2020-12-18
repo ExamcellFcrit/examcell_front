@@ -173,7 +173,7 @@ export class Home extends Component {
 
 
     /* Check Sem3 ktprofile */
-    /* if (user.username !== 'admin') {
+    if (user.username !== 'admin') {
       fetch(`${serverip}/student/${user ? `${user.username}KT3/` : `asdsad`}`, {
         headers: {
           'Content-Type': 'application/json',
@@ -198,7 +198,11 @@ export class Home extends Component {
           const kt3branch = data.branch
           const kt3scheme = data.scheme
           fetch(`${serverip}/scheme/${kt3scheme}/branch/${kt3branch}${kt3scheme}/semester/${kt3sem}${kt3branch}${kt3scheme}/course/`, {
-            method: 'Get'
+            method: 'Get',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Token ${this.props.auth.token}`
+            },
           })
             .then(res => res.json())
             .then(data => {
@@ -224,10 +228,10 @@ export class Home extends Component {
         })
         .catch(function (error) {
           console.log(error);
-        }); */
+        });
 
       /* Check Sem4 Ktprofile */
-      /* fetch(`${serverip}/student/${user ? `${user.username}KT4/` : `asdsad`}`, {
+      fetch(`${serverip}/student/${user ? `${user.username}KT4/` : `asdsad`}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Token ${this.props.auth.token}`
@@ -253,7 +257,11 @@ export class Home extends Component {
           const kt4branch = data.branch
           const kt4scheme = data.scheme
           fetch(`${serverip}/scheme/${kt4scheme}/branch/${kt4branch}${kt4scheme}/semester/${kt4sem}${kt4branch}${kt4scheme}/course/`, {
-            method: 'Get'
+            method: 'Get',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Token ${this.props.auth.token}`
+            },
           })
             .then(res => res.json())
             .then(data => {
@@ -279,10 +287,10 @@ export class Home extends Component {
         })
         .catch(function (error) {
           console.log(error);
-        }); */
+        });
 
       /* Check Sem5 Ktprofile */
-      /* fetch(`${serverip}/student/${user ? `${user.username}KT5/` : `asdsad`}`, {
+      fetch(`${serverip}/student/${user ? `${user.username}KT5/` : `asdsad`}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Token ${this.props.auth.token}`
@@ -332,11 +340,11 @@ export class Home extends Component {
         })
         .catch(function (error) {
           console.log(error);
-        }); */
+        });
 
 
       /* Check sem6 ktprofile */
-      /* fetch(`${serverip}/student/${user ? `${user.username}KT6/` : `asdsad`}`, {
+      fetch(`${serverip}/student/${user ? `${user.username}KT6/` : `asdsad`}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Token ${this.props.auth.token}`
@@ -360,7 +368,11 @@ export class Home extends Component {
           const kt6branch = data.branch
           const kt6scheme = data.scheme
           fetch(`${serverip}/scheme/${kt6scheme}/branch/${kt6branch}${kt6scheme}/semester/${kt6sem}${kt6branch}${kt6scheme}/course/`, {
-            method: 'Get'
+            method: 'Get',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Token ${this.props.auth.token}`
+            },
           })
             .then(res => res.json())
             .then(data => {
@@ -386,9 +398,9 @@ export class Home extends Component {
         })
         .catch(function (error) {
           console.log(error);
-        }); */
+        });
     
-
+      }
 
   }
 
@@ -450,7 +462,7 @@ export class Home extends Component {
                     </div>
                     <p><b>KT seat number: </b>{kt3profile.seatNo ? <span className="subtitle is-4">{kt3profile.seatNo}</span> : ' Not generated yet'}</p>
                     <p><b>Selected Subjects: </b><ul style={{ marginLeft: '10px' }}>{this.state.kt3studentsubj ? this.state.kt3studentsubj.map(x => (
-                      <li key={x.id} style={{ listStyle: 'circle' }} >{x.course} on {x.date} {x.isInternal ? '(Internal)' : null}</li>
+                      <li key={x.id} style={{ listStyle: 'circle' }} >{x.course} {x.isInternal ? '(Internal)' : null} on {x.date?x.date:'( date to be announced )'} </li>
                     )) : null}</ul></p>
 
                   </div>
@@ -469,7 +481,7 @@ export class Home extends Component {
 
                     <p><b>Seat number: </b>{kt4profile.seatNo ? <span className="subtitle is-4">{kt4profile.seatNo}</span> : ' Not generated yet'}</p>
                     <p><b>Selected Subjects: </b><ul style={{ marginLeft: '10px' }}>{this.state.kt4studentsubj ? this.state.kt4studentsubj.map(x => (
-                      <li key={x.id} style={{ listStyle: 'circle' }} >{x.course} on  {x.date} {x.isInternal ? '(Internal)' : null}</li>
+                      <li key={x.id} style={{ listStyle: 'circle' }} >{x.course} {x.isInternal ? '(Internal)' : null} on  {x.date?x.date:'( date to be announced )'} </li>
                     )) : null}</ul></p>
 
                   </div>
@@ -486,7 +498,7 @@ export class Home extends Component {
                     </div>
                     <p><b>Seat number: </b>{kt5profile.seatNo ? <span className="subtitle is-4">{kt5profile.seatNo}</span> : ' Not generated yet'}</p>
                     <p><b>Selected Subjects: </b><ul style={{ marginLeft: '10px' }}>{this.state.kt5studentsubj ? this.state.kt5studentsubj.map(x => (
-                      <li key={x.id} style={{ listStyle: 'circle' }} >{x.course} on  {x.date} {x.isInternal ? '(Internal)' : null}</li>
+                      <li key={x.id} style={{ listStyle: 'circle' }} >{x.course} {x.isInternal ? '(Internal)' : null} on  {x.date?x.date:'( date to be announced )'} </li>
                     )) : null}</ul></p>
 
                   </div>
@@ -502,7 +514,7 @@ export class Home extends Component {
                     </div>
                     <p><b>Seat number: </b>{kt6profile.seatNo ? kt6profile.seatNo : ' Not generated yet'}</p>
                     <p><b>Selected Subjects: </b><ul style={{ marginLeft: '10px' }}>{kt6profile ? kt6profile.ktsubjects.map(x => (
-                      <li key={x.id} style={{ listStyle: 'circle' }} >{x.ktsubject} on  {x.date} {x.isInternal ? '(Internal)' : null}</li>
+                      <li key={x.id} style={{ listStyle: 'circle' }} >{x.ktsubject} {x.isInternal ? '(Internal)' : null} on  {x.date?x.date:'( date to be announced )'} </li>
                     )) : null}</ul></p>
                     <hr />
                   </div>
@@ -526,15 +538,14 @@ export class Home extends Component {
         <div>
           {this.stopLoader()}
           <div className="columns">
-            <div className="column is-one-third" style={{ textAlign: 'center' }} >
+            <div className="column is-half" style={{ textAlign: 'center' }} >
               <figure className="image is-100x100">
-                <img className="is-rounded" style={{ width: "100px", height: '100px', display: 'block', margin: 'auto', marginBottom: '10px' }} src={this.state.images ? this.state.images[1].download_url : null} alt="" />
+                <img className="is-rounded" style={{ width: "100px", height: '100px', display: 'block', margin: 'auto', marginBottom: '10px' }} src={studentdp} alt="" />
               </figure>
               <div className="title" style={{ fontSize: '1.5em' }}>{user.first_name}</div>
             </div>
             <div className="column">
-              <p ><b>Branch: </b>{profile.branch}</p>
-              <p ><b>Semester: </b>{profile.semester}</p>
+              <p ><b>Branch: </b>{branch}</p>
               <p ><b>Roll number: </b>{user.username}</p>
             </div>
 
@@ -550,7 +561,7 @@ export class Home extends Component {
               </div>
               <p><b>Seat number: </b>{kt3profile.seatNo ? kt3profile.seatNo : ' Not generated yet'}</p>
               <p><b>Selected Subjects for KT exams: </b><ul style={{ marginLeft: '10px' }}>{kt3profile ? kt3profile.ktsubjects.map(x => (
-                <li key={x.id} style={{ listStyle: 'circle' }} >{x.ktsubject} on {x.date}</li>
+                <li key={x.id} style={{ listStyle: 'circle' }} >{x.ktsubject} on {x.date?x.date:'( date to be announced )'}</li>
               )) : null}</ul></p>
 
             </div>
@@ -568,7 +579,7 @@ export class Home extends Component {
               </div>
               <p><b>Seat number: </b>{kt4profile.seatNo ? kt4profile.seatNo : ' Not generated yet'}</p>
               <p><b>Selected Subjects for KT exams: </b><ul style={{ marginLeft: '10px' }}>{kt4profile ? kt4profile.ktsubjects.map(x => (
-                <li key={x.id} style={{ listStyle: 'circle' }} >{x.ktsubject} on  {x.date} {x.isInternal ? '(Internal)' : null}</li>
+                <li key={x.id} style={{ listStyle: 'circle' }} >{x.ktsubject} {x.isInternal ? '(Internal)' : null} on  {x.date?x.date:'( date to be announced )'} </li>
               )) : null}</ul></p>
             </div>
           ) : null}
@@ -583,7 +594,7 @@ export class Home extends Component {
               </div>
               <p><b>Seat number: </b>{kt5profile.seatNo ? kt5profile.seatNo : ' Not generated yet'}</p>
               <p><b>Selected Subjects for KT exams: </b><ul style={{ marginLeft: '10px' }}>{kt5profile ? kt5profile.ktsubjects.map(x => (
-                <li key={x.id} style={{ listStyle: 'circle' }} >{x.ktsubject} on  {x.date} {x.isInternal ? '(Internal)' : null}</li>
+                <li key={x.id} style={{ listStyle: 'circle' }} >{x.ktsubject} {x.isInternal ? '(Internal)' : null} on  {x.date?x.date:'( date to be announced )'} </li>
               )) : null}</ul></p>
             </div>
           ) : null}
@@ -594,7 +605,7 @@ export class Home extends Component {
               <hr />
               <p><b>Semester 6 KT seat number: </b>{kt6profile.seatNo ? kt6profile.seatNo : ' Not generated yet'}</p>
               <p><b>Selected Subjects for KT exams: </b><ul style={{ marginLeft: '10px' }}>{kt6profile ? kt6profile.ktsubjects.map(x => (
-                <li key={x.id} style={{ listStyle: 'circle' }} >{x.ktsubject} on  {x.date} {x.isInternal ? '(Internal)' : null}</li>
+                <li key={x.id} style={{ listStyle: 'circle' }} >{x.ktsubject} {x.isInternal ? '(Internal)' : null} on  {x.date?x.date:'( date to be announced )'} </li>
               )) : null}</ul></p>
             </div>
           ) : null}
@@ -609,7 +620,7 @@ export class Home extends Component {
           <div className="columns">
             <div className="column is-one-third" style={{ textAlign: 'center' }} >
               <figure className="image is-100x100">
-                <img className="is-rounded" style={{ width: "100px", height: '100px', display: 'block', margin: 'auto', marginBottom: '10px' }} src={dp} alt="" />
+                <img className="is-rounded" style={{ width: "100px", height: '100px', display: 'block', margin: 'auto', marginBottom: '10px' }} src={studentdp} alt="" />
               </figure>
               <div className="title" style={{ fontSize: '1.5em' }}>{user.first_name} </div>
             </div>
@@ -625,7 +636,7 @@ export class Home extends Component {
             <Link to="/form"><button className="button is-success">Fill form</button></Link>
           </div>
         </div>
-      )
+      );
     }
   }
 
@@ -700,9 +711,11 @@ export class Home extends Component {
           window.location.reload();
         }
       })
+    
 
   }
 
+  
 
 
 
@@ -809,6 +822,7 @@ export class Home extends Component {
 
     );
   }
+
 }
 const mapStateToProps = state => ({
   auth: state.auth

@@ -379,6 +379,7 @@ export class edit extends Component {
         const isInternal = props.dataItem.isInternal;
         const green = { backgroundColor: "rgb(55, 180, 0,0.32)" };
         const blue = { backgroundColor: "rgba(0, 255 ,255, 0.20)" };
+        const pink = { backgroundColor: "rgba(0, 255 ,255, 0.20)" };
         const none = { backgroundColor: "rgba(255, 255 ,255, 0.20)" };
         const trProps = { style: isElective ? green : isInternal ? blue : none };
         return React.cloneElement(trElement, { ...trProps }, trElement.props.children);
@@ -484,6 +485,7 @@ export class edit extends Component {
                                 <Column field="isElective" title="Elective" width="100%" editor='boolean' />
                                 <Column field="isInternal" title="Internal" width="100%" editor="boolean" />
                                 <Column field="date" title="Date" editor='text' width="100%" />
+                                <Column field="ktdate" title="KT Exam Date" editor='text' width="100%" />
                                 <Column field="start_time" title="Start Time" width="100%" editor="text" />
                                 <Column field="end_time" title="End Time" width="100%" editor="text" />
 

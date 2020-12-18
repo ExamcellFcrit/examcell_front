@@ -139,7 +139,7 @@ export class edit extends Component {
                                                         { error() }
 
                                                     }
-                                                    else if (data.date) {
+                                                    else if (data.date || data.ktdate) {
                                                         const error = () => toast.update(toastId, { type: toast.TYPE.ERROR, autoClose: 2000, render: `${data.date}` });
                                                         { error() }
                                                         { this.discard(dataItem) }
@@ -205,8 +205,9 @@ export class edit extends Component {
         if (dataItem.end_time == "") {
             dataItem.end_time = null
         }
-        if (dataItem.date == "") {
+        if (dataItem.date == "" || dataItem.ktdate=="") {
             dataItem.date = null
+            dataItem.ktdate = null
         }
         const semester = this.state.credentials.semester;
         const branch = this.state.credentials.branch;
@@ -460,6 +461,7 @@ export class edit extends Component {
                                 <Column field="isElective" title="Elective" width="100%" editor='boolean' />
                                 <Column field="isInternal" title="Internal" width="100%" editor="boolean" />
                                 <Column field="date" title="Date" editor='text' width="100%" />
+                                <Column field="ktdate" title="KT Date" editor='text' width="100%" />
                                 <Column field="start_time" title="Start Time" width="100%" editor="text" />
                                 <Column field="end_time" title="End Time" width="100%" editor="text" />
 

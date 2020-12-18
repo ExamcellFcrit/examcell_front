@@ -219,6 +219,10 @@ export class verification extends Component {
         this.setState({
             profileid: id
         })
+        if(this.state.profile.studentType==='Regular')
+        {}
+        else {id=id.substring(0,id.length-3)}
+        console.log(this.state.profile)
 
         //get student image
         fetch(`${serverip}/api/image/${id}/`, {
@@ -232,6 +236,7 @@ export class verification extends Component {
             this.setState({image:data})
         })
 
+        id = localStorage.getItem('test')
         //get student profile
         fetch(`${serverip}/student/${id}/`, {
             headers: {
