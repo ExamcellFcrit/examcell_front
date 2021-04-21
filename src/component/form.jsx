@@ -34,7 +34,6 @@ export class form extends Component {
             freezelink: '',
             finalcourse: '',
             data: '',
-            enableKT: false,
             internal: false,
             ktdata: '',
             profile: '',
@@ -78,10 +77,10 @@ export class form extends Component {
         const semester = this.state.credentials.semester
         const internal = this.state.internal
         const ktsemester = this.state.credentials.ktsemester
-        if ( this.state.credentials.studentType == 'KT') {
+        if (this.state.credentials.studentType == 'KT') {
             choices = $('input:checkbox:checked', tableControl).map(function () {
                 return {
-                    id:`${$(this).closest('tr').find('td:nth-child(1)').text()}${user.username}KT`,
+                    id: `${$(this).closest('tr').find('td:nth-child(1)').text()}${user.username}KT`,
                     branch: branch,
                     semester: ktsemester,
                     student: `${user.username}KT${ktsemester}`,
@@ -142,7 +141,10 @@ export class form extends Component {
         $('input[type="checkbox"]:checked').prop('checked', false);
     }
 
+
+
     componentDidMount = () => {
+
 
         //get control status
         fetch(`${serverip}/controls/freezelink/`, {
@@ -151,176 +153,58 @@ export class form extends Component {
                 'Content-Type': 'application/json',
                 'Authorization': `Token ${this.props.auth.token}`
             }
-        }).then(res=>{
-          console.log(res)
-          return res.json()
-        }).then(data=>{
-          console.log(data.freezelink)
-          this.setState({studentPortal:data.studentPortal})
+        }).then(res => {
+            console.log(res)
+            return res.json()
+        }).then(data => {
+            console.log(data.freezelink)
+            this.setState({ studentPortal: data.studentPortal })
         })
 
+        //get student profile; contains all regular as well as kt data
         const { user } = this.props.auth;
-        fetch(`${serverip}/student/${user ? `${user.username}/` : `null`}`, {
+        fetch(`${serverip}/student/`, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Token ${this.props.auth.token}`
             },
+        }).then(response => {
+            console.log("ok");
+            return response.json()
         })
-            .then((response) => {
-                if (!response.ok) {
-                    this.setState({
-                        filled: '',
-
-                    })
-                    throw Error("null")
-                }
-                return response;
-            }).then(response => {
-                console.log("ok");
-                this.setState({
-                    filled: true,
-                    isRegular: true
-                })
-                return response.json()
-            })
             .then(data => {
-                this.setState({
-                    profile: data
-                })
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+                console.log(data)
 
-        /* Check Sem3 ktprofile */
-        fetch(`${serverip}/student/${user ? `${user.username}KT3/` : `null`}`, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${this.props.auth.token}`,
-
-            },
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    this.setState({
-                        kt3filled: '',
-                    })
-                    throw Error("null")
+                var regular = data.filter(x => x.studentType === 'Regular');
+                if (!_.isEmpty(regular)) {
+                    this.setState({ filled: true, profile: regular[0], isRegular: true })
                 }
-                return response;
-            }).then(response => {
-                console.log("ok");
-                this.setState({
-                    kt3filled: true,
-                    isKt: true
-                })
-                return response.json()
-            })
-            .then(data => {
-                this.setState({
-                    kt3profile: data
 
-                })
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-
-
-        /* Check Sem4 Ktprofile */
-        fetch(`${serverip}/student/${user ? `${user.username}KT4/` : `null`}`, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${this.props.auth.token}`
-            },
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    this.setState({
-                        kt4filled: '',
-                    })
-                    throw Error("null")
+                //check if KT3 exists
+                var kt3 = data.filter(x => x.id.includes("KT3"));
+                if (!_.isEmpty(kt3)) {
+                    this.setState({ kt3filled: true, kt3profile: kt3[0] })
                 }
-                return response;
-            }).then(response => {
-                console.log("ok");
-                this.setState({
-                    kt4filled: true,
-                    isKt: true
-                })
-                return response.json()
-            })
-            .then(data => {
-                this.setState({
-                    kt4profile: data
 
-                })
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-
-        /* Check sem5 ktprofile */
-        fetch(`${serverip}/student/${user ? `${user.username}KT5/` : `null`}`, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${this.props.auth.token}`
-            },
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    this.setState({
-                        kt5filled: '',
-                    })
-                    throw Error("null")
+                //check if KT4 exists
+                var kt4 = data.filter(x => x.id.includes("KT4"));
+                if (!_.isEmpty(kt4)) {
+                    this.setState({ kt4filled: true, kt4profile: kt4[0] })
                 }
-                return response;
-            }).then(response => {
-                console.log("ok");
-                this.setState({
-                    kt5filled: true,
-                    isKt: true
-                })
-                return response.json()
-            })
-            .then(data => {
-                this.setState({
-                    kt5profile: data
 
-                })
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-
-        /* Check sem6 ktprofile */
-        fetch(`${serverip}/student/${user ? `${user.username}KT6/` : `null`}`, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${this.props.auth.token}`
-            },
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    this.setState({
-                        kt6filled: '',
-                    })
-                    throw Error("null")
+                //check if KT5 exists
+                var kt5 = data.filter(x => x.id.includes("KT5"));
+                if (!_.isEmpty(kt5)) {
+                    this.setState({ kt5filled: true, kt5profile: kt5[0] })
                 }
-                return response;
-            }).then(response => {
-                console.log("ok");
-                this.setState({
-                    kt6filled: true,
-                    isKt: true
-                })
-                return response.json()
-            })
-            .then(data => {
-                this.setState({
-                    kt6profile: data
 
-                })
+                //check if KT6 exists
+                var kt6 = data.filter(x => x.id.includes("KT6"));
+                if (!_.isEmpty(kt6)) {
+                    this.setState({ kt6filled: true, kt6profile: kt6 })
+                }
+
+
             })
             .catch(function (error) {
                 console.log(error);
@@ -351,12 +235,12 @@ export class form extends Component {
         });
         const response = await api_call.json();
         console.log(response)
-        let newdata=[]
-        response.map(i=>{
-            if(i.code.includes('INT')){
-                return 
+        let newdata = []
+        response.map(i => {
+            if (i.code.includes('INT')) {
+                return
             }
-            else{
+            else {
                 newdata.push(i)
             }
         })
@@ -437,7 +321,7 @@ export class form extends Component {
         const semester = this.state.credentials.semester
         const { user } = this.props.auth;
         let form_data = new FormData();
-       
+
         if (this.state.credentials.studentType === 'Regular') {
             form_data.append('studentType', 'Regular')
             form_data.append('semester', this.state.credentials.semester)
@@ -506,7 +390,7 @@ export class form extends Component {
                 ktform_data.append('address', this.state.credentials.address);
                 ktform_data.append('year', this.state.credentials.year);
                 ktform_data.append('session', this.state.credentials.session);
-                ktform_data.append('rollno', `${user.username}KT${semester}`);
+                ktform_data.append('rollno', `${user.username}`);
                 ktform_data.append('branch', this.state.credentials.branch);
                 ktform_data.append('semester', semester);
                 ktform_data.append('dob', this.state.credentials.dob);
@@ -1087,7 +971,7 @@ export class form extends Component {
                     {this.stopLoader()}
                     <div className="section" >
                         <div className="container form-filled">
-                        <div id="status" className="title " style={{ color: 'white', display: 'flex', alignItems: 'center' }}>{`KT Exam Form filled`}<span class="material-icons material-icons has-text-white  ml-2"> done_all</span></div>
+                            <div id="status" className="title " style={{ color: 'white', display: 'flex', alignItems: 'center' }}>{`KT Exam Form filled`}<span class="material-icons material-icons has-text-white  ml-2"> done_all</span></div>
                             <div className="notification is-light is-success">
                                 <p>Hallticket can be downloaded once the admin has verified your form and generated seat number. Print hallticket tab will be activated later.</p>
                             </div>
@@ -1096,7 +980,7 @@ export class form extends Component {
                 </div>
             )
         }
-        else{
+        else {
             return (
                 <div>
                     <div className="subtitle" style={{ color: 'white' }}>Complete the following 3 steps to submit your form</div><br />
@@ -1136,7 +1020,7 @@ export class form extends Component {
                                             <label className="k-radio-label" htmlFor="c2"><input type="radio" onChange={this.handleChange} id="c2" name="studentType" value="KT" className="k-radio" />KT</label>
                                         </div>
                                     </div>
-    
+
                                 </Ripple>
                             </div>
                         ) : null}
@@ -1150,7 +1034,7 @@ export class form extends Component {
                     {this.renderKtSubjects()}
                     {this.renderSelectedCourses()}
                     <div>
-    
+
                         <hr />
                         <div className="hero" >
                             <section className="section" >
@@ -1202,7 +1086,7 @@ export class form extends Component {
                                                     </div>
                                                     {/* <p class="help is-success">This username is available</p> */}
                                                 </div>
-    
+
                                                 <div class="field">
                                                     <label class="label">Student Name</label>
                                                     <div class="control">
@@ -1301,21 +1185,21 @@ export class form extends Component {
     }
 
     render() {
-        if( !this.state.studentPortal){
+        if (!this.state.studentPortal) {
             return (
-                
+
                 <div className="title has-text-white">Form filling has been stopped by admin.</div>
-                    
+
             )
         }
-        
+
         return (
             <div >
                 <Header />
                 {/*  <div class="pageloader is-active"><span class="title" style={{ fontSize: '2em' }}></span></div> */}
                 <div className="hero first">
                     <div className="section" >
-                        <div className="container" style={{width:'50%'}}>
+                        <div className="container" style={{ width: '50%' }}>
                             <div className="hallticket-tabs" style={{ marginTop: '20px', marginBottom: '0px' }}>
                                 <a href="javascript:void(0)" onClick={(event) => { this.openCity(event, 'regularform') }}>
                                     <div className="w3-third tablink w3-bottombar w3-padding is-active"><button className="has-text-white">Regular Form</button></div>
@@ -1332,7 +1216,7 @@ export class form extends Component {
                         <div className=" w3-container city mt-6" id="ktform" style={{ display: 'none' }}>
                             {this.renderKTForm()}
                         </div>
-                      
+
                     </div>
                 </div>
             </div >

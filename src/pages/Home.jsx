@@ -26,7 +26,7 @@ export class Home extends Component {
       notice: '',
       freezelink: false,
       showtimetable: null,
-      image:'',
+      image: '',
       profile: '',
       data: [],
       studentprofile: { email: '', username: '', id: '', first_name: '' },
@@ -49,9 +49,6 @@ export class Home extends Component {
       console.log("prod")
     }
 
-   
-    
-
 
     //passwordModal open,close Jquery
     $(".delete").click(function () {
@@ -65,19 +62,19 @@ export class Home extends Component {
 
 
     const { user } = this.props.auth
-   /*  console.log(user.username) */
+    /*  console.log(user.username) */
 
     //get student image
     fetch(`${serverip}/api/image/${user.username}/`, {
       method: 'get',
       headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Token ${this.props.auth.token}`
+        'Content-Type': 'application/json',
+        'Authorization': `Token ${this.props.auth.token}`
       },
-  }).then(res=>res.json())
-  .then(data=>{
-      this.setState({image:data})
-  })
+    }).then(res => res.json())
+      .then(data => {
+        this.setState({ image: data })
+      })
 
     //get halltkt switch status
     if (user.username !== 'admin') {
@@ -89,7 +86,7 @@ export class Home extends Component {
           'Authorization': `Token ${this.props.auth.token}`
         }
       }).then(res => {
-       /*  console.log(res) */
+        /*  console.log(res) */
         return res.json()
       }).then(data => {
         console.log(data.freezelink)
@@ -115,35 +112,82 @@ export class Home extends Component {
 
     /* Fetch Students Regular profile */
     if (user.username !== 'admin') {
-      fetch(`${serverip}/student/${user ? `${user.username}/` : null}`, {
+      fetch(`${serverip}/student/`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Token ${this.props.auth.token}`
         }
+      }).then((response) => {
+        console.log("ok");
+
+        return response.json()
       })
-        .then((response) => {
-          if (!response.ok) {
-
-            this.setState({
-              filled: '',
-              profileData: response
-            })
-            throw Error("Regular profile not exist");
-          }
-          return response;
-        }).then((response) => {
-
-          console.log("ok");
-          this.setState({
-            filled: true,
-            isRegular: true
-          })
-          return response
-        })
-        .then(res => res.json())
         .then(async (data) => {
+          console.log(data)
+
+          var regular = data.filter(x => x.studentType === 'Regular');
+          if (!_.isEmpty(regular)) {
+            this.setState({ filled: true, profile: regular[0], isRegular: true })
+          }
+
+          //check if KT3 exists
+          const kt3 = data.filter(x => x.id.includes("KT3"))[0];
+          if (!_.isEmpty(kt3)) {
+
+            this.setState({ kt3filled: true, kt3profile: kt3,isKt:true })
+            const kt3sem = kt3.semester
+            const kt3branch = kt3.branch
+            const kt3scheme = kt3.scheme
+            fetch(`${serverip}/scheme/${kt3scheme}/branch/${kt3branch}${kt3scheme}/semester/${kt3sem}${kt3branch}${kt3scheme}/course/`, {
+              method: 'Get',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${this.props.auth.token}`
+              },
+            })
+              .then(res => res.json())
+              .then(kt3 => {
+                this.setState({ kt3subjects: kt3, isKt: true })
+                let kt3codes = []
+                console.log(Object.keys(this.state.kt3profile).length)
+                if (Object.keys(this.state.kt3profile).length > 1) {
+                  for (let i = 0; i < this.state.kt3profile.ktsubjects.length; i++) {
+                    kt3codes.push(this.state.kt3profile.ktsubjects[i].code)
+                  }
+                }
+                console.log(kt3codes)
+                let kt3student = []
+                for (let i = 0; i < kt3codes.length; i++) {
+                  for (let j = 0; j < this.state.kt3subjects.length; j++) {
+                    if (kt3codes[i] === this.state.kt3subjects[j].code) {
+                      kt3student.push(this.state.kt3subjects[j])
+                      this.setState({ kt3studentsubj: kt3student })
+                    }
+                  }
+                }
+              })
+          }
+
+          //check if KT4 exists
+          var kt4 = data.filter(x => x.id.includes("KT4"))[0];
+          if (!_.isEmpty(kt4)) {
+            this.setState({ kt4filled: true, kt4profile: kt4,isKt:true })
+
+          }
+
+          //check if KT5 exists
+          var kt5 = data.filter(x => x.id.includes("KT5"))[0];
+          if (!_.isEmpty(kt5)) {
+            this.setState({ kt5filled: true, kt5profile: kt5 ,isKt:true})
+          }
+
+          //check if KT6 exists
+          var kt6 = data.filter(x => x.id.includes("KT6"))[0];
+          if (!_.isEmpty(kt6)) {
+            this.setState({ kt6filled: true, kt6profile: kt6,isKt:true })
+          }
           this.setState({
-            profile: data,
+
             credentials: { 'branch': data.branch, 'semester': data.semester, 'revscheme': data.scheme }
           })
           /*  end of regular profile */
@@ -173,7 +217,7 @@ export class Home extends Component {
 
 
     /* Check Sem3 ktprofile */
-    if (user.username !== 'admin') {
+    /* if (user.username !== 'admin') {
       fetch(`${serverip}/student/${user ? `${user.username}KT3/` : `asdsad`}`, {
         headers: {
           'Content-Type': 'application/json',
@@ -228,191 +272,191 @@ export class Home extends Component {
         })
         .catch(function (error) {
           console.log(error);
-        });
+        }); */
 
-      /* Check Sem4 Ktprofile */
-      fetch(`${serverip}/student/${user ? `${user.username}KT4/` : `asdsad`}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Token ${this.props.auth.token}`
-        },
-      })
-        .then((response) => {
-          if (!response.ok) {
-            this.setState({
-              kt4filled: '',
-            })
-            throw Error("KT4 not exist")
-          }
-          return response;
-        }).then(response => {
-          console.log("KT4 ok");
-          return response.json()
-        })
-        .then(data => {
+    /* Check Sem4 Ktprofile */
+    /* fetch(`${serverip}/student/${user ? `${user.username}KT4/` : `asdsad`}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Token ${this.props.auth.token}`
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
           this.setState({
-            kt4profile: data
+            kt4filled: '',
           })
-          const kt4sem = data.semester
-          const kt4branch = data.branch
-          const kt4scheme = data.scheme
-          fetch(`${serverip}/scheme/${kt4scheme}/branch/${kt4branch}${kt4scheme}/semester/${kt4sem}${kt4branch}${kt4scheme}/course/`, {
-            method: 'Get',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Token ${this.props.auth.token}`
-            },
-          })
-            .then(res => res.json())
-            .then(data => {
-              this.setState({ kt4subjects: data, isKt: true })
-              let kt4codes = []
-              console.log(Object.keys(this.state.kt4profile).length)
-              if (Object.keys(this.state.kt4profile).length > 1) {
-                for (let i = 0; i < this.state.kt4profile.ktsubjects.length; i++) {
-                  kt4codes.push(this.state.kt4profile.ktsubjects[i].code)
-                }
-              }
-              console.log(kt4codes)
-              let kt4student = []
-              for (let i = 0; i < kt4codes.length; i++) {
-                for (let j = 0; j < this.state.kt4subjects.length; j++) {
-                  if (kt4codes[i] == this.state.kt4subjects[j].code) {
-                    kt4student.push(this.state.kt4subjects[j])
-                    this.setState({ kt4studentsubj: kt4student })
-                  }
-                }
-              }
-            })
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-
-      /* Check Sem5 Ktprofile */
-      fetch(`${serverip}/student/${user ? `${user.username}KT5/` : `asdsad`}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Token ${this.props.auth.token}`
-        },
+          throw Error("KT4 not exist")
+        }
+        return response;
+      }).then(response => {
+        console.log("KT4 ok");
+        return response.json()
       })
-        .then((response) => {
-          if (!response.ok) {
-            this.setState({
-              kt5filled: '',
-            })
-            throw Error("KT5 not exist")
-          }
-          return response;
-        }).then(response => {
-          console.log("KT5 ok");
-          return response.json()
+      .then(data => {
+        this.setState({
+          kt4profile: data
         })
-        .then(data => {
-          this.setState({ kt5profile: data })
-          const kt5sem = data.semester
-          const kt5branch = data.branch
-          const kt5scheme = data.scheme
-          fetch(`${serverip}/scheme/${kt5scheme}/branch/${kt5branch}${kt5scheme}/semester/${kt5sem}${kt5branch}${kt5scheme}/course/`, {
-            method: 'Get'
+        const kt4sem = data.semester
+        const kt4branch = data.branch
+        const kt4scheme = data.scheme
+        fetch(`${serverip}/scheme/${kt4scheme}/branch/${kt4branch}${kt4scheme}/semester/${kt4sem}${kt4branch}${kt4scheme}/course/`, {
+          method: 'Get',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Token ${this.props.auth.token}`
+          },
+        })
+          .then(res => res.json())
+          .then(data => {
+            this.setState({ kt4subjects: data, isKt: true })
+            let kt4codes = []
+            console.log(Object.keys(this.state.kt4profile).length)
+            if (Object.keys(this.state.kt4profile).length > 1) {
+              for (let i = 0; i < this.state.kt4profile.ktsubjects.length; i++) {
+                kt4codes.push(this.state.kt4profile.ktsubjects[i].code)
+              }
+            }
+            console.log(kt4codes)
+            let kt4student = []
+            for (let i = 0; i < kt4codes.length; i++) {
+              for (let j = 0; j < this.state.kt4subjects.length; j++) {
+                if (kt4codes[i] == this.state.kt4subjects[j].code) {
+                  kt4student.push(this.state.kt4subjects[j])
+                  this.setState({ kt4studentsubj: kt4student })
+                }
+              }
+            }
           })
-            .then(res => res.json())
-            .then(data => {
-              this.setState({ kt5subjects: data, isKt: true })
-              let kt5codes = []
-              console.log(Object.keys(this.state.kt5profile).length)
-              if (Object.keys(this.state.kt5profile).length > 1) {
-                for (let i = 0; i < this.state.kt5profile.ktsubjects.length; i++) {
-                  kt5codes.push(this.state.kt5profile.ktsubjects[i].code)
-                }
-              }
-              console.log(kt5codes)
-              let kt5student = []
-              for (let i = 0; i < kt5codes.length; i++) {
-                for (let j = 0; j < this.state.kt5subjects.length; j++) {
-                  if (kt5codes[i] == this.state.kt5subjects[j].code) {
-                    kt5student.push(this.state.kt5subjects[j])
-                    this.setState({ kt5studentsubj: kt5student })
-                  }
-                }
-              }
-            })
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-
-
-      /* Check sem6 ktprofile */
-      fetch(`${serverip}/student/${user ? `${user.username}KT6/` : `asdsad`}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Token ${this.props.auth.token}`
-        },
       })
-        .then((response) => {
-          if (!response.ok) {
-            this.setState({
-              kt6filled: '',
-            })
-            throw Error("KT6 not exist")
-          }
-          return response;
-        }).then(response => {
-          console.log("KT6 ok");
-          return response.json()
-        })
-        .then(data => {
-          this.setState({ kt6profile: data })
-          const kt6sem = data.semester
-          const kt6branch = data.branch
-          const kt6scheme = data.scheme
-          fetch(`${serverip}/scheme/${kt6scheme}/branch/${kt6branch}${kt6scheme}/semester/${kt6sem}${kt6branch}${kt6scheme}/course/`, {
-            method: 'Get',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Token ${this.props.auth.token}`
-            },
+      .catch(function (error) {
+        console.log(error);
+      }); */
+
+    /* Check Sem5 Ktprofile */
+    /* fetch(`${serverip}/student/${user ? `${user.username}KT5/` : `asdsad`}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Token ${this.props.auth.token}`
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          this.setState({
+            kt5filled: '',
           })
-            .then(res => res.json())
-            .then(data => {
-              this.setState({ kt6subjects: data, isKt: true })
-              let kt6codes = []
-              console.log(Object.keys(this.state.kt6profile).length)
-              if (Object.keys(this.state.kt6profile).length > 1) {
-                for (let i = 0; i < this.state.kt6profile.ktsubjects.length; i++) {
-                  kt6codes.push(this.state.kt6profile.ktsubjects[i].code)
-                }
-              }
-              console.log(kt6codes)
-              let kt6student = []
-              for (let i = 0; i < kt6codes.length; i++) {
-                for (let j = 0; j < this.state.kt6subjects.length; j++) {
-                  if (kt6codes[i] == this.state.kt6subjects[j].code) {
-                    kt6student.push(this.state.kt6subjects[j])
-                    this.setState({ kt6studentsubj: kt6student })
-                  }
-                }
-              }
-            })
+          throw Error("KT5 not exist")
+        }
+        return response;
+      }).then(response => {
+        console.log("KT5 ok");
+        return response.json()
+      })
+      .then(data => {
+        this.setState({ kt5profile: data })
+        const kt5sem = data.semester
+        const kt5branch = data.branch
+        const kt5scheme = data.scheme
+        fetch(`${serverip}/scheme/${kt5scheme}/branch/${kt5branch}${kt5scheme}/semester/${kt5sem}${kt5branch}${kt5scheme}/course/`, {
+          method: 'Get'
         })
-        .catch(function (error) {
-          console.log(error);
-        });
-    
-      }
+          .then(res => res.json())
+          .then(data => {
+            this.setState({ kt5subjects: data, isKt: true })
+            let kt5codes = []
+            console.log(Object.keys(this.state.kt5profile).length)
+            if (Object.keys(this.state.kt5profile).length > 1) {
+              for (let i = 0; i < this.state.kt5profile.ktsubjects.length; i++) {
+                kt5codes.push(this.state.kt5profile.ktsubjects[i].code)
+              }
+            }
+            console.log(kt5codes)
+            let kt5student = []
+            for (let i = 0; i < kt5codes.length; i++) {
+              for (let j = 0; j < this.state.kt5subjects.length; j++) {
+                if (kt5codes[i] == this.state.kt5subjects[j].code) {
+                  kt5student.push(this.state.kt5subjects[j])
+                  this.setState({ kt5studentsubj: kt5student })
+                }
+              }
+            }
+          })
+      })
+      .catch(function (error) {
+        console.log(error);
+      }); */
+
+
+    /* Check sem6 ktprofile */
+    /* fetch(`${serverip}/student/${user ? `${user.username}KT6/` : `asdsad`}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Token ${this.props.auth.token}`
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          this.setState({
+            kt6filled: '',
+          })
+          throw Error("KT6 not exist")
+        }
+        return response;
+      }).then(response => {
+        console.log("KT6 ok");
+        return response.json()
+      })
+      .then(data => {
+        this.setState({ kt6profile: data })
+        const kt6sem = data.semester
+        const kt6branch = data.branch
+        const kt6scheme = data.scheme
+        fetch(`${serverip}/scheme/${kt6scheme}/branch/${kt6branch}${kt6scheme}/semester/${kt6sem}${kt6branch}${kt6scheme}/course/`, {
+          method: 'Get',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Token ${this.props.auth.token}`
+          },
+        })
+          .then(res => res.json())
+          .then(data => {
+            this.setState({ kt6subjects: data, isKt: true })
+            let kt6codes = []
+            console.log(Object.keys(this.state.kt6profile).length)
+            if (Object.keys(this.state.kt6profile).length > 1) {
+              for (let i = 0; i < this.state.kt6profile.ktsubjects.length; i++) {
+                kt6codes.push(this.state.kt6profile.ktsubjects[i].code)
+              }
+            }
+            console.log(kt6codes)
+            let kt6student = []
+            for (let i = 0; i < kt6codes.length; i++) {
+              for (let j = 0; j < this.state.kt6subjects.length; j++) {
+                if (kt6codes[i] == this.state.kt6subjects[j].code) {
+                  kt6student.push(this.state.kt6subjects[j])
+                  this.setState({ kt6studentsubj: kt6student })
+                }
+              }
+            }
+          })
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  
+    } */
 
   }
 
   renderStudentProfile = () => {
     const { user } = this.props.auth;
-    const studentdp=this.state.image.image;
+    const studentdp = this.state.image.image;
     const profile = this.state.profile;
     const kt3profile = this.state.kt3profile;
     const kt4profile = this.state.kt4profile;
     const kt5profile = this.state.kt5profile;
     const kt6profile = this.state.kt6profile;
-   
+
     if (profile) {   /* Check profile of Regular,KT exam student and render Kt if exists*/
       return (
         <div>
@@ -462,7 +506,7 @@ export class Home extends Component {
                     </div>
                     <p><b>KT seat number: </b>{kt3profile.seatNo ? <span className="subtitle is-4">{kt3profile.seatNo}</span> : ' Not generated yet'}</p>
                     <p><b>Selected Subjects: </b><ul style={{ marginLeft: '10px' }}>{this.state.kt3studentsubj ? this.state.kt3studentsubj.map(x => (
-                      <li key={x.id} style={{ listStyle: 'circle' }} >{x.course} {x.isInternal ? '(Internal)' : null} on {x.date?x.date:'( date to be announced )'} </li>
+                      <li key={x.id} style={{ listStyle: 'circle' }} >{x.course} {x.isInternal ? '(Internal)' : null} on {x.date ? x.date : '( date to be announced )'} </li>
                     )) : null}</ul></p>
 
                   </div>
@@ -481,7 +525,7 @@ export class Home extends Component {
 
                     <p><b>Seat number: </b>{kt4profile.seatNo ? <span className="subtitle is-4">{kt4profile.seatNo}</span> : ' Not generated yet'}</p>
                     <p><b>Selected Subjects: </b><ul style={{ marginLeft: '10px' }}>{this.state.kt4studentsubj ? this.state.kt4studentsubj.map(x => (
-                      <li key={x.id} style={{ listStyle: 'circle' }} >{x.course} {x.isInternal ? '(Internal)' : null} on  {x.date?x.date:'( date to be announced )'} </li>
+                      <li key={x.id} style={{ listStyle: 'circle' }} >{x.course} {x.isInternal ? '(Internal)' : null} on  {x.date ? x.date : '( date to be announced )'} </li>
                     )) : null}</ul></p>
 
                   </div>
@@ -498,7 +542,7 @@ export class Home extends Component {
                     </div>
                     <p><b>Seat number: </b>{kt5profile.seatNo ? <span className="subtitle is-4">{kt5profile.seatNo}</span> : ' Not generated yet'}</p>
                     <p><b>Selected Subjects: </b><ul style={{ marginLeft: '10px' }}>{this.state.kt5studentsubj ? this.state.kt5studentsubj.map(x => (
-                      <li key={x.id} style={{ listStyle: 'circle' }} >{x.course} {x.isInternal ? '(Internal)' : null} on  {x.date?x.date:'( date to be announced )'} </li>
+                      <li key={x.id} style={{ listStyle: 'circle' }} >{x.course} {x.isInternal ? '(Internal)' : null} on  {x.date ? x.date : '( date to be announced )'} </li>
                     )) : null}</ul></p>
 
                   </div>
@@ -514,7 +558,7 @@ export class Home extends Component {
                     </div>
                     <p><b>Seat number: </b>{kt6profile.seatNo ? kt6profile.seatNo : ' Not generated yet'}</p>
                     <p><b>Selected Subjects: </b><ul style={{ marginLeft: '10px' }}>{kt6profile ? kt6profile.ktsubjects.map(x => (
-                      <li key={x.id} style={{ listStyle: 'circle' }} >{x.ktsubject} {x.isInternal ? '(Internal)' : null} on  {x.date?x.date:'( date to be announced )'} </li>
+                      <li key={x.id} style={{ listStyle: 'circle' }} >{x.ktsubject} {x.isInternal ? '(Internal)' : null} on  {x.date ? x.date : '( date to be announced )'} </li>
                     )) : null}</ul></p>
                     <hr />
                   </div>
@@ -561,7 +605,7 @@ export class Home extends Component {
               </div>
               <p><b>Seat number: </b>{kt3profile.seatNo ? kt3profile.seatNo : ' Not generated yet'}</p>
               <p><b>Selected Subjects for KT exams: </b><ul style={{ marginLeft: '10px' }}>{kt3profile ? kt3profile.ktsubjects.map(x => (
-                <li key={x.id} style={{ listStyle: 'circle' }} >{x.ktsubject} on {x.date?x.date:'( date to be announced )'}</li>
+                <li key={x.id} style={{ listStyle: 'circle' }} >{x.ktsubject} on {x.date ? x.date : '( date to be announced )'}</li>
               )) : null}</ul></p>
 
             </div>
@@ -579,7 +623,7 @@ export class Home extends Component {
               </div>
               <p><b>Seat number: </b>{kt4profile.seatNo ? kt4profile.seatNo : ' Not generated yet'}</p>
               <p><b>Selected Subjects for KT exams: </b><ul style={{ marginLeft: '10px' }}>{kt4profile ? kt4profile.ktsubjects.map(x => (
-                <li key={x.id} style={{ listStyle: 'circle' }} >{x.ktsubject} {x.isInternal ? '(Internal)' : null} on  {x.date?x.date:'( date to be announced )'} </li>
+                <li key={x.id} style={{ listStyle: 'circle' }} >{x.ktsubject} {x.isInternal ? '(Internal)' : null} on  {x.date ? x.date : '( date to be announced )'} </li>
               )) : null}</ul></p>
             </div>
           ) : null}
@@ -594,7 +638,7 @@ export class Home extends Component {
               </div>
               <p><b>Seat number: </b>{kt5profile.seatNo ? kt5profile.seatNo : ' Not generated yet'}</p>
               <p><b>Selected Subjects for KT exams: </b><ul style={{ marginLeft: '10px' }}>{kt5profile ? kt5profile.ktsubjects.map(x => (
-                <li key={x.id} style={{ listStyle: 'circle' }} >{x.ktsubject} {x.isInternal ? '(Internal)' : null} on  {x.date?x.date:'( date to be announced )'} </li>
+                <li key={x.id} style={{ listStyle: 'circle' }} >{x.ktsubject} {x.isInternal ? '(Internal)' : null} on  {x.date ? x.date : '( date to be announced )'} </li>
               )) : null}</ul></p>
             </div>
           ) : null}
@@ -605,7 +649,7 @@ export class Home extends Component {
               <hr />
               <p><b>Semester 6 KT seat number: </b>{kt6profile.seatNo ? kt6profile.seatNo : ' Not generated yet'}</p>
               <p><b>Selected Subjects for KT exams: </b><ul style={{ marginLeft: '10px' }}>{kt6profile ? kt6profile.ktsubjects.map(x => (
-                <li key={x.id} style={{ listStyle: 'circle' }} >{x.ktsubject} {x.isInternal ? '(Internal)' : null} on  {x.date?x.date:'( date to be announced )'} </li>
+                <li key={x.id} style={{ listStyle: 'circle' }} >{x.ktsubject} {x.isInternal ? '(Internal)' : null} on  {x.date ? x.date : '( date to be announced )'} </li>
               )) : null}</ul></p>
             </div>
           ) : null}
@@ -625,8 +669,8 @@ export class Home extends Component {
               <div className="title" style={{ fontSize: '1.5em' }}>{user.first_name} </div>
             </div>
             <div className="column">
-              <p ><b>Branch: </b>{profile.branch ? profile.branch : 'Form not filled'}</p>
-              <p ><b>Semester: </b>{profile.semester ? profile.semester : 'Form not filled'}</p>
+              <p ><b>Branch: </b>{profile ? profile.branch : 'Form not filled'}</p>
+              <p ><b>Semester: </b>{profile ? profile.semester : 'Form not filled'}</p>
               <p ><b>Roll number: </b>{user.username}</p>
             </div>
 
@@ -711,11 +755,11 @@ export class Home extends Component {
           window.location.reload();
         }
       })
-    
+
 
   }
 
-  
+
 
 
 
@@ -761,7 +805,7 @@ export class Home extends Component {
                             <label class="label">Full name ( LASTNAME FIRSTNAME FATHERNAME MOTHERNAME )</label>
                             <p className="help" style={{ animation: 'none' }}>Fill in uppercase</p>
                             <div class="control">
-                              <input class="input" type="text" autoComplete="off" onChange={this.handleChange} name="first_name" value={user.first_name} placeholder="Full name" style={{textTransform:'uppercase'}} />
+                              <input class="input" type="text" autoComplete="off" onChange={this.handleChange} name="first_name" value={user.first_name} placeholder="Full name" style={{ textTransform: 'uppercase' }} />
                             </div>
                             {user.first_name === '' ? <p className="help is-danger">Please fill your name before filling form</p> : null}
                           </div>

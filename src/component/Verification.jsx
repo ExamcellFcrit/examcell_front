@@ -46,7 +46,7 @@ export class verification extends Component {
         })
 
         console.log(cred)
-        const api_call = await fetch(`${serverip}/student/?branch=${this.state.credentials.branch}&semester=${this.state.credentials.semester[0]}`, {
+        const api_call = await fetch(`${serverip}/student/?branch=${this.state.credentials.branch}&semester=${this.state.credentials.semester[0]}&all=true`, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Token ${this.props.auth.token}`
@@ -146,7 +146,7 @@ export class verification extends Component {
                     <div className="title">Academic Details</div>
                     <article className="media" style={{ marginRight: '20px' }}>
                         <div className="media-content">
-                            <table>
+                            <table className="is-size-5">
                                 <tr><th>Branch:</th><td>{data.branch}</td> </tr>
                                 <tr><th>Semester:</th><td>{data.semester}</td> </tr>
                                 <tr><th>Scheme:</th><td>{data.scheme}</td> </tr>
@@ -156,7 +156,7 @@ export class verification extends Component {
                                 <tr><th>Year of Exam:</th><td>{data.year}</td> </tr>
                             </table>
                             <br />
-                            {this.state.profile && this.state.ktstudentsubj && this.state.profile.studentType === 'KT' ? (<div>
+                            {this.state.profile && this.state.ktstudentsubj && this.state.profile.studentType === 'KT' ? (<div className="is-size-5">
                                 <p>{`KT subjects (Semester ${this.state.profile.semester})`}:</p>
                                 {this.state.ktstudentsubj.map(x => (
                                     <li key={x.id} style={{ listStyle: 'circle' }} >{x.course} on  {x.date}</li>
@@ -171,7 +171,7 @@ export class verification extends Component {
                     </article>
                     <hr />
                     <div className="title">Personal Details</div>
-                    <table>
+                    <table className="is-size-5">
                         <tr><th>Name:</th><td>{data.studentname} </td></tr>
                         <tr><th>Father's name:</th><td>{data.fathername} </td></tr>
                         <tr><th>Mother's Name:</th><td>{data.mothername} </td></tr>
@@ -225,7 +225,7 @@ export class verification extends Component {
         console.log(this.state.profile)
 
         //get student image
-        fetch(`${serverip}/api/image/${id}/`, {
+        /* fetch(`${serverip}/api/image/${id}/`, {
             method: 'get',
             headers: {
                 'Content-Type': 'application/json',
@@ -234,17 +234,22 @@ export class verification extends Component {
         }).then(res=>res.json())
         .then(data=>{
             this.setState({image:data})
-        })
+        }) */
 
         id = localStorage.getItem('test')
+
+
         //get student profile
-        fetch(`${serverip}/student/${id}/`, {
+        fetch(`${serverip}/student/?id=${id}`, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Token ${this.props.auth.token}`
             },
         }).then(res => { return res.json() })
-            .then(data => { this.setState({ profile: data }) })
+            .then(data => { 
+                console.log(data)
+                this.setState({ profile: data[0] })
+            })
             .then(() => {
                 const scheme = this.state.profile.scheme;
                 const branch = this.state.profile.branch;
@@ -311,7 +316,7 @@ export class verification extends Component {
 
     verifyProfile = async () => {
         let id = localStorage.getItem('test')
-        fetch(`${serverip}/student/${id}/`, {
+        fetch(`${serverip}/student/${id.includes('KT')?`${id.slice(0,-3)}`:`${id}`}/?id=${id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
@@ -338,7 +343,7 @@ export class verification extends Component {
 
     rejectProfile = async () => {
         let id = localStorage.getItem('test')
-        fetch(`${serverip}/student/${id}/`, {
+        fetch(`${serverip}/student/${id}?id=${id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -417,7 +422,7 @@ export class verification extends Component {
                             {this.state.credentials.branch && this.state.credentials.semester ?
                         <div>
 
-                            <table id="thisTable" width="100%" className="table" style={{display:'block',overflowX:'auto',whiteSpace:'nowrap'}}>
+                            <table id="thisTable"  className="table is-fullwidth" style={{display:'block',overflowX:'auto',whiteSpace:'nowrap'}}>
                                 <tbody>
                                     <td><b>Roll no.</b></td>
                                     <td><b>Name</b></td>
@@ -431,7 +436,7 @@ export class verification extends Component {
 
                                     {this.state.data.map(x =>
                                         <tr>
-                                            <td className="nr">{x.rollno}</td>
+                                            <td className="nr">{x.id}</td>
                                             <td>{x.studentname}</td>
                                             <td>{x.scheme}</td>
                                             <td>{x.session}</td>

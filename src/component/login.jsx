@@ -184,6 +184,9 @@ export class Login extends Component {
                                     <br />
                                     <div className="title has-text-centered">Student Login</div>
 
+                                    
+
+                                    
 
                                     <div className="field ">
                                         <div className="control has-icons-left">
@@ -230,8 +233,9 @@ export class Login extends Component {
 
                                     <div className="submit">
                                        {/*  <p>Don't have an account? <Link to="/register" >Register</Link></p> */}
-                                        <button className="button is-success  " onClick={this.handlesubmit}>Login</button>
+                                        <button className="button is-success"  onClick={this.handlesubmit}>Login</button>
                                     </div>
+                                 
                                     <Link onClick={this.openPasswordModal} style={{ color: '#48c774' }}>Forgot password?</Link>
                                    {/*  <hr /> */}
                                     {/* <Link to="/" style={{ color: '#48c774' }}>Home</Link> */}
