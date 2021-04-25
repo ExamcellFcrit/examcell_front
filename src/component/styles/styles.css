@@ -5455,8 +5455,7 @@ table th {
   top: 0;
   position: fixed;
   padding-top: 2em;
-  background: #00d1b2;
-  background: #00d1b2;
+  background: transparent;
   z-index: 999998;
   transition: transform .35s ease-out,-webkit-transform .35s ease-out;
   will-change: transform; }
@@ -5469,7 +5468,7 @@ table th {
       -moz-animation: loader-figure-white 1.15s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
       animation: loader-figure-white 1.15s infinite cubic-bezier(0.215, 0.61, 0.355, 1); }
     .pageloader.is-white .title {
-      color: #0a0a0a; }
+      color: green; }
   .pageloader.is-black {
     background-color: #0a0a0a;
     background: #0a0a0a; }
@@ -5479,7 +5478,7 @@ table th {
       -moz-animation: loader-figure-black 1.15s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
       animation: loader-figure-black 1.15s infinite cubic-bezier(0.215, 0.61, 0.355, 1); }
     .pageloader.is-black .title {
-      color: white; }
+      color: green; }
   .pageloader.is-light {
     background-color: #f8f9fa;
     background: #f8f9fa; }
@@ -5489,7 +5488,7 @@ table th {
       -moz-animation: loader-figure-light 1.15s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
       animation: loader-figure-light 1.15s infinite cubic-bezier(0.215, 0.61, 0.355, 1); }
     .pageloader.is-light .title {
-      color: rgba(0, 0, 0, 0.7); }
+      color: green; }
   .pageloader.is-dark {
     background-color: #363636;
     background: #363636; }
@@ -5499,7 +5498,7 @@ table th {
       -moz-animation: loader-figure-dark 1.15s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
       animation: loader-figure-dark 1.15s infinite cubic-bezier(0.215, 0.61, 0.355, 1); }
     .pageloader.is-dark .title {
-      color: #fff; }
+      color: green; }
   .pageloader.is-primary {
     background-color: #00d1b2;
     background: #00d1b2; }
@@ -5509,7 +5508,7 @@ table th {
       -moz-animation: loader-figure-primary 1.15s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
       animation: loader-figure-primary 1.15s infinite cubic-bezier(0.215, 0.61, 0.355, 1); }
     .pageloader.is-primary .title {
-      color: #fff; }
+      color: green; }
   .pageloader.is-link {
     background-color: #3273dc;
     background: #3273dc; }
@@ -5519,7 +5518,7 @@ table th {
       -moz-animation: loader-figure-link 1.15s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
       animation: loader-figure-link 1.15s infinite cubic-bezier(0.215, 0.61, 0.355, 1); }
     .pageloader.is-link .title {
-      color: #fff; }
+      color: green; }
   .pageloader.is-info {
     background-color: #3298dc;
     background: #3298dc; }
@@ -5529,7 +5528,7 @@ table th {
       -moz-animation: loader-figure-info 1.15s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
       animation: loader-figure-info 1.15s infinite cubic-bezier(0.215, 0.61, 0.355, 1); }
     .pageloader.is-info .title {
-      color: #fff; }
+      color: green; }
   .pageloader.is-success {
     background-color: #009434;
     background: #009434; }
@@ -5539,7 +5538,7 @@ table th {
       -moz-animation: loader-figure-success 1.15s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
       animation: loader-figure-success 1.15s infinite cubic-bezier(0.215, 0.61, 0.355, 1); }
     .pageloader.is-success .title {
-      color: #fff; }
+      color: green; }
   .pageloader.is-warning {
     background-color: #ffd000;
     background: #ffd000; }
@@ -5549,7 +5548,7 @@ table th {
       -moz-animation: loader-figure-warning 1.15s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
       animation: loader-figure-warning 1.15s infinite cubic-bezier(0.215, 0.61, 0.355, 1); }
     .pageloader.is-warning .title {
-      color: rgba(0, 0, 0, 0.7); }
+      color: green; }
   .pageloader.is-danger {
     background-color: #e62626;
     background: #e62626; }
@@ -5559,7 +5558,7 @@ table th {
       -moz-animation: loader-figure-danger 1.15s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
       animation: loader-figure-danger 1.15s infinite cubic-bezier(0.215, 0.61, 0.355, 1); }
     .pageloader.is-danger .title {
-      color: #fff; }
+      color: green; }
   .pageloader:not(.is-left-to-right), .pageloader:not(.is-right-to-left) {
     -webkit-transform: translateY(-100%);
     transform: translateY(-100%); }

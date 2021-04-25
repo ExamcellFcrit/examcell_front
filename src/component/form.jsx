@@ -1196,7 +1196,7 @@ export class form extends Component {
         return (
             <div >
                 <Header />
-                {/*  <div class="pageloader is-active"><span class="title" style={{ fontSize: '2em' }}></span></div> */}
+                 <div class="pageloader is-active"><span class="title" style={{ fontSize: '2em' }}></span></div>
                 <div className="hero first">
                     <div className="section" >
                         <div className="container" style={{ width: '50%' }}>

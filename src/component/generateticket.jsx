@@ -15,7 +15,7 @@ import $ from "jquery"
 import 'react-toastify/dist/ReactToastify.css';
 import Header from '../pages/Header'
 import ExamNotice from './ExamNotice';
-import { isThisSecond } from 'date-fns';
+import _ from 'lodash'
 import KtSubTab from './KtSubTab';
 
 export class generateticket extends Component {
@@ -32,10 +32,10 @@ export class generateticket extends Component {
             data: [],
             image:'',
             courses: {},
-            kt3profile: {},
-            kt4profile: {},
-            kt5profile: {},
-            kt6profile: {},
+            kt3profile: '',
+            kt4profile: '',
+            kt5profile: '',
+            kt6profile: '',
         }
     }
 
@@ -91,9 +91,9 @@ export class generateticket extends Component {
 
     componentDidMount = () => {
         const { user } = this.props.auth;
-      
+        const id=user.username
        //get student image
-    fetch(`${serverip}/api/image/${user.username}/`, {
+    fetch(`${serverip}/api/image/${id}/`, {
         method: 'get',
         headers: {
             'Content-Type': 'application/json',
@@ -113,7 +113,7 @@ export class generateticket extends Component {
         })
        
         console.log(user)
-        fetch(`${serverip}/student/${user ? user.username : null}/`, {
+        fetch(`${serverip}/student/`, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Token ${this.props.auth.token}`
@@ -124,15 +124,34 @@ export class generateticket extends Component {
             })
             .then(data => {
                 console.log(data)
-                if (data.detail === 'Not found.') {
-                    this.setState({ filled: false, isRegular: false })
+               
+                var regular = data.filter(x => x.studentType === 'Regular');
+                console.log(regular)
+                if (!_.isEmpty(regular)) {
+                  this.setState({ filled: true, data: regular[0], isRegular: true })
                 }
-                else {
-                    this.setState({ filled: true, isRegular: true })
+
+                //check if KT3 exists
+                const kt3 = data.filter(x => x.id.includes("KT3"))[0];
+                if (!_.isEmpty(kt3)) {
+                    this.setState({ kt3filled: true, kt3profile: kt3, isKT: true })
                 }
-                this.setState({
-                    data: data
-                })
+
+                const kt4 = data.filter(x => x.id.includes("KT4"))[0];
+                if (!_.isEmpty(kt4)) {
+                    this.setState({ kt4filled: true, kt4profile: kt4, isKT: true })
+                }
+
+                const kt5 = data.filter(x => x.id.includes("KT5"))[0];
+                if (!_.isEmpty(kt5)) {
+                    this.setState({ kt5filled: true, kt5profile: kt5, isKT: true })
+                }
+
+                const kt6 = data.filter(x => x.id.includes("KT6"))[0];
+                if (!_.isEmpty(kt6)) {
+                    this.setState({ kt6filled: true, kt5profile: kt6, isKT: true })
+                }
+              
                 const scheme = this.state.data.scheme;
                 const branch = this.state.data.branch;
                 const semester = this.state.data.semester;
@@ -184,117 +203,8 @@ export class generateticket extends Component {
                 console.log('Request failed', error)
             })
 
-        /* Fetch KT3 profile */
-        fetch(`${serverip}/student/${user ? `${user.username}KT3` : null}/`, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${this.props.auth.token}`
-            },
-        })
-            .then(response => {
-                return response.json();
-            })
-            .then(data => {
-                console.log(data)
-                if (data.detail === 'Not found.') {
-                    this.setState({
-                        kt3profile: '',
-                        isKT: false,
-                        kt3filled: '',
-                    })
-                }
-                else {
-                    this.setState({
-                        kt3profile: data,
-                        isKT: true, kt3filled: true
-                    })
-                }
-            })
-
-        /* Fetch KT4 profile */
-        fetch(`${serverip}/student/${user ? `${user.username}KT4` : null}/`, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${this.props.auth.token}`
-            },
-        })
-            .then(response => {
-                return response.json();
-            })
-            .then(data => {
-                console.log(data)
-                if (data.detail === 'Not found.') {
-                    this.setState({
-                        kt4profile: '',
-                        isKT: false,
-                        kt4filled: ''
-                    })
-                }
-                else {
-                    this.setState({
-                        kt4profile: data,
-                        isKT: true,
-                        kt4filled: true
-                    })
-                }
-                console.log(data.detail)
-
-            })
-
-
-        /* Fetch KT5 profile */
-        fetch(`${serverip}/student/${user ? `${user.username}KT5` : null}/`, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${this.props.auth.token}`
-            },
-        })
-            .then(response => {
-                return response.json();
-            })
-            .then(data => {
-                console.log(data)
-                if (data.detail === 'Not found.') {
-                    this.setState({
-                        kt5profile: '',
-                        isKT: false,
-                        kt5filled: ''
-                    })
-                }
-                else {
-                    this.setState({
-                        kt5profile: data,
-                        isKT: true, kt5filled: true
-                    })
-                }
-            })
-
-        /* Fetch kt6 profile */
-        fetch(`${serverip}/student/${user ? `${user.username}KT6` : null}/`, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${this.props.auth.token}`
-            },
-        })
-            .then(response => {
-                return response.json();
-            })
-            .then(data => {
-                console.log(data)
-                if (data.detail === 'Not found.') {
-                    this.setState({
-                        kt6profile: '',
-                        isKT: false,
-                        kt6filled: ''
-                    })
-                }
-                else {
-                    this.setState({
-                        kt6profile: data,
-                        isKT: true, kt6filled: true
-                    })
-                }
-            })
+        
+       
 
 
 

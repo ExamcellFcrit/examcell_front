@@ -122,7 +122,7 @@ export const login = (username, password) => dispatch => {
             dispatch({
                 type: "LOGIN_FAILED",
             });
-            const failed = () => toast.update(toastId, { type: toast.TYPE.ERROR, autoClose: 2000, render: `Login failed! 😕`, });
+            const failed = () => toast.update(toastId, { type: toast.TYPE.ERROR, autoClose: 2000, render: `Login Failed! 😕`, });
             { failed() }
             console.log(err.response.data)
             const errors = {

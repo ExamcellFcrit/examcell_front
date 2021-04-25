@@ -62,7 +62,7 @@ export class Header extends Component {
     })
 
     //get student profile
-    const { user } = this.props.auth
+    /* const { user } = this.props.auth
     console.log(user.username)
     fetch(`${serverip}/student/${user ? `${user.username}/` : null}`, {
       headers: {
@@ -78,7 +78,7 @@ export class Header extends Component {
           profile: data
         })
       })
-      .catch(err => console.log(err))
+      .catch(err => console.log(err)) */
   }
 
 

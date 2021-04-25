@@ -133,7 +133,6 @@ export class Home extends Component {
           //check if KT3 exists
           const kt3 = data.filter(x => x.id.includes("KT3"))[0];
           if (!_.isEmpty(kt3)) {
-
             this.setState({ kt3filled: true, kt3profile: kt3,isKt:true })
             const kt3sem = kt3.semester
             const kt3branch = kt3.branch
@@ -194,7 +193,7 @@ export class Home extends Component {
 
 
           /* Fetch students current exam timetable */
-          const semester = data.semester;
+          /* const semester = data.semester;
           const branch = data.branch;
           const scheme = data.scheme;
           const api_call = await fetch(`${serverip}/scheme/${scheme}/branch/${branch}${scheme}/semester/${semester}${branch}${scheme}/course/`, {
@@ -206,7 +205,7 @@ export class Home extends Component {
           this.setState({
             data: response,
           })
-          console.log(this.state.data.sort())
+          console.log(this.state.data.sort()) */
         })
         .catch(function (error) {
           console.log(error);
