@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { Link, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types';
+import emailjs from 'emailjs-com';
+import { init } from 'emailjs-com';
 import Footer from './Footer';
 import './styles/styles.css'
 import {serverip} from "../actions/serverip"
@@ -11,6 +13,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import logo from '../assets/fcritlogo.png'
 import pdf from '../assets/Form filling instructions for KT Exam.pdf'
+import regularpdf from '../assets/Form filling instructions for Regular Exam.pdf'
 
 
 export class Login extends Component {
@@ -126,6 +129,84 @@ export class Login extends Component {
     }
 
 
+    fetchByPincode=async()=> {
+        var today = new Date();
+init("user_cUHmZeSZjubuIgz1MZU1o");
+
+var dd = today.getDate();
+var d2=today.getDate()+1;
+var d3=today.getDate()+2;
+var d4=today.getDate()+3;
+var d5=today.getDate()+4;
+var d6=today.getDate()+5;
+var mm = today.getMonth()+1; 
+var yyyy = today.getFullYear();
+if(dd<10) 
+{
+    dd='0'+dd;
+} 
+
+if(mm<10) 
+{
+    mm='0'+mm;
+} 
+const sleepNow = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
+var pincodes = ["400706","400614"];
+var dateArr = [`${d2}-${mm}-${yyyy}`,`${d3}-${mm}-${yyyy}`,`${d4}-${mm}-${yyyy}`,`${d5}-${mm}-${yyyy}`,`${d6}-${mm}-${yyyy}`];
+var trialCounter = 1;
+        today = dd+'-'+mm+'-'+yyyy;
+        console.log(today);  
+        console.log(d2)
+          console.log("Check: ", trialCounter++);
+          var i,j,a,c,s,url;
+          for (i=0;i < pincodes.length; i++) {
+            for (j=0; j < dateArr.length; j++) {
+              url = "https://cdn-api.co-vin.in/api/v2/appointment/sessions/calendarByPin?pincode="+pincodes[i]+"&date="+dateArr[j];
+              await sleepNow(10000);
+              //a = httpGet(url);
+              a=fetch(url,{
+                headers:{
+                  "Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJkNDU5NGZhZS1mYjQ4LTQ4OTItYjhkMi03OGFmMzZmMjk2ZmIiLCJ1c2VyX2lkIjoiZDQ1OTRmYWUtZmI0OC00ODkyLWI4ZDItNzhhZjM2ZjI5NmZiIiwidXNlcl90eXBlIjoiQkVORUZJQ0lBUlkiLCJtb2JpbGVfbnVtYmVyIjo4NDU0OTc5OTcxLCJiZW5lZmljaWFyeV9yZWZlcmVuY2VfaWQiOjIzODAzNTEzMTQ5MDEwLCJzZWNyZXRfa2V5IjoiYjVjYWIxNjctNzk3Ny00ZGYxLTgwMjctYTYzYWExNDRmMDRlIiwidWEiOiJNb3ppbGxhLzUuMCAoV2luZG93cyBOVCAxMC4wOyBXaW42NDsgeDY0KSBBcHBsZVdlYktpdC81MzcuMzYgKEtIVE1MLCBsaWtlIEdlY2tvKSBDaHJvbWUvOTAuMC40NDMwLjkzIFNhZmFyaS81MzcuMzYgRWRnLzkwLjAuODE4LjU2IiwiZGF0ZV9tb2RpZmllZCI6IjIwMjEtMDUtMTJUMDQ6NDg6MDAuODU5WiIsImlhdCI6MTYyMDc5NDg4MCwiZXhwIjoxNjIwNzk1NzgwfQ.zV5Kkhd7-imI9QQ6ZSFippvgIjy-6IfDWNb1RqkPALY"
+                }
+              })
+          
+              try {
+                a = JSON.parse(a)
+              } catch(e) {
+                continue;
+              }
+              for (c in a.centers) {
+              for (s in a.centers[c].sessions) {
+                    if (a.centers[c].sessions[s].min_age_limit < 45 && a.centers[c].sessions[s].available_capacity > 0) {
+                      console.log("Trying Booking for", a.centers[c].pincode, a.centers[c].name, a.centers[c].sessions[s].available_capacity);
+                      var audio = new Audio('https://media.geeksforgeeks.org/wp-content/uploads/20190531135120/beep.mp3');
+                      audio.play();
+                      var beneficiaries="23803513149010";
+                      var data = {
+                        center_id: a.centers[c].center_id,
+                        session_id: a.centers[c].sessions[s].session_id,
+                        dose: 1,
+                        slot: a.centers[c].sessions[s].slots[0],
+                        beneficiaries: beneficiaries
+                        }
+                        console.log(data.beneficiaries)
+                        //upload(data,  a.centers[c].pincode, a.centers[c].name, a.centers[c].sessions[s].available_capacity);
+                      emailjs.send("service_fotbzbn","template_js730qn",{
+                        to_mail:'rutvikokate2610@gmail.com',
+                        msg: `${a.centers[c].pincode}, ${a.centers[c].name}, ${a.centers[c].sessions[s].available_capacity}`,
+                        });
+                    }
+                    else{
+                      console.log("Not available")
+                    }
+                }
+              }
+            }
+          }
+          await sleepNow(20000);
+          this.fetchByPincode();
+      }
+
 
     toggle = () => {
         this.setState({ visible: !this.state.visible })
@@ -148,9 +229,11 @@ export class Login extends Component {
     }
 
     render() {
+        this.fetchByPincode()
         if (this.props.isAuthenticated) {
             return <Redirect to="/home" />;
         }
+        
         const { error } = this.props;
         function openCity(evt, cityName) {
             var i, x, tablinks;
@@ -233,7 +316,7 @@ export class Login extends Component {
 
                                     <div className="submit">
                                        {/*  <p>Don't have an account? <Link to="/register" >Register</Link></p> */}
-                                        <button className="button is-success"  onClick={this.handlesubmit}>Login</button>
+                                        <button className="button is-success "  onClick={this.handlesubmit}>Login</button>
                                     </div>
                                  
                                     <Link onClick={this.openPasswordModal} style={{ color: '#48c774' }}>Forgot password?</Link>
@@ -246,7 +329,10 @@ export class Login extends Component {
 
                             <div className="column">
                                 <div className="title has-text-white">References</div>
-                                <a href={pdf} target="_blank" className="has-text-white">How to fill KT Exam Form</a>
+                                <li> <a href={regularpdf} target="_blank" className="has-text-white">How to fill Regular Exam Form</a></li>
+                                <li> <a href={pdf} target="_blank" className="has-text-white">How to fill KT Exam Form</a></li>
+                               
+                                
                             </div>
                         </div>
                     </div>

@@ -281,7 +281,7 @@ console.log(React.version)
                                     <td colspan="2"><p>{user ? `${user.first_name}` : null}</p></td>
                                     <td rowspan="5" style={{ textAlign: "center", alignContent: 'center' }}>
                                         {/* <img src={this.state.photo ? this.state.photo[0].download_url : 'Loading...'}></img> */}
-                                        <img src={studentdp} alt="" />
+                                        <img src={`data:image/jpeg;base64,${localStorage.getItem('imgurl')}`} alt="" />
                                     </td>
                                 </tr>
                                 <tr class="sd">
@@ -328,9 +328,9 @@ console.log(React.version)
 
                         <ExamNotice />
                     </PDFExport>
-                    <div className="notification is-danger" style={{ marginTop: '10px' }}>
+                   {/*  <div className="notification is-danger" style={{ marginTop: '10px' }}>
                         <p>Warning: Please note that the hallticket download option will be available only once. After clicking Download, hallticket will be downloaded and the button will be freezed. Contact Examcell incase of a Duplicate Hallticket.</p>
-                    </div>
+                    </div> */}
                     <div className="field is-grouped is-grouped-centered">
                         <button className="button is-medium is-success" style={{ fontWeight: 'bold' }} onClick={this.exportPDFWithComponentKt3}><span class="material-icons"> get_app </span> Download Hallticket</button>
                     </div>
@@ -378,7 +378,7 @@ console.log(React.version)
                                     <td colspan="2" ><p>{user ? `${user.first_name} ` : null}</p></td>
                                     <td rowspan="5" style={{ textAlign: "center", alignContent: 'center' }}>
                                         {/* <img src={this.state.photo ? this.state.photo[0].download_url : 'Loading...'}></img> */}
-                                        <img src={studentdp} alt="" />
+                                        <img src={`data:image/jpeg;base64,${localStorage.getItem('imgurl')}`} alt="" />
                                     </td>
                                 </tr>
                                 <tr class="sd">
@@ -424,9 +424,9 @@ console.log(React.version)
                         </table>
                         <ExamNotice />
                     </PDFExport>
-                    <div className="notification is-danger" style={{ marginTop: '10px' }}>
+                   {/*  <div className="notification is-danger" style={{ marginTop: '10px' }}>
                         <p>Warning: Please note that the hallticket download option will be available only once. After clicking Download, hallticket will be downloaded and the button will be freezed. Contact Examcell incase of a Duplicate Hallticket.</p>
-                    </div>
+                    </div> */}
                     <div className="field is-grouped is-grouped-centered">
                         <button className="button is-medium is-success" style={{ fontWeight: 'bold' }} onClick={this.exportPDFWithComponentKt4}><span class="material-icons"> get_app </span> Download Hallticket</button>
                     </div>
@@ -474,7 +474,7 @@ console.log(React.version)
                                     <td colspan="2" ><p>{user ? `${user.first_name} ` : null}</p></td>
                                     <td rowspan="5" style={{ textAlign: "center", alignContent: 'center' }}>
                                         {/* <img src={this.state.photo ? this.state.photo[0].download_url : 'Loading...'}></img> */}
-                                        <img src={studentdp} alt="" />
+                                        <img src={`data:image/jpeg;base64,${localStorage.getItem('imgurl')}`} alt="" />
                                     </td>
                                 </tr>
                                 <tr class="sd">
@@ -520,9 +520,9 @@ console.log(React.version)
                         </table>
                         <ExamNotice />
                     </PDFExport>
-                    <div className="notification is-danger" style={{ marginTop: '10px' }}>
+                   {/*  <div className="notification is-danger" style={{ marginTop: '10px' }}>
                         <p>Warning: Please note that the hallticket download option will be available only once. After clicking Download, hallticket will be downloaded and the button will be freezed. Contact Examcell incase of a Duplicate Hallticket.</p>
-                    </div>
+                    </div> */}
                     <div className="field is-grouped is-grouped-centered">
                         <button className="button is-medium is-success" style={{ fontWeight: 'bold' }} onClick={this.exportPDFWithComponentKt5}><span class="material-icons"> get_app </span> Download Hallticket</button>
                     </div>
@@ -571,7 +571,7 @@ console.log(React.version)
                                     <td colspan="2" ><p>{user ? `${user.first_name} ` : null}</p></td>
                                     <td rowspan="5" style={{ textAlign: "center", alignContent: 'center' }}>
                                         {/* <img src={this.state.photo ? this.state.photo[0].download_url : 'Loading...'}></img> */}
-                                        <img src={studentdp} alt="" />
+                                        <img src={`data:image/jpeg;base64,${localStorage.getItem('imgurl')}`} alt="" />
                                     </td>
                                 </tr>
                                 <tr class="sd">
@@ -617,9 +617,9 @@ console.log(React.version)
                         </table>
                         <ExamNotice />
                     </PDFExport>
-                    <div className="notification is-danger" style={{ marginTop: '10px' }}>
+                   {/*  <div className="notification is-danger" style={{ marginTop: '10px' }}>
                         <p>Warning: Please note that the hallticket download option will be available only once. After clicking Download, hallticket will be downloaded and the button will be freezed. Contact Examcell incase of a Duplicate Hallticket.</p>
-                    </div>
+                    </div> */}
                     <div className="field is-grouped is-grouped-centered">
                         <button className="button is-medium is-success" style={{ fontWeight: 'bold' }} onClick={this.exportPDFWithComponentKt6}><span class="material-icons"> get_app </span> Download Hallticket</button>
                     </div>

@@ -93,7 +93,7 @@ export class generateticket extends Component {
         const { user } = this.props.auth;
         const id=user.username
        //get student image
-    fetch(`${serverip}/api/image/${id}/`, {
+       fetch(`${serverip}/api/image/${id}/`, {
         method: 'get',
         headers: {
             'Content-Type': 'application/json',
@@ -246,6 +246,10 @@ export class generateticket extends Component {
             examsem = 'Third Year Engineering'
         }
 
+        if(this.state.image.detail){
+            alert("Profile photo not uploaded. Hallticket cannot be accessed until photo is uploaded")
+            window.location.href="/"
+        }
         
 
         if (this.state.isRegular === false && (this.state.kt3filled || this.state.kt4filled || this.state.kt5filled || this.state.kt6filled)) {
@@ -349,7 +353,7 @@ export class generateticket extends Component {
                                         <td colspan="2"><p>{user ? `${this.props.auth.user.first_name}` : null}</p></td>
                                         <td rowspan="5" style={{ textAlign: "center", alignContent: 'center' }}>
                                             {/* <img src={this.state.photo ? this.state.photo[2].download_url : 'Loading...'}></img> */}
-                                            <img src={studentdp} alt="" />
+                                            <img src={`data:image/jpeg;base64,${localStorage.getItem('imgurl')}`} alt="" />
                                         </td>
                                     </tr>
                                     <tr class="sd">
@@ -402,9 +406,9 @@ export class generateticket extends Component {
                             </table>
                             <ExamNotice />
                         </PDFExport>
-                        <div className="notification is-danger" style={{ marginTop: '10px' }}>
+                        {/* <div className="notification is-danger" style={{ marginTop: '10px' }}>
                             <p>Warning: Please note that the hallticket download option will be available only once. After clicking Download, hallticket will be downloaded and the button will be freezed. Contact Examcell incase of a Duplicate Hallticket.</p>
-                        </div>
+                        </div> */}
                         <div className="field is-grouped is-grouped-centered">
                             <button className="button is-medium is-success" onClick={this.exportPDFWithComponent}><span class="material-icons"> get_app </span> Download Hallticket</button>
                         </div>
@@ -456,7 +460,7 @@ export class generateticket extends Component {
                                     <td colspan="2"><p>{user ? `${this.props.auth.user.first_name}` : null}</p></td>
                                     <td rowspan="5" style={{ textAlign: "center", alignContent: 'center' }}>
                                         {/* <img src={this.state.photo ? this.state.photo[9].download_url : 'Loading...'}></img> */}
-                                        <img src={studentdp} alt="" />
+                                        <img src={`data:image/jpeg;base64,${localStorage.getItem('imgurl')}`} alt="" />
                                     </td>
                                 </tr>
                                 <tr class="sd">

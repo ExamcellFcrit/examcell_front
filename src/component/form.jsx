@@ -252,7 +252,7 @@ export class form extends Component {
 
     }
 
-    handleChange = async (e) => {
+    handleBranchSemesterChange=async(e)=>{
         const cred = this.state.credentials
         cred[e.target.name] = e.target.value;
         this.setState({
@@ -315,6 +315,17 @@ export class form extends Component {
         console.log(this.state.data)
     }
 
+    handleChange = async (e) => {
+        const cred = this.state.credentials
+        cred[e.target.name] = e.target.value;
+        this.setState({
+            credentials: cred,
+            selectedElective: cred.elective,
+        })
+
+        
+    }
+
 
     register = async (e) => {
         const branch = this.state.credentials.branch
@@ -322,13 +333,25 @@ export class form extends Component {
         const { user } = this.props.auth;
         let form_data = new FormData();
 
+        if(semester== 5 || semester==6 ){
+
+            if(this.state.credentials.elective===''){
+                alert("Select your elective subject")
+                return
+            }
+        }
+
         if (this.state.credentials.studentType === 'Regular') {
+            
             form_data.append('studentType', 'Regular')
             form_data.append('semester', this.state.credentials.semester)
             form_data.append('rollno', user.username);
             form_data.append('id', `${user.username}`);
             form_data.append('elective', this.state.credentials.elective);
             form_data.append('email', this.state.credentials.email);
+            if(this.state.profile.rejected===true){
+                form_data.append('rejected','false')
+            }
             form_data.append('studentphone', this.state.credentials.studentphone);
             form_data.append('parentphone', this.state.credentials.parentphone);
             form_data.append('studentname', user.first_name);
@@ -344,29 +367,57 @@ export class form extends Component {
             form_data.append('scheme', this.state.credentials.revscheme);
             form_data.append('ktsemester', this.state.credentials.ktsemester);
             e.preventDefault()
-            fetch(`${serverip}/student/`, {
-                method: 'POST',
-                headers: {
-                    /* 'Content-Type': 'multipart/form-data', */
-                    'Authorization': `Token ${this.props.auth.token}`
-                },
-                body: form_data
-            })
-                .then(data => data.json())
+            if(this.state.profile.rejected){
+                fetch(`${serverip}/student/${this.state.profile.id}/?id=${this.state.profile.rollno}`, {
+                    method: 'Put',
+                    headers: {
+                        /* 'Content-Type': 'multipart/form-data', */
+                        'Authorization': `Token ${this.props.auth.token}`
+                    },
+                    body: form_data
+                }).then(res => {
+                    console.log(res.status)
+                    if(res.status==200){
+                        this.successfull() 
+                        setTimeout("location.href = '/form';", 2000)
+                        return 
+                    }
+                    return res.json()
+                })
                 .then(
                     data => {
-                        this.setState({
-                            error: data,
-                        })
-                        if (this.state.error.msg) {
-                            { this.successfull() }
-                            /* setTimeout("location.href = '/form';", 2000) */
+
+                            this.setState({ error: data,})
+                            {this.unsuccessfull()}
+                        
+                    }
+                ).catch(error => console.log(error))
+            }
+            else{
+                fetch(`${serverip}/student/`, {
+                    method: 'POST',
+                    headers: {
+                        /* 'Content-Type': 'multipart/form-data', */
+                        'Authorization': `Token ${this.props.auth.token}`
+                    },
+                    body: form_data
+                }).then(res => {
+                    console.log(res.status)
+                    if(res.status==200){
+                        this.successfull() 
+                        setTimeout("location.href = '/form';", 2000)
+                    }
+                    return res.json()
+                })
+                .then(
+                    data => {
+                        this.setState({ error: data,})
+                        if(!this.state.error.msg){
+                            {this.unsuccessfull()}
                         }
-                        else if (this.state.credentials.studentType !== 'Dropout') {
-                            { this.unsuccessfull() }
-                        }
-                    })
-                .catch(error => console.log(error))
+                    }
+                ).catch(error => console.log(error))
+            }
 
         }
 
@@ -412,7 +463,7 @@ export class form extends Component {
                             })
                             if (this.state.error.msg) {
                                 { this.successfull() }
-                                /* setTimeout("location.href = '/form';", 2000) */
+                                setTimeout("location.href = '/form';", 2000)
                             }
                             else {
                                 { this.unsuccessfull() }
@@ -451,7 +502,7 @@ export class form extends Component {
                     <div className="field" style={{ maxWidth: '400px' }}>
                         <label htmlFor="d1" className="label">Branch:</label>
                         <div className="select">
-                            <select onChange={this.handleChange} name="branch">
+                            <select onChange={this.handleBranchSemesterChange} name="branch">
                                 <option>Select Branch</option>
                                 <option >Computer</option>
                                 <option >Mechanical</option>
@@ -464,7 +515,7 @@ export class form extends Component {
                     <div className="field" style={{ maxWidth: '400px' }}>
                         <label htmlFor="d1" className="label">Semester:</label>
                         <div className="select">
-                            <select onChange={this.handleChange} name="semester">
+                            <select onChange={this.handleBranchSemesterChange} name="semester">
                                 <option>Select Semester</option>
                                 <option>3</option>
                                 <option>4</option>
@@ -478,13 +529,15 @@ export class form extends Component {
                             <div className="field" style={{ maxWidth: '400px' }}>
                                 <label htmlFor="d1" className="label">Elective:</label>
                                 <div className="select">
-                                    <select onChange={this.handleChange} name="elective">
-                                        <option>Select Elective</option>
+                                    <select onChange={this.handleBranchSemesterChange} name="elective"  style={{ border: `1px solid #e62626`  }}>
+                                        <option value="">Select Elective</option>
                                         {this.state.electives.map((item) => <option value={item.course}>{item.course}</option>)}
                                     </select>
                                 </div>
+                                {this.state.credentials.elective===''?(<p className="help is-danger">Select Elective</p>):null}
                             </div> : null
                         }
+                       
                     </div>
 
                 </div>
@@ -723,90 +776,24 @@ export class form extends Component {
         evt.currentTarget.firstElementChild.className += " is-active";
     }
 
-    renderRegularForm = () => {
-        const { user } = this.props.auth
-        const minOffset = 0;
-        const profile = this.state.profile;
-        const ktprofile = this.state.kt3profile;
+    renderPersonalDetailForm = () =>{
         const maxOffset = 2;
         const { thisYear } = this.state;
+        const minOffset = 0;
         const options = [];
         for (let i = minOffset; i <= maxOffset; i++) {
             const year = thisYear + i;
             options.push(<option value={year}>{year}</option>);
         }
-        if (this.state.filled) {
-            return (
-                <div className="hero first">
-                    {this.stopLoader()}
-                    <div className="section" >
-                        <div className="container form-filled">
-                            <div id="status" className="title " style={{ color: 'white', display: 'flex', alignItems: 'center' }}>{profile && this.state.isRegular == true ? (<div>{`Current Exam Form filled`}<span class="material-icons has-text-white  ml-2"> done_all</span></div>) : null}</div>
-                            <div className="notification is-light is-success">
-                                <p>Hallticket can be downloaded once the admin has verified your form and generated seat number. Print hallticket tab will be activated later.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )
-        }
-        else {
-            return (
-                <div>
-                    <div className="subtitle" style={{ color: 'white' }}>Complete the following 3 steps to submit your form</div><br />
-                    <div className="title" style={{ color: 'white' }}><span className="tag is-success is-rounded is-large"> Step 1</span> Current Semester Details</div>
-                    <div className="columns">
-                        <div className="column box">
-                            <div className="title"> Revision Scheme</div>
-                            <Ripple>
-                                <div className="field">
-                                    <div className="control">
-                                        <label className="k-radio-label" htmlFor="label2012"><input type="radio" onChange={this.handleChange} id="label2012" name="revscheme" value="2012" className="k-radio" />Revised A Scheme (2012)</label>
-                                    </div>
-                                </div>
-                                <div className="field">
-                                    <div className="control">
-                                        <label className="k-radio-label" htmlFor="label2016"><input type="radio" onChange={this.handleChange} id="label2016" name="revscheme" value="2016" className="k-radio" />Revision B Scheme (2016)</label>
-                                    </div>
-                                </div>
-                                <div className="field">
-                                    <div className="control">
-                                        <label className="k-radio-label" htmlFor="label2019"><input type="radio" onChange={this.handleChange} id="label2019" name="revscheme" value="2019" className="k-radio" />Revised C Scheme (2019)</label>
-                                    </div>
-                                </div>
-                            </Ripple>
-                        </div>
-                        {this.state.credentials.revscheme ? (
-                            <div className="column box">
-                                <div className="title"> Filling form for</div>
-                                <Ripple>
-                                    <div className="field">
-                                        <div className="control" >
-                                            <label className="k-radio-label" htmlFor="c1"><input type="radio" onChange={this.handleChange} id="c1" name="studentType" value="Regular" className="k-radio" />Current Examination</label>
-                                        </div>
-                                    </div>
-                                    {/* <div className="field">
-                                        <div className="control">
-                                            <label className="k-radio-label" htmlFor="c2"><input type="radio" onChange={this.handleChange} id="c2" name="studentType" value="KT" className="k-radio" />KT</label>
-                                        </div>
-                                    </div> */}
-
-                                </Ripple>
-                            </div>
-                        ) : null}
-                        {/* third column */}
-                        {this.renderBranchSemester()}
-                    </div>
-                    <div>
-                    </div>
-                    {this.renderSelectedCourses()}
-                    <div>
-
-                        <hr />
-                        <div className="hero" >
+        const { user } = this.props.auth
+        if(this.state.credentials.semester || this.state.credentials.ktsemester){
+            return(
+                <div className="hero" >
+                     
                             <section className="section" >
+                            <div className="title has-text-white" ><span className="tag is-success is-rounded is-large"> Step 3</span> Student Details</div>
                                 <div className="container"  >
-                                    <div className="title has-text-white" ><span className="tag is-success is-rounded is-large"> Step 3</span> Student Details</div>
+                                   
                                     <div className="content">
                                         <div className="box" style={{ maxWidth: "500px", margin: '0 auto' }}>
                                             <div className="container" style={{ maxWidth: "300px", paddingBottom: "1em" }}>
@@ -831,6 +818,7 @@ export class form extends Component {
                                                     <div className="help is-danger">
                                                         {this.state.error.session ? <span>Select a choice</span> : null}
                                                     </div>
+                                                    <p className="is-danger">*FH exams are conducted in May-June. SH exams are conducted in Nov-Dec</p>
                                                 </div>
                                                 <div className="field">
                                                     <label class="label">Date Of Birth</label>
@@ -945,6 +933,92 @@ export class form extends Component {
                                 </div>
                             </section>
                         </div>
+            )
+        }
+    }
+
+
+    renderRegularForm = () => {
+        const { user } = this.props.auth
+        const minOffset = 0;
+        const profile = this.state.profile;
+        const ktprofile = this.state.kt3profile;
+        const maxOffset = 2;
+        const { thisYear } = this.state;
+        const options = [];
+        for (let i = minOffset; i <= maxOffset; i++) {
+            const year = thisYear + i;
+            options.push(<option value={year}>{year}</option>);
+        }
+        if (this.state.filled && this.state.profile.rejected===false) {
+            return (
+                <div className="hero first">
+                    {this.stopLoader()}
+                    <div className="section" >
+                        <div className="container form-filled">
+                            <div id="status" className="title " style={{ color: 'white', display: 'flex', alignItems: 'center' }}>{profile && this.state.isRegular == true ? (<div>{`Current Exam Form filled`}<span class="material-icons has-text-white  ml-2"> done_all</span></div>) : null}</div>
+                            <div className="notification is-light is-success">
+                                <p>Hallticket can be downloaded once the admin has verified your form and generated seat number. Print hallticket tab will be activated later.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )
+        }
+        else {
+            return (
+                <div>
+                    <div className="subtitle" style={{ color: 'white' }}>Complete the following 3 steps to submit your form</div><br />
+                    <div className="title" style={{ color: 'white' }}><span className="tag is-success is-rounded is-large"> Step 1</span> Current Semester Details</div>
+                    <div className="columns">
+                        <div className="column box">
+                            <div className="title"> Revision Scheme</div>
+                            <Ripple>
+                                <div className="field">
+                                    <div className="control">
+                                        <label className="k-radio-label" htmlFor="label2012"><input type="radio" onChange={this.handleBranchSemesterChange} id="label2012" name="revscheme" value="2012" className="k-radio" />Revised A Scheme (2012)</label>
+                                    </div>
+                                </div>
+                                <div className="field">
+                                    <div className="control">
+                                        <label className="k-radio-label" htmlFor="label2016"><input type="radio" onChange={this.handleBranchSemesterChange} id="label2016" name="revscheme" value="2016" className="k-radio" />Revision B Scheme (2016)</label>
+                                    </div>
+                                </div>
+                                <div className="field">
+                                    <div className="control">
+                                        <label className="k-radio-label" htmlFor="label2019"><input type="radio" onChange={this.handleBranchSemesterChange} id="label2019" name="revscheme" value="2019" className="k-radio" />Revised C Scheme (2019)</label>
+                                    </div>
+                                </div>
+                            </Ripple>
+                        </div>
+                        {this.state.credentials.revscheme ? (
+                            <div className="column box">
+                                <div className="title"> Filling form for</div>
+                                <Ripple>
+                                    <div className="field">
+                                        <div className="control" >
+                                            <label className="k-radio-label" htmlFor="c1"><input type="radio" onChange={this.handleBranchSemesterChange} id="c1" name="studentType" value="Regular" className="k-radio" />Current Examination</label>
+                                        </div>
+                                    </div>
+                                    {/* <div className="field">
+                                        <div className="control">
+                                            <label className="k-radio-label" htmlFor="c2"><input type="radio" onChange={this.handleChange} id="c2" name="studentType" value="KT" className="k-radio" />KT</label>
+                                        </div>
+                                    </div> */}
+
+                                </Ripple>
+                            </div>
+                        ) : null}
+                        {/* third column */}
+                        {this.renderBranchSemester()}
+                    </div>
+                    <div>
+                    </div>
+                    {this.renderSelectedCourses()}
+                    <div>
+
+                    {this.renderPersonalDetailForm()}
+                        
 
 
                     </div>
@@ -1034,150 +1108,8 @@ export class form extends Component {
                     {this.renderKtSubjects()}
                     {this.renderSelectedCourses()}
                     <div>
-
-                        <hr />
-                        <div className="hero" >
-                            <section className="section" >
-                                <div className="container"  >
-                                    <div className="title has-text-white" ><span className="tag is-success is-rounded is-large"> Step 3</span> Student Details</div>
-                                    <div className="content">
-                                        <div className="box" style={{ maxWidth: "500px", margin: '0 auto' }}>
-                                            <div className="container" style={{ maxWidth: "300px", paddingBottom: "1em" }}>
-                                                {/* <div class="field" style={{ background: "", display: "flex", alignItems: "center"}}> */}
-                                                <div className="field">
-                                                    <label className="label">Year</label>
-                                                    <div className="select">
-                                                        <select onChange={this.handleChange} value={this.selectedYear} name="year">
-                                                            {options}
-                                                        </select>
-                                                    </div>
-                                                    <div className="help is-danger">
-                                                        {this.state.error.year ? <span>{this.state.error.year}</span> : null}
-                                                    </div>
-                                                </div>
-                                                <div className="field">
-                                                    <div className="control">
-                                                        <label className="k-radio-label" htmlFor="r1"><input type="radio" name="session" value="SH" onChange={this.handleChange} className="k-radio" /> SH</label>
-                                                        <span style={{ marginRight: '10px' }}></span>
-                                                        <label className="k-radio-label" htmlFor="r2"><input type="radio" id="r2" name="session" onChange={this.handleChange} value="FH" className="k-radio" /> FH</label><br />
-                                                    </div>
-                                                    <div className="help is-danger">
-                                                        {this.state.error.session ? <span>Select a choice</span> : null}
-                                                    </div>
-                                                </div>
-                                                <div className="field">
-                                                    <label class="label">Date Of Birth</label>
-                                                    <div className="control">
-                                                        <input id="my-element" className="input" type="date" onChange={this.handleChange} name="dob" />
-                                                    </div>
-                                                    <div className="help is-danger">
-                                                        {this.state.error.dob ? <span><i className="fas fa-exclamation-circle"></i>Enter a date</span> : null}
-                                                    </div>
-                                                    {/* <p class="help is-success">This username is available</p> */}
-                                                </div>
-                                                <div className="field">
-                                                    <label class="label">Roll Number</label>
-                                                    <div className="control">
-                                                        {user ? <input disabled className="input" type="number" value={user.username} onChange={this.handleChange} name="rollno" placeholder="Roll Number" /> :
-                                                            <input className="input" type="number" value={this.state.credentials.rollno} onChange={this.handleChange} name="rollno" placeholder="Roll Number" />}
-                                                    </div>
-                                                    <div className="help is-danger">
-                                                        {this.state.error.rollno ? <span><i className="fas fa-exclamation-circle"></i>{this.state.error.rollno}</span> : null}
-                                                    </div>
-                                                    {/* <p class="help is-success">This username is available</p> */}
-                                                </div>
-
-                                                <div class="field">
-                                                    <label class="label">Student Name</label>
-                                                    <div class="control">
-                                                        {user ? <input className="input" disabled autoComplete="off" type="text" onChange={this.handleChange} name="studentname" value={user.first_name} placeholder="Student Name" /> :
-                                                            <input className="input" disabled autoComplete="off" type="text" onChange={this.handleChange} name="studentname" value={this.state.credentials.studentname} placeholder="Student Name" />}
-                                                    </div>
-                                                    <div className="help is-danger">
-                                                        {this.state.error.studentname ? <span>{this.state.error.studentname}</span> : null}
-                                                    </div>
-                                                    {/* <p class="help is-success">This username is available</p> */}
-                                                </div>
-                                                <div class="field">
-                                                    <label class="label">Student's Email address</label>
-                                                    <div class="control">
-                                                        <input class="input" type="text" disabled autoComplete="off" onChange={this.handleChange} name="email" value={user.email} placeholder="Email address" />
-                                                    </div>
-                                                    <div className="help is-danger">
-                                                        {this.state.error.email ? <span><i className="fas fa-exclamation-circle"></i> {this.state.error.email}</span> : null}
-                                                    </div>
-                                                    {/* <p class="help is-success">This username is available</p> */}
-                                                </div>
-                                                <div class="field">
-                                                    <label class="label">Student's Phone number</label>
-                                                    <div class="control">
-                                                        <input class="input" type="text" autoComplete="off" onChange={this.handleChange} name="studentphone" value={this.state.credentials.studentphone} placeholder="Student's Phone number" />
-                                                    </div>
-                                                    <div className="help is-danger">
-                                                        {this.state.error.studentphone ? <span><i className="fas fa-exclamation-circle"></i> {this.state.error.studentphone}</span> : null}
-                                                    </div>
-                                                    {/* <p class="help is-success">This username is available</p> */}
-                                                </div>
-                                                <div class="field">
-                                                    <label class="label">Father's Name</label>
-                                                    <div class="control">
-                                                        <input class="input" type="text" autoComplete="off" onChange={this.handleChange} name="fathername" value={this.state.credentials.fathername} placeholder="Fathers' name" />
-                                                    </div>
-                                                    <div className="help is-danger">
-                                                        {this.state.error.fathername ? <span><i className="fas fa-exclamation-circle"></i> {this.state.error.fathername}</span> : null}
-                                                    </div>
-                                                    {/* <p class="help is-success">This username is available</p> */}
-                                                </div>
-                                                <div class="field">
-                                                    <label class="label">Mother's Name</label>
-                                                    <div class="control">
-                                                        <input class="input" type="text" autoComplete="off" onChange={this.handleChange} name="mothername" value={this.state.credentials.mothername} placeholder="Mothers' name" />
-                                                    </div>
-                                                    <div className="help is-danger">
-                                                        {this.state.error.mothername ? <span><i className="fas fa-exclamation-circle"></i> {this.state.error.mothername}</span> : null}
-                                                    </div>
-                                                    {/* <p class="help is-success">This username is available</p> */}
-                                                </div>
-                                                <div class="field">
-                                                    <label class="label">Parent's Phone number</label>
-                                                    <div class="control">
-                                                        <input class="input" type="text" autoComplete="off" onChange={this.handleChange} name="parentphone" value={this.state.credentials.parentphone} placeholder="Parent's Phone number" />
-                                                    </div>
-                                                    <div className="help is-danger">
-                                                        {this.state.error.parentphone ? <span><i className="fas fa-exclamation-circle"></i> {this.state.error.parentphone}</span> : null}
-                                                    </div>
-                                                    {/* <p class="help is-success">This username is available</p> */}
-                                                </div>
-                                                <Ripple>
-                                                    <div className="field">
-                                                        <label class="label">Gender</label>
-                                                        <div class="control">
-                                                            <label className="radio"><input type="radio" onChange={this.handleChange} value="M" className="k-radio" name="gender" /> Male</label>
-                                                            <label className="radio"><input type="radio" onChange={this.handleChange} value="F" className="k-radio" name="gender" /> Female</label>
-                                                        </div>
-                                                        <div className="help is-danger">
-                                                            {this.state.error.gender ? <span><i className="fas fa-exclamation-circle"></i> {this.state.error.gender}</span> : null}
-                                                        </div>
-                                                    </div>
-                                                </Ripple>
-                                                <div class="field">
-                                                    <label class="label">Address</label>
-                                                    <div class="control">
-                                                        <textarea class="textarea" autoComplete="off" value={this.state.credentials.address} name="address" onChange={this.handleChange} placeholder="Address"></textarea>
-                                                    </div>
-                                                    <div className="help is-danger">
-                                                        {this.state.error.address ? <span>{this.state.error.address}</span> : null}
-                                                    </div>
-                                                </div>
-                                                <div className="field is-grouped is-grouped-centered">
-                                                    <button className="button is-success" onClick={this.register}>Submit</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </section>
-                        </div>
+                    {this.renderPersonalDetailForm()}
+                        
                     </div>
                 </div>
             )
@@ -1196,7 +1128,7 @@ export class form extends Component {
         return (
             <div >
                 <Header />
-                 <div class="pageloader is-active"><span class="title" style={{ fontSize: '2em' }}></span></div>
+                {/* <div class="pageloader is-active "><span class="title" style={{ fontSize: '2em' }}></span></div> */}
                 <div className="hero first">
                     <div className="section" >
                         <div className="container" style={{ width: '50%' }}>

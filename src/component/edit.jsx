@@ -458,7 +458,7 @@ export class edit extends Component {
                                         sort: e.sort
                                     });
                                 }}
-                                style={{ boxShadow: '0 0px 3em rgba(0,0,0,0.09)', margin: '0 auto', }}
+                                style={{ boxShadow: '0 0px 3em rgba(0,0,0,0.09)', margin: '0 auto',fontWeight:'bold' }}
                                 onItemChange={this.itemChange}
                                 rowRender={this.rowRender}
                                 editField={this.editField}
@@ -480,7 +480,7 @@ export class edit extends Component {
                                     <p className="help" style={{ animation: 'none' }}>Double click Delete to remove a course</p>
 
                                 </GridToolbar>
-                                <Column field="code" title="Code" width="100%" />
+                                <Column field="code" title="Code" width="100%" style={{fontWeight:'bold'}}/>
                                 <Column field="course" title="Course" />
                                 <Column field="isElective" title="Elective" width="100%" editor='boolean' />
                                 <Column field="isInternal" title="Internal" width="100%" editor="boolean" />

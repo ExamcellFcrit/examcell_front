@@ -6,6 +6,7 @@ import PropTypes from "prop-types"
 import ReactTooltip from 'react-tooltip';
 import Timetable from '../component/Timetable'
 import { logout } from '../actions/auth'
+import axios from 'axios';
 import $ from "jquery"
 import { serverip } from '../actions/serverip'
 import { Link, Redirect } from 'react-router-dom'
@@ -26,6 +27,9 @@ export class Home extends Component {
       notice: '',
       freezelink: false,
       showtimetable: null,
+      selectedFile: '',
+      uploadDp: false,
+      correctDp: '',
       image: '',
       profile: '',
       data: [],
@@ -36,6 +40,37 @@ export class Home extends Component {
       ]
     }
   }
+
+  getBase64Image = (imgUrl, callback) => {
+
+    var img = new Image();
+    console.log(imgUrl)
+    // onload fires when the image is fully loadded, and has width and height
+
+    img.onload = function () {
+      console.log("loaded")
+      var canvas = document.createElement("canvas");
+      canvas.width = img.width;
+      canvas.height = img.height;
+      var ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0);
+      var dataURL = canvas.toDataURL("image/jpg"),
+        dataURL = dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
+
+      console.log(dataURL)
+      // the base64 string
+
+      localStorage.setItem('imgurl', dataURL)
+
+
+    };
+
+    // set attributes and src 
+    img.setAttribute('crossOrigin', 'anonymous'); //
+    img.src = imgUrl;
+
+  }
+
 
 
   stopLoader = () => {
@@ -65,16 +100,29 @@ export class Home extends Component {
     /*  console.log(user.username) */
 
     //get student image
+
     fetch(`${serverip}/api/image/${user.username}/`, {
       method: 'get',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Token ${this.props.auth.token}`
       },
-    }).then(res => res.json())
+    }).then(res => {
+      /* if(res.status==404){
+        alert("Upload your photo")
+      } */
+      return res.json()
+    })
       .then(data => {
+        //let base64image = this.getBase64Image(data.image);
+        //console.log(base64image)
+        if (data.detail) {
+          this.setState({ uploadDp: true })
+          console.log("not exists")
+        }
         this.setState({ image: data })
       })
+
 
     //get halltkt switch status
     if (user.username !== 'admin') {
@@ -171,19 +219,111 @@ export class Home extends Component {
           var kt4 = data.filter(x => x.id.includes("KT4"))[0];
           if (!_.isEmpty(kt4)) {
             this.setState({ kt4filled: true, kt4profile: kt4, isKt: true })
-
+            const kt4sem = kt4.semester
+            const kt4branch = kt4.branch
+            const kt4scheme = kt4.scheme
+            fetch(`${serverip}/scheme/${kt4scheme}/branch/${kt4branch}${kt4scheme}/semester/${kt4sem}${kt4branch}${kt4scheme}/course/`, {
+              method: 'Get',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${this.props.auth.token}`
+              },
+            })
+              .then(res => res.json())
+              .then(kt4 => {
+                this.setState({ kt4subjects: kt4, isKt: true })
+                let kt4codes = []
+                console.log(Object.keys(this.state.kt4profile).length)
+                if (Object.keys(this.state.kt4profile).length > 1) {
+                  for (let i = 0; i < this.state.kt4profile.ktsubjects.length; i++) {
+                    kt4codes.push(this.state.kt4profile.ktsubjects[i].code)
+                  }
+                }
+                console.log(kt4codes)
+                let kt4student = []
+                for (let i = 0; i < kt4codes.length; i++) {
+                  for (let j = 0; j < this.state.kt4subjects.length; j++) {
+                    if (kt4codes[i] === this.state.kt4subjects[j].code) {
+                      kt4student.push(this.state.kt4subjects[j])
+                      this.setState({ kt4studentsubj: kt4student })
+                    }
+                  }
+                }
+              })
           }
 
           //check if KT5 exists
           var kt5 = data.filter(x => x.id.includes("KT5"))[0];
           if (!_.isEmpty(kt5)) {
             this.setState({ kt5filled: true, kt5profile: kt5, isKt: true })
+            const kt5sem = kt5.semester
+            const kt5branch = kt5.branch
+            const kt5scheme = kt5.scheme
+            fetch(`${serverip}/scheme/${kt5scheme}/branch/${kt5branch}${kt5scheme}/semester/${kt5sem}${kt5branch}${kt5scheme}/course/`, {
+              method: 'Get',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${this.props.auth.token}`
+              },
+            })
+              .then(res => res.json())
+              .then(kt5 => {
+                this.setState({ kt5subjects: kt5, isKt: true })
+                let kt5codes = []
+                console.log(Object.keys(this.state.kt5profile).length)
+                if (Object.keys(this.state.kt5profile).length > 1) {
+                  for (let i = 0; i < this.state.kt5profile.ktsubjects.length; i++) {
+                    kt5codes.push(this.state.kt5profile.ktsubjects[i].code)
+                  }
+                }
+                console.log(kt5codes)
+                let kt5student = []
+                for (let i = 0; i < kt5codes.length; i++) {
+                  for (let j = 0; j < this.state.kt5subjects.length; j++) {
+                    if (kt5codes[i] === this.state.kt5subjects[j].code) {
+                      kt5student.push(this.state.kt5subjects[j])
+                      this.setState({ kt5studentsubj: kt5student })
+                    }
+                  }
+                }
+              })
           }
 
           //check if KT6 exists
           var kt6 = data.filter(x => x.id.includes("KT6"))[0];
           if (!_.isEmpty(kt6)) {
             this.setState({ kt6filled: true, kt6profile: kt6, isKt: true })
+            const kt6sem = kt6.semester
+            const kt6branch = kt6.branch
+            const kt6scheme = kt6.scheme
+            fetch(`${serverip}/scheme/${kt6scheme}/branch/${kt6branch}${kt6scheme}/semester/${kt6sem}${kt6branch}${kt6scheme}/course/`, {
+              method: 'Get',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${this.props.auth.token}`
+              },
+            })
+              .then(res => res.json())
+              .then(kt6 => {
+                this.setState({ kt6subjects: kt6, isKt: true })
+                let kt6codes = []
+                console.log(Object.keys(this.state.kt6profile).length)
+                if (Object.keys(this.state.kt6profile).length > 1) {
+                  for (let i = 0; i < this.state.kt6profile.ktsubjects.length; i++) {
+                    kt6codes.push(this.state.kt6profile.ktsubjects[i].code)
+                  }
+                }
+                console.log(kt6codes)
+                let kt6student = []
+                for (let i = 0; i < kt6codes.length; i++) {
+                  for (let j = 0; j < this.state.kt6subjects.length; j++) {
+                    if (kt6codes[i] === this.state.kt6subjects[j].code) {
+                      kt6student.push(this.state.kt6subjects[j])
+                      this.setState({ kt6studentsubj: kt6student })
+                    }
+                  }
+                }
+              })
           }
           this.setState({
 
@@ -238,7 +378,7 @@ export class Home extends Component {
               <figure className="image is-150x150">
                 <img className="is-rounded" style={{ width: "150px", height: '150px', display: 'block', margin: 'auto', marginBottom: '10px' }} src={studentdp} alt="" />
               </figure>
-              <div className="title is-uppercase" style={{ fontSize: '1.5em' }}>{user.first_name} </div>
+              <div className="title" style={{ fontSize: '1.5em' }}>{user.first_name} </div>
             </div>
             <div className="column">
               <p ><b>Branch: </b>{profile.branch}</p>
@@ -251,9 +391,15 @@ export class Home extends Component {
             <div className="column" style={{ border: '3px solid #34a85d59', borderRadius: '5px', margin: '5px',/* boxShadow:'#34a85d59 0px 10px 20px 0px' */ }}>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <div className="title" >Regular Exam</div>
-                {profile.verified ? (<div className="tag is-medium verifytag is-success" data-tip="Status of your exam form">Verified<span class="material-icons" style={{ marginLeft: '5px' }} > verified</span></div>) : (<div className="tag is-medium is-warning verifytag has-text-white" data-tip="Status of your exam form">Not Verified<span class="material-icons" style={{ marginLeft: '5px' }} >error_outline</span></div>)}
+                {profile.verified ? (<div className="tag is-medium verifytag is-success" data-tip="Form is submitted. Verified by admin.">Verified<span class="material-icons" style={{ marginLeft: '5px' }} > verified</span></div>) : (<div className="tag is-medium is-warning verifytag has-text-white" data-tip="Form is submitted. Not verified by admin yet.">Not Verified<span class="material-icons" style={{ marginLeft: '5px' }} >error_outline</span></div>)}
               </div>
-
+              {this.state.filled ? <p>Form is filled.</p> : null}
+              {profile.rejected ? (
+                <div className="notification is-medium is-danger">
+                  <p>Your form has been rejected due to incorrect details. Fill the form again with correct details. Reason of rejection :</p>
+                  <li>{profile.rejectionReason}</li>
+                </div>
+              ) : null}
               <p ><b>Semester: </b>{profile ? profile.semester : `Form not filled`}</p>
               <p><b>Seat number: </b> {profile.seatNo ? <span className="subtitle is-4">{profile.seatNo}</span> : 'Not generated yet'}</p>
 
@@ -275,6 +421,13 @@ export class Home extends Component {
                       <div className="title">Semester 3</div>
                       {kt3profile.verified ? (<div className="tag is-medium verifytag is-success">Verified<span class="material-icons" style={{ marginLeft: '5px' }} > verified</span></div>) : (<div className="tag is-medium is-warning verifytag has-text-white ">Not Verified<span class="material-icons" style={{ marginLeft: '5px' }} >error_outline</span></div>)}
                     </div>
+                    {this.state.kt3filled ? <p>Form is filled.</p> : null}
+                    {kt3profile.rejected ? (
+                      <div className="notification is-medium is-danger">
+                        <p>Your form has been rejected due to incorrect details. Fill the form again with correct details. Reason of rejection :</p>
+                        <li>{kt3profile.rejectionReason}</li>
+                      </div>
+                    ) : null}
                     <p><b>KT seat number: </b>{kt3profile.seatNo ? <span className="subtitle is-4">{kt3profile.seatNo}</span> : ' Not generated yet'}</p>
                     <p><b>Selected Subjects: </b><ul style={{ marginLeft: '10px' }}>{this.state.kt3studentsubj ? this.state.kt3studentsubj.map(x => (
                       <li key={x.id} style={{ listStyle: 'circle' }} >{x.course} {x.isInternal ? '(Internal)' : null} on {x.date ? x.date : '( date to be announced )'} </li>
@@ -293,7 +446,13 @@ export class Home extends Component {
                       <div className="title">Semester 4</div>
                       {kt4profile.verified ? (<div className="tag is-medium verifytag is-success">Verified<span class="material-icons" style={{ marginLeft: '5px' }} > verified</span></div>) : (<div className="tag is-medium verifytag is-warning has-text-white">Not Verified<span class="material-icons" style={{ marginLeft: '5px' }} >error_outline</span></div>)}
                     </div>
-
+                    {this.state.kt4filled ? <p>Form is filled.</p> : null}
+                    {kt4profile.rejected ? (
+                      <div className="notification is-medium is-danger">
+                        <p>Your form has been rejected due to incorrect details. Fill the form again with correct details. Reason of rejection :</p>
+                        <li>{kt4profile.rejectionReason}</li>
+                      </div>
+                    ) : null}
                     <p><b>Seat number: </b>{kt4profile.seatNo ? <span className="subtitle is-4">{kt4profile.seatNo}</span> : ' Not generated yet'}</p>
                     <p><b>Selected Subjects: </b><ul style={{ marginLeft: '10px' }}>{this.state.kt4studentsubj ? this.state.kt4studentsubj.map(x => (
                       <li key={x.id} style={{ listStyle: 'circle' }} >{x.course} {x.isInternal ? '(Internal)' : null} on  {x.date ? x.date : '( date to be announced )'} </li>
@@ -311,6 +470,13 @@ export class Home extends Component {
                       <div className="title">Semester 5</div>
                       {kt5profile.verified ? (<div className="verifytag">Verified<span class="material-icons" style={{ marginLeft: '5px' }}> verified</span></div>) : (<div className="tag is-medium verifytag is-warning has-text-white" style={{ background: '#ffbb00' }}>Not Verified<span class="material-icons" style={{ marginLeft: '5px' }}>error_outline</span></div>)}
                     </div>
+                    {this.state.kt5filled ? <p>Form is filled.</p> : null}
+                    {kt5profile.rejected ? (
+                      <div className="notification is-medium is-danger">
+                        <p>Your form has been rejected due to incorrect details. Fill the form again with correct details. Reason of rejection :</p>
+                        <li>{kt5profile.rejectionReason}</li>
+                      </div>
+                    ) : null}
                     <p><b>Seat number: </b>{kt5profile.seatNo ? <span className="subtitle is-4">{kt5profile.seatNo}</span> : ' Not generated yet'}</p>
                     <p><b>Selected Subjects: </b><ul style={{ marginLeft: '10px' }}>{this.state.kt5studentsubj ? this.state.kt5studentsubj.map(x => (
                       <li key={x.id} style={{ listStyle: 'circle' }} >{x.course} {x.isInternal ? '(Internal)' : null} on  {x.date ? x.date : '( date to be announced )'} </li>
@@ -325,8 +491,15 @@ export class Home extends Component {
                     <hr />
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                       <div className="title">Semester 6</div>
-                      {kt5profile.verified ? (<div className="verifytag">Verified<span class="material-icons" style={{ marginLeft: '5px' }}> verified</span></div>) : (<div className="tag is-medium verifytag is-warning has-text-white" style={{ background: '#ffbb00' }}>Not Verified<span class="material-icons" style={{ marginLeft: '5px' }}>error_outline</span></div>)}
+                      {kt6profile.verified ? (<div className="verifytag">Verified<span class="material-icons" style={{ marginLeft: '5px' }}> verified</span></div>) : (<div className="tag is-medium verifytag is-warning has-text-white" style={{ background: '#ffbb00' }}>Not Verified<span class="material-icons" style={{ marginLeft: '5px' }}>error_outline</span></div>)}
                     </div>
+                    {this.state.kt6filled ? <p>Form is filled.</p> : null}
+                    {kt6profile.rejected ? (
+                      <div className="notification is-medium is-danger">
+                        <p>Your form has been rejected due to incorrect details. Fill the form again with correct details. Reason of rejection :</p>
+                        <li>{kt6profile.rejectionReason}</li>
+                      </div>
+                    ) : null}
                     <p><b>Seat number: </b>{kt6profile.seatNo ? kt6profile.seatNo : ' Not generated yet'}</p>
                     <p><b>Selected Subjects: </b><ul style={{ marginLeft: '10px' }}>{kt6profile ? kt6profile.ktsubjects.map(x => (
                       <li key={x.id} style={{ listStyle: 'circle' }} >{x.ktsubject} {x.isInternal ? '(Internal)' : null} on  {x.date ? x.date : '( date to be announced )'} </li>
@@ -494,6 +667,16 @@ export class Home extends Component {
     })
   }
 
+  updateDp = (e) => {
+    const user = this.props.auth.user;
+    const dp = new FormData();
+    dp.append('id', user.username);
+    dp.append('image', this.state.selectedFile)
+
+
+  }
+
+
   updateProfile = () => {
     const user = this.props.auth.user
     fetch(`${serverip}/update_profile/${user.id}/`, {
@@ -522,10 +705,36 @@ export class Home extends Component {
           alert(data.email)
         }
         else {
-          alert("Updated")
+          alert("Name and Email updated")
           window.location.reload();
         }
       })
+
+    if (this.state.correctDp) {
+      const dp = new FormData();
+      dp.append('id', user.username);
+      dp.append('image', this.state.selectedFile)
+      if (this.state.uploadDp === true) {
+        axios.post(`${serverip}/api/image/`, dp, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `Token ${this.props.auth.token}`
+          }
+        }).then(res => console.log(res))
+      }
+      else {
+        axios.put(`${serverip}/api/image/${user.username}`, dp, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `Token ${this.props.auth.token}`
+          }
+        }).then(res => console.log(res))
+      }
+      alert("Photo updated")
+    }
+    else {
+      alert("Photo not updated. Wrong file name")
+    }
 
 
   }
@@ -576,7 +785,7 @@ export class Home extends Component {
                             <label class="label">Full name ( LASTNAME FIRSTNAME FATHERNAME MOTHERNAME )</label>
                             <p className="help" style={{ animation: 'none' }}>Fill in uppercase</p>
                             <div class="control">
-                              <input class="input" type="text" autoComplete="off" onChange={this.handleChange} name="first_name" value={user.first_name} placeholder="Full name" style={{ textTransform: 'uppercase' }} />
+                              <input class="input" type="text" autoComplete="off" onChange={this.handleChange} name="first_name" value={user.first_name} placeholder="Full name" />
                             </div>
                             {user.first_name === '' ? <p className="help is-danger">Please fill your name before filling form</p> : null}
                           </div>
@@ -592,7 +801,30 @@ export class Home extends Component {
                             {user.email === '' ? <p className="help is-danger">Please fill you email before filling form</p> : null}
                           </div>
                         </li>
+
+                        <li>
+                          <div class="field">
+                            <label class="label">Update Profile picture</label>
+                            <p className="help" style={{ animation: 'none' }}>Please name your image file as your roll number. ( e.g:101700.jpg )</p>
+                            <div><input type="file" onChange={(event) => {
+                              this.setState({ selectedFile: event.target.files[0] })
+                              var fileName = event.target.files[0].name.split('.')[0]
+                              if (fileName === `${user.username}`) {
+                                this.setState({ correctDp: true })
+                              }
+                              else {
+                                this.setState({ correctDp: false })
+                              }
+                            }} /></div>
+                            {this.state.image.detail ? <p className="help is-danger">Photo not uploaded! Hallticket cannot be downloaded without photo.</p> : null}
+                            {this.state.correctDp === false ? (<p className="help is-danger">Wrong file name</p>) : null}
+                          </div>
+                        </li>
                       </ul>
+
+
+                      <br />
+
 
                       <button className="button is-success" onClick={this.updateProfile} >Update Profile</button>
                     </div>

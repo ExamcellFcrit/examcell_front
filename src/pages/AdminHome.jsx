@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Header from './Header'
 import { connect } from 'react-redux'
-import qrcode from '../assets/qrcode.png';
 import Footer from '../component/Footer'
 import {serverip} from '../actions/serverip'
 import $ from "jquery"
@@ -231,13 +230,13 @@ export class AdminHome extends Component {
                                         </div>
                                     </div>
 
-                                    <div className="box ">
+                                    {/* <div className="box ">
                                         <div className="title">Security</div>
 
                                         <img src={qrcode} alt="" />
                                         <br />
                                         <button className="button is-success">Create new secret key</button>
-                                    </div>
+                                    </div> */}
 
 
                                     

@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import Header from '../pages/Header';
 import ReactDOM from 'react-dom';
 import './styles/styles.css'
+import emailjs from 'emailjs-com';
+import { init } from 'emailjs-com';
 import dp from '../assets/dp.jpg'
-import {serverip} from '../actions/serverip'
+import { serverip } from '../actions/serverip'
 import { logout } from '../actions/auth'
 import CsvParse from '@vtex/react-csv-parse'
 import CSVReader from 'react-csv-reader'
@@ -28,13 +30,17 @@ export class verification extends Component {
         super(props);
         this.state = {
             data: [],
-            image:'',
+            image: '',
+            verified:'',
+            sendemail:true,
             ktstudentsubj: '',
             csvdata: [],
-            credentials: { branch: '', semester: '', starting_seatno: undefined },
+            credentials: { branch: '', semester: '', rejectionReason: '' },
             profile: 'null'
         };
     }
+
+
 
     handleChange = async (e) => {
 
@@ -44,24 +50,27 @@ export class verification extends Component {
             credentials: cred,
 
         })
-
+        console.log(e.target.name)
         console.log(cred)
-        const api_call = await fetch(`${serverip}/student/?branch=${this.state.credentials.branch}&semester=${this.state.credentials.semester[0]}&all=true`, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${this.props.auth.token}`
-            }
-        });
-        const response = await api_call.json();
-        response.sort((a, b) => parseInt(a.rollno) - parseInt(b.rollno));
-        this.setState({
-            data: response
-        })
-
+        if (e.target.name !== "rejectionReason") {
+            const api_call = await fetch(`${serverip}/student/?branch=${this.state.credentials.branch}&semester=${this.state.credentials.semester[0]}&all=true`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${this.props.auth.token}`
+                }
+            });
+            const response = await api_call.json();
+            response.sort((a, b) => parseInt(a.rollno) - parseInt(b.rollno));
+            this.setState({
+                data: response
+            })
+        }
 
     }
 
-    
+  
+
+
 
     exportPDFWithComponent = () => {
         this.pdfExportComponent.save()
@@ -116,13 +125,13 @@ export class verification extends Component {
         )
     }
 
-    ktStringRemover=(str)=>{
-        var patt=new RegExp("KT");
-        if(patt.test(String(str))){
-            return String(str).slice(0,-3)
-                
+    ktStringRemover = (str) => {
+        var patt = new RegExp("KT");
+        if (patt.test(String(str))) {
+            return String(str).slice(0, -3)
+
         }
-        else{
+        else {
             return str
         }
     }
@@ -138,7 +147,7 @@ export class verification extends Component {
         }
         var patt = new RegExp("KT");
 
-        const studentdp=this.state.image.image
+        const studentdp = this.state.image.image
 
         return (
             <div>
@@ -183,11 +192,18 @@ export class verification extends Component {
                         <tr><th>Student Email:</th><td>{data.email}</td></tr>
 
                     </table>
+                    <br />
+                    <input type="checkbox" name="sendemail"onChange={()=>{
+                        this.setState({sendemail:!this.state.sendemail})
+                    }} checked={this.state.sendemail}/>
+                    <input type="text" placeholder="Enter rejection reason" name="rejectionReason" className="input" onChange={this.handleChange} />
                     {this.duplicate()}
-                    <DialogActionsBar>
-                        <button class="button is-success" onClick={this.verifyProfile}>Verify Form</button>
-                        <button class="button is-danger" onClick={this.rejectProfile}>Reject Form</button>
-                        <button class="button" onClick={this.exportPDFWithComponent}>Download Duplicate Hallticket</button>
+                    <DialogActionsBar layout='stretched' style={{background:'grey'}}>
+                       
+            
+                        <button className={`button m-4 ${this.state.profile.verified?'is-success':null}`} onClick={this.verifyProfile} >Verify Form</button>
+                        <button className={`button m-4 ${this.state.profile.rejected?'is-danger':null}`} onClick={this.rejectProfile}>Reject Form</button>
+                        <button className="button m-4 is-info" onClick={this.exportPDFWithComponent}>Download Duplicate Hallticket</button>
 
                     </DialogActionsBar>
                 </Dialog>}
@@ -206,7 +222,7 @@ export class verification extends Component {
             $(".modal").addClass("not-active");
         })
 
-        
+
     }
 
 
@@ -219,22 +235,21 @@ export class verification extends Component {
         this.setState({
             profileid: id
         })
-        if(this.state.profile.studentType==='Regular')
-        {}
-        else {id=id.substring(0,id.length-3)}
+        if (this.state.profile.studentType === 'Regular') { id = id }
+        else { id = id.substring(0, id.length - 3) }
         console.log(this.state.profile)
 
         //get student image
-        /* fetch(`${serverip}/api/image/${id}/`, {
+        fetch(`${serverip}/api/image/${id}/`, {
             method: 'get',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Token ${this.props.auth.token}`
             },
-        }).then(res=>res.json())
-        .then(data=>{
-            this.setState({image:data})
-        }) */
+        }).then(res => res.json())
+            .then(data => {
+                this.setState({ image: data })
+            })
 
         id = localStorage.getItem('test')
 
@@ -246,7 +261,7 @@ export class verification extends Component {
                 'Authorization': `Token ${this.props.auth.token}`
             },
         }).then(res => { return res.json() })
-            .then(data => { 
+            .then(data => {
                 console.log(data)
                 this.setState({ profile: data[0] })
             })
@@ -314,16 +329,66 @@ export class verification extends Component {
         localStorage.removeItem('test')
     }
 
-    verifyProfile = async () => {
+    
+    verifyProfile = async (e) => {
+        const profile={...this.state.profile}
+        profile.verified=!this.state.profile.verified
+        this.setState({profile})
+        console.log(e.target.checked)
         let id = localStorage.getItem('test')
-        fetch(`${serverip}/student/${id.includes('KT')?`${id.slice(0,-3)}`:`${id}`}/?id=${id}`, {
+        
+            fetch(`${serverip}/student/${id.includes('KT') ? `${id.slice(0, -3)}` : `${id}`}/?id=${id}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${this.props.auth.token}`
+                },
+                body: JSON.stringify({ "verified": !this.state.profile.verified })
+            }).then(() => {
+                fetch(`${serverip}/student/?branch=${this.state.credentials.branch}&semester=${this.state.credentials.semester[0]}`, {
+                    method: 'get',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Token ${this.props.auth.token}`
+                    },
+                }).then(res => res.json())
+                    .then(data => {
+                        data.sort((a, b) => parseInt(a.rollno) - parseInt(b.rollno));
+                        this.setState({ data: data })
+                    })
+            })
+        
+
+
+
+    }
+
+    rejectProfile = async () => {
+        const profile={...this.state.profile}
+        profile.rejected=!this.state.profile.rejected
+        this.setState({profile})
+        let id = localStorage.getItem('test')
+        fetch(`${serverip}/student/${this.state.profile.rollno}/?id=${id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Token ${this.props.auth.token}`
             },
-            body: JSON.stringify({ "verified": true })
-        }).then(() => {
+           
+                body:JSON.stringify({ "rejected":!this.state.profile.rejected, "rejectionReason": this.state.credentials.rejectionReason })
+           
+        }).then(res  => {
+            if (res.status === 200 && this.state.sendemail) {
+                init("user_VELYi2AaTCL9liqwqfJH2");
+
+                emailjs.send("service_t45gzrt", "template_b4hm46m", {
+                    to_name: this.state.profile.studentname,
+                    reason: this.state.credentials.rejectionReason,
+                    user_email: this.state.profile.email,
+                });
+            }
+        })
+        .then(() => {
             fetch(`${serverip}/student/?branch=${this.state.credentials.branch}&semester=${this.state.credentials.semester[0]}`, {
                 method: 'get',
                 headers: {
@@ -333,37 +398,18 @@ export class verification extends Component {
             }).then(res => res.json())
                 .then(data => {
                     console.log(data)
+                    data.sort((a, b) => parseInt(a.rollno) - parseInt(b.rollno));
                     this.setState({ data: data })
                 })
         })
 
+        /* init("user_VELYi2AaTCL9liqwqfJH2");
 
-        
-    }
-
-    rejectProfile = async () => {
-        let id = localStorage.getItem('test')
-        fetch(`${serverip}/student/${id}?id=${id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${this.props.auth.token}`
-            },
-            body: JSON.stringify({ "verified": false })
-        }).then(() => {
-            fetch(`${serverip}/student/?branch=${this.state.credentials.branch}&semester=${this.state.credentials.semester[0]}`, {
-                method: 'get',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Token ${this.props.auth.token}`
-                },
-            }).then(res => res.json())
-                .then(data => {
-                    console.log(data)
-                    this.setState({ data: data })
-                })
-        })
-
+        emailjs.send("service_t45gzrt","template_b4hm46m",{
+            to_name: this.state.profile.studentname,
+            reason:this.state.credentials.rejectionReason,
+            user_email: this.state.profile.email,
+            }); */
        
     }
     render() {
@@ -375,11 +421,11 @@ export class verification extends Component {
             });
         });
 
-        const filledno=this.state.data.length
+        const filledno = this.state.data.length
         return (
             <div >
-               
-               
+
+
                 <div className="columns" style={{ maxWidth: '800px', margin: '0 auto' }}>
                     <div className="column" >
                         <div className="field" >
@@ -412,17 +458,17 @@ export class verification extends Component {
                         </div>
                     </div>
                 </div>
-                
-                   
-                        <div className="hero">
-                            <div className="section-small">
-                                <div className="container"><div className="title has-text-white">Verify Forms</div><p className="has-text-white">Filled:{filledno}</p></div>
-                            </div>
-                       
-                            {this.state.credentials.branch && this.state.credentials.semester ?
+
+
+                <div className="hero">
+                    <div className="section-small">
+                        <div className="container"><div className="title has-text-white">Verify Forms</div><p className="has-text-white">Filled:{filledno}</p></div>
+                    </div>
+
+                    {this.state.credentials.branch && this.state.credentials.semester ?
                         <div>
 
-                            <table id="thisTable"  className="table is-fullwidth" style={{display:'block',overflowX:'auto',whiteSpace:'nowrap'}}>
+                            <table id="thisTable" className="table is-fullwidth" style={{ display: 'block', overflowX: 'auto', whiteSpace: 'nowrap' }}>
                                 <tbody>
                                     <td><b>Roll no.</b></td>
                                     <td><b>Name</b></td>
@@ -445,9 +491,9 @@ export class verification extends Component {
                                             <td style={{ padding: '0' }}> <button className="use-address" onClick={this.openProfile} style={{ background: 'none', margin: '0', height: '35px', cursor: 'pointer', color: '#48c774', fontWeight: 'bold', border: 'none' }}>Open Profile</button></td>
                                             <td>
                                                 <button class="use-address button is-success is-small" onClick={this.verifyProfile}>Verify Form</button>
-                                                <button className="use-address button is-danger is-small"  onClick={this.rejectProfile}>Reject Form</button>
+                                                {/* <button className="use-address button is-danger is-small"  onClick={this.rejectProfile}>Reject Form</button> */}
                                             </td>
-                                            {x.verified ? <td style={{ background: '#34a85c', color: 'white' }}>Verified</td> : <td style={{ background: '#ff4242', color: 'white' }}>Not verified</td>}
+                                            {x.verified ? <td style={{ background: '#34a85c', color: 'white' }}>Verified</td> : (x.rejected ? <td style={{ background: 'red', color: 'white' }}>Rejected</td> : <td style={{ background: 'white', color: 'black' }}>Not Verified</td>)}
                                         </tr>
                                     )}
 
@@ -459,7 +505,7 @@ export class verification extends Component {
                             <div className="title has-text-centered">-</div>
                         </div>}
 
-                    
+
                 </div>
 
             </div>

@@ -36,11 +36,7 @@ export class developer extends Component {
                                             
                                         </div>
                                     </div>
-                                    <footer class="card-footer">
-                                        <a href="#" class="card-footer-item"><span class="icon"><i class="fab fa-github"></i>GitHub</span></a>
-                                        <a href="#" class="card-footer-item"><span class="icon"><i class="fab fa-linkedin"></i>Linkedin</span></a>
-                                        <a href="#" class="card-footer-item"><span class="icon"><i class="fab fa-instagram"></i>Instagram</span></a>
-                                    </footer>
+                                   
                                 </div>
                                 </Tilt>
                             </div>
@@ -64,11 +60,7 @@ export class developer extends Component {
                                             
                                         </div>
                                     </div>
-                                    <footer class="card-footer">
-                                        <a href="#" class="card-footer-item"><span class="icon"><i class="fab fa-github"></i></span>Github</a>
-                                        <a href="#" class="card-footer-item"><span class="icon"><i class="fab fa-linkedin"></i></span>Linkedin</a>
-                                        <a href="#" class="card-footer-item"><span class="icon"><i class="fab fa-instagram"></i></span>Instagram</a>
-                                    </footer>
+                                   
                                 </div>
                                 </Tilt>
                             </div>
@@ -92,11 +84,7 @@ export class developer extends Component {
                                             
                                         </div>
                                     </div>
-                                    <footer class="card-footer">
-                                        <a href="#" class="card-footer-item"><span class="icon"><i class="fab fa-github"></i></span>Github</a>
-                                        <a href="#" class="card-footer-item"><span class="icon"><i class="fab fa-linkedin"></i></span>Linkedin</a>
-                                        <a href="#" class="card-footer-item"><span class="icon"><i class="fab fa-instagram"></i></span>Instagram</a>
-                                    </footer>
+                                   
                                 </div>
                                 </Tilt>
                             </div>

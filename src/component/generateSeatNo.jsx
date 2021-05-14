@@ -462,7 +462,7 @@ export class hallticket extends Component {
                                     
                                     />
 
-                                <input type="file" onChange={this.onChangeHandler} name="file"/>
+                                <input type="file" onChange={this.onChangeHandler} name="file" style={{color:'white'}}/>
                                 <button className="button" onClick={this.uploadSheet}>Upload Sheet</button>
 
                                 <label for="file" class="has-text-white" /* onClick={this.handleData} */>Check status</label>
