@@ -6,6 +6,7 @@ import { logout } from '../actions/auth'
 import CsvDownload from 'react-json-to-csv'
 import CsvParse from '@vtex/react-csv-parse'
 import CSVReader from 'react-csv-reader'
+import { readRemoteFile } from 'react-papaparse';
 import { connect } from 'react-redux'
 import ReactFileReader from 'react-file-reader';
 import {serverip} from '../actions/serverip'
@@ -57,6 +58,15 @@ export class hallticket extends Component {
 
     }
 
+
+    handleClick = () => {
+        readRemoteFile('http://127.0.0.1:8000/media/Files/mech5.csv', {
+          complete: (results) => {
+            console.log('Results:', results);
+          },
+        });
+      };
+
     uploadSheet=()=>{
         const branch=this.state.credentials.branch;
         const semester=this.state.credentials.semester;
@@ -75,19 +85,45 @@ export class hallticket extends Component {
             },
             body:formdata
         })
+     
+    }
+
+    deleteSheet=()=>{
+        const branch=this.state.credentials.branch
+        const semester=this.state.credentials.semester
+        fetch(`${serverip}/api/file/${branch}${semester}/`,{
+            method:'Delete',
+            headers: {
+                /* 'Content-Type': 'multipart/form-data', */
+                'Authorization': `Token ${this.props.auth.token}`
+            },
+        }).then(res=>{
+            if(res.status===204){
+                alert("Deleted")
+               this.setState({classSheet:''})
+            }
+    
+        })
+
     }
 
     componentDidMount=()=>{
         const branch=this.state.credentials.branch;
         const semester=this.state.credentials.semester;
+      
         
     }
 
     handleData = data => {
-
-        console.log(data)
-        this.setState({ csvdata: data })
-        console.log(this.state.csvdata)
+        let refined=[]
+        data.map(x=>{
+            const [rollno,studentname] = x;
+             x={ rollno,studentname };
+             refined.push(x)
+            
+        })
+        console.log(refined)
+        this.setState({csvdata:refined})
         let not_filled = {}
         not_filled = this.state.csvdata.filter(f =>
             !this.state.data.some(d => d.rollno == f.rollno)
@@ -100,7 +136,7 @@ export class hallticket extends Component {
         //get filled form students data in input csv file sequence
         var csv_filled_data=[]
         console.log(not_filled);
-        data.forEach(e=>{
+        refined.forEach(e=>{
             this.state.filled.some(x=>{
                 if(x.rollno==e.rollno){
                     csv_filled_data.push(x)
@@ -130,7 +166,7 @@ export class hallticket extends Component {
         console.log(this.state.final)
     }
     handleChange = async (e) => {
-
+      
         const cred = this.state.credentials
         cred[e.target.name] = e.target.value;
         this.setState({
@@ -138,19 +174,30 @@ export class hallticket extends Component {
         })
 
 
-        fetch(`${serverip}/api/file/${this.state.credentials.branch}${this.state.credentials.semester}`,{
-            method:'Get',
-            headers: {
-                /* 'Content-Type': 'multipart/form-data', */
-                'Authorization': `Token ${this.props.auth.token}`
-            },
-        }).then(res=>res.json())
-        .then(data=>{
-            console.log(data)
-            this.setState({
-                csvdata:data.file
+        if(this.state.credentials.semester){
+            fetch(`${serverip}/api/file/${this.state.credentials.branch}${this.state.credentials.semester}/`,{
+                method:'Get',
+                headers: {
+                    /* 'Content-Type': 'multipart/form-data', */
+                    'Authorization': `Token ${this.props.auth.token}`
+                },
+            }).then(res=>res.json())
+            .then(data=>{
+                console.log(data)
+                this.setState({classSheet:data.id})
+                if(data.file){
+                    readRemoteFile(data.file, {
+                    
+                    complete: (results) => {
+                      console.log('Results:', results);
+                      this.setState({csvdata:results.data.slice(1,-1)})
+                      setTimeout(()=>{this.handleData(results.data.slice(1,-1))},1000)
+                    },
+                });
+               
+                }
             })
-        })
+        }
         
 
         console.log(cred)
@@ -170,6 +217,7 @@ export class hallticket extends Component {
 
             return {
                 rollno: r["rollno"],
+                semester:r['semester'],
                 studentname: r['studentname'],
                 studentType: r['studentType'],
                 elective: r['elective'],
@@ -205,6 +253,7 @@ export class hallticket extends Component {
         })
         console.log(ktfilled)
         this.setState({ktfilled})
+        
     }
 
     enterEdit = (dataItem) => {
@@ -320,7 +369,9 @@ export class hallticket extends Component {
 
         for (var i = 0; i < this.state.final.length; i++) {
             const rollno = this.state.final[i].rollno;
-            fetch(`${serverip}/student/${rollno}/`, {
+            const semester = this.state.final[i].semester;
+            const studentType=this.state.final[i].studentType;
+            fetch(studentType==='Regular'?(`${serverip}/student/${rollno}/?id=${rollno}`):(`${serverip}/student/${rollno}/?id=${rollno}KT${semester}`), {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -462,10 +513,14 @@ export class hallticket extends Component {
                                     
                                     />
 
-                                <input type="file" onChange={this.onChangeHandler} name="file" style={{color:'white'}}/>
-                                <button className="button" onClick={this.uploadSheet}>Upload Sheet</button>
-
-                                <label for="file" class="has-text-white" /* onClick={this.handleData} */>Check status</label>
+                                <div className="field">
+                                <input type="file" onChange={this.onChangeHandler} name="file" className='has-text-white'/>
+                                <p className="has-text-white">Current File: {this.state.classSheet?this.state.classSheet:'No file'}</p>
+                                <button className="button is-small" onClick={this.uploadSheet}>Upload Sheet</button>
+                                <button className="button is-small is-danger" onClick={this.deleteSheet}>Delete Sheet</button>
+                                </div>
+                                {/* <button onClick={this.handleClick}>readRemoteFile</button> */}
+                               {/*  <label for="file" class="has-text-white" onChange={this.handleData} >Check status</label> */}
                                 {/* <button className="button" onClick={this.refresh}>Refresh List</button> */}
 
                             </div>

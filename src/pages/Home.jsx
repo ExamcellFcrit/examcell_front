@@ -67,7 +67,7 @@ export class Home extends Component {
 
     // set attributes and src 
     img.setAttribute('crossOrigin', 'anonymous'); //
-    img.src = imgUrl;
+    img.src = "http://192.168.161.9:8090/media/Images/api/fcrit_examcell/assets/101727.jpg";
 
   }
 
@@ -114,8 +114,8 @@ export class Home extends Component {
       return res.json()
     })
       .then(data => {
-        //let base64image = this.getBase64Image(data.image);
-        //console.log(base64image)
+        /* let base64image = this.getBase64Image(data.image);
+        console.log(base64image) */
         if (data.detail) {
           this.setState({ uploadDp: true })
           console.log("not exists")
@@ -706,7 +706,7 @@ export class Home extends Component {
         }
         else {
           alert("Name and Email updated")
-          window.location.reload();
+         // window.location.reload();
         }
       })
 

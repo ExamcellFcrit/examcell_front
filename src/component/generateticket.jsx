@@ -7,6 +7,7 @@ import sign from '../assets/sign.png'
 import {serverip} from '../actions/serverip'
 import PropTypes from "prop-types"
 import Footer from './Footer'
+import { Redirect } from 'react-router-dom'
 import { HashLink as Link } from 'react-router-hash-link';
 import { PDFExport, savePDF } from "@progress/kendo-react-pdf";
 import { logout } from '../actions/auth'
@@ -93,7 +94,7 @@ export class generateticket extends Component {
         const { user } = this.props.auth;
         const id=user.username
        //get student image
-       fetch(`${serverip}/api/image/${id}/`, {
+    fetch(`${serverip}/api/image/${id}/`, {
         method: 'get',
         headers: {
             'Content-Type': 'application/json',
@@ -248,7 +249,7 @@ export class generateticket extends Component {
 
         if(this.state.image.detail){
             alert("Profile photo not uploaded. Hallticket cannot be accessed until photo is uploaded")
-            window.location.href="/"
+            return <Redirect to="/home" />
         }
         
 
@@ -307,7 +308,7 @@ export class generateticket extends Component {
                             kt5filled={this.state.kt5filled}
                             kt6filled={this.state.kt6filled}
                             openCity={this.openCity}
-                            studentdp={this.state.studentdp}
+                            studentdp={this.state.image}
                             pdfExportComponentKt={this.pdfExportComponentKt}
                         />
 
@@ -322,7 +323,7 @@ export class generateticket extends Component {
                             fileName={user ? `Hallticket:${user.first_name}:Sem${this.state.data.semester}:(${this.state.data.session} ${this.state.data.year})` : null}
                             ref={(component) => this.pdfExportComponent = component}
                         >
-                            <table style={{ tableLayout: "auto" }}>
+                            <table  style={{ tableLayout: "auto" }}>
                                 <tbody>
                                     <tr>
                                         <td style={{ textAlign: 'center', paddingTop: '10px' }} >
@@ -353,7 +354,7 @@ export class generateticket extends Component {
                                         <td colspan="2"><p>{user ? `${this.props.auth.user.first_name}` : null}</p></td>
                                         <td rowspan="5" style={{ textAlign: "center", alignContent: 'center' }}>
                                             {/* <img src={this.state.photo ? this.state.photo[2].download_url : 'Loading...'}></img> */}
-                                            <img src={`data:image/jpeg;base64,${localStorage.getItem('imgurl')}`} alt="" />
+                                            <img src={studentdp} alt="" />
                                         </td>
                                     </tr>
                                     <tr class="sd">
@@ -406,9 +407,7 @@ export class generateticket extends Component {
                             </table>
                             <ExamNotice />
                         </PDFExport>
-                        {/* <div className="notification is-danger" style={{ marginTop: '10px' }}>
-                            <p>Warning: Please note that the hallticket download option will be available only once. After clicking Download, hallticket will be downloaded and the button will be freezed. Contact Examcell incase of a Duplicate Hallticket.</p>
-                        </div> */}
+                       
                         <div className="field is-grouped is-grouped-centered">
                             <button className="button is-medium is-success" onClick={this.exportPDFWithComponent}><span class="material-icons"> get_app </span> Download Hallticket</button>
                         </div>
@@ -460,7 +459,7 @@ export class generateticket extends Component {
                                     <td colspan="2"><p>{user ? `${this.props.auth.user.first_name}` : null}</p></td>
                                     <td rowspan="5" style={{ textAlign: "center", alignContent: 'center' }}>
                                         {/* <img src={this.state.photo ? this.state.photo[9].download_url : 'Loading...'}></img> */}
-                                        <img src={`data:image/jpeg;base64,${localStorage.getItem('imgurl')}`} alt="" />
+                                        <img src={studentdp} alt="" />
                                     </td>
                                 </tr>
                                 <tr class="sd">
@@ -523,7 +522,7 @@ export class generateticket extends Component {
             )
         }
 
-        else if (!this.state.filled || !this.state.kt3filled || !this.state.k4filled || !this.state.kt5filled || !this.state.kt6filled) {
+        else if (!this.state.filled || !this.state.kt3filled || !this.state.k4filled || !this.state.kt5filled || !this.state.kt6filled ) {
 
             return (<div className="container" >
                 {this.stopLoader()}
@@ -564,12 +563,13 @@ export class generateticket extends Component {
 
 
     render() {
-
-
+        if(this.state.data.hold){
+            alert("Hallticket access is paused for this account.")
+            return <Redirect to="/home" />
+        }
+        const img=this.state.image.detail
         return (
-            <div
-
-            >
+            <div>
                 <Header />
                 {this.modal()}
                 <div class="pageloader is-active "><span class="title" style={{ fontSize: '2em' }}></span></div>

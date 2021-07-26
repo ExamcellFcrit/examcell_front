@@ -18,6 +18,7 @@ import { toast } from 'react-toastify';
 import PropTypes from 'prop-types';
 import { Grid, GridColumn as Column, GridToolbar } from '@progress/kendo-react-grid';
 import DuplicateHalltkt from './DuplicateHalltkt'
+import { findRenderedDOMComponentWithClass } from 'react-dom/test-utils';
 
 export class verification extends Component {
 
@@ -31,8 +32,9 @@ export class verification extends Component {
         this.state = {
             data: [],
             image: '',
-            verified:'',
-            sendemail:true,
+            verified: '',
+            hold: false,
+            sendemail: true,
             ktstudentsubj: '',
             csvdata: [],
             credentials: { branch: '', semester: '', rejectionReason: '' },
@@ -64,11 +66,28 @@ export class verification extends Component {
             this.setState({
                 data: response
             })
+            let imagelist = []
+            for (var i = 0; i < response.length; i++) {
+                fetch(`${serverip}/api/image/${response[i].rollno}/`, {
+                    method: 'get',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Token ${this.props.auth.token}`
+                    },
+                }).then(res => res.json())
+                    .then(data => {
+                        imagelist.push(data)
+
+                    })
+
+            }
+            this.setState({ image: imagelist })
+
         }
 
     }
 
-  
+
 
 
 
@@ -92,7 +111,7 @@ export class verification extends Component {
         else {
             examsem = 'Third Year Engineering'
         }
-        let session = this.state.data.session;
+        let session = this.state.profile.session;
         if (session == 'FH') {
             session = 'First Half';
         }
@@ -151,58 +170,83 @@ export class verification extends Component {
 
         return (
             <div>
-                {this.state.visible && <Dialog title={`${data.studentname} ${data.rollno}`} onClose={this.closeProfile} width={800} height={600}>
-                    <div className="title">Academic Details</div>
-                    <article className="media" style={{ marginRight: '20px' }}>
-                        <div className="media-content">
-                            <table className="is-size-5">
-                                <tr><th>Branch:</th><td>{data.branch}</td> </tr>
-                                <tr><th>Semester:</th><td>{data.semester}</td> </tr>
-                                <tr><th>Scheme:</th><td>{data.scheme}</td> </tr>
-                                <tr><th>Session:</th><td>{data.session}</td> </tr>
-                                <tr><th>Exam Type:</th><td>{data.studentType}</td> </tr>
-                                <tr><th>Seat no:</th><td>{data.seatNo}</td> </tr>
-                                <tr><th>Year of Exam:</th><td>{data.year}</td> </tr>
-                            </table>
-                            <br />
-                            {this.state.profile && this.state.ktstudentsubj && this.state.profile.studentType === 'KT' ? (<div className="is-size-5">
-                                <p>{`KT subjects (Semester ${this.state.profile.semester})`}:</p>
-                                {this.state.ktstudentsubj.map(x => (
-                                    <li key={x.id} style={{ listStyle: 'circle' }} >{x.course} on  {x.date}</li>
-                                ))}
-                            </div>) : null}
+                {this.state.visible && <Dialog title={`${data.studentname} ${data.rollno}`} onClose={this.closeProfile} width={'100%'} height={600}>
+                    <div className="columns">
+                        <div className="column">
+                            <div className="title">Academic Details</div>
+                            <article className="media" style={{ marginRight: '20px' }}>
+                                <div className="media-content">
+                                    <table >
+                                        <tr><th>Branch:</th><td>{data.branch}</td> </tr>
+                                        <tr><th>Semester:</th><td>{data.semester}</td> </tr>
+                                        <tr><th>Scheme:</th><td>{data.scheme}</td> </tr>
+                                        <tr><th>Session:</th><td>{data.session}</td> </tr>
+                                        <tr><th>Exam Type:</th><td>{data.studentType}</td> </tr>
+                                        <tr><th>Seat no:</th><td>{data.seatNo}</td> </tr>
+                                        <tr><th>Year of Exam:</th><td>{data.year}</td> </tr>
+                                    </table>
+                                    <br />
+                                    {this.state.profile && this.state.ktstudentsubj && this.state.profile.studentType === 'KT' ? (<div className="is-size-5">
+                                        <p>{`KT subjects (Semester ${this.state.profile.semester})`}:</p>
+                                        {this.state.ktstudentsubj.map(x => (
+                                            <li key={x.id} style={{ listStyle: 'circle' }} >{x.course} on  {x.date}</li>
+                                        ))}
+                                    </div>) : null}
+                                </div>
+                                <div className="media-right">
+                                    <figure className="image is-150x150">
+                                        <img className="is-rounded" style={{ width: "150px", height: '150px', display: 'block', margin: 'auto', marginBottom: '10px' }} src={studentdp} alt="" />
+                                    </figure>
+                                </div>
+                            </article>
+                            <label htmlFor="" className="label">Send Email</label>
+                            <input type="checkbox" name="sendemail" onChange={() => {
+                                this.setState({ sendemail: !this.state.sendemail })
+                            }} checked={this.state.sendemail} />
+                            <input type="text" placeholder="Enter rejection reason" name="rejectionReason" className="input" onChange={this.handleChange} />
                         </div>
-                        <div className="media-right">
-                            <figure className="image is-150x150">
-                                <img className="is-rounded" style={{ width: "150px", height: '150px', display: 'block', margin: 'auto', marginBottom: '10px' }} src={studentdp} alt="" />
-                            </figure>
-                        </div>
-                    </article>
-                    <hr />
-                    <div className="title">Personal Details</div>
-                    <table className="is-size-5">
-                        <tr><th>Name:</th><td>{data.studentname} </td></tr>
-                        <tr><th>Father's name:</th><td>{data.fathername} </td></tr>
-                        <tr><th>Mother's Name:</th><td>{data.mothername} </td></tr>
-                        <tr><th>Gender:</th><td>{gender} </td></tr>
-                        <tr><th>DOB:</th><td>{data.dob} </td></tr>
-                        <tr><th>Address:</th><td>{data.address}</td></tr>
-                        <tr><th>Student phone no:</th><td>{data.studentphone} </td></tr>
-                        <tr><th>Parent phone no:</th><td>{data.parentphone} </td></tr>
-                        <tr><th>Student Email:</th><td>{data.email}</td></tr>
+                        <div className="column">
+                            <div className="title">Personal Details</div>
+                            <table>
+                                <tr><th>Name:</th><td>{data.studentname} </td></tr>
+                                <tr><th>Father's name:</th><td>{data.fathername} </td></tr>
+                                <tr><th>Mother's Name:</th><td>{data.mothername} </td></tr>
+                                <tr><th>Gender:</th><td>{data.gender} </td></tr>
+                                <tr><th>DOB:</th><td>{data.dob} </td></tr>
+                                <tr><th>Address:</th><td>{data.address}</td></tr>
+                                <tr><th>Student phone no:</th><td>{data.studentphone} </td></tr>
+                                <tr><th>Parent phone no:</th><td>{data.parentphone} </td></tr>
+                                <tr><th>Student Email:</th><td>{data.email}</td></tr>
 
-                    </table>
+                            </table>
+                        </div>
+                    </div>
+
+
                     <br />
-                    <input type="checkbox" name="sendemail"onChange={()=>{
-                        this.setState({sendemail:!this.state.sendemail})
-                    }} checked={this.state.sendemail}/>
-                    <input type="text" placeholder="Enter rejection reason" name="rejectionReason" className="input" onChange={this.handleChange} />
+
                     {this.duplicate()}
-                    <DialogActionsBar layout='stretched' style={{background:'grey'}}>
-                       
-            
-                        <button className={`button m-4 ${this.state.profile.verified?'is-success':null}`} onClick={this.verifyProfile} >Verify Form</button>
-                        <button className={`button m-4 ${this.state.profile.rejected?'is-danger':null}`} onClick={this.rejectProfile}>Reject Form</button>
+                    <DialogActionsBar layout='stretched' style={{ background: 'grey' }}>
+
+                        
+                        <button className={`button m-4 ${this.state.profile.verified ? 'is-success' : null}`} onClick={this.verifyProfile} >Verify Form</button>
+                        <button className={`button m-4 ${this.state.profile.rejected ? 'is-danger' : null}`} onClick={this.rejectProfile}>Reject Form</button>
+                        
+                        <button className={`button m-4 ${this.state.profile.hold ? 'is-danger' : null}`} onClick={()=>{
+                           const profile = { ...this.state.profile }
+                           profile.hold = !this.state.profile.hold
+                           this.setState({ profile })
+                            let id = localStorage.getItem('test')
+                            fetch(`${serverip}/student/${id.includes('KT') ? `${id.slice(0, -3)}` : `${id}`}/?id=${id}`, {
+                                method: 'PATCH',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': `Token ${this.props.auth.token}`
+                                },
+                                body: JSON.stringify({ "hold":!this.state.profile.hold})
+                            }).then(res=>console.log(res))
+                        }} >Hold hallticket</button>
+
                         <button className="button m-4 is-info" onClick={this.exportPDFWithComponent}>Download Duplicate Hallticket</button>
 
                     </DialogActionsBar>
@@ -221,6 +265,7 @@ export class verification extends Component {
             $(".modal").removeClass("is-active");
             $(".modal").addClass("not-active");
         })
+
 
 
     }
@@ -296,11 +341,15 @@ export class verification extends Component {
                         }
                         let onlyelectives = []
                         let onlycourses = []
+                        let onlyinternal = []
                         const myelective = this.state.profile.elective;
                         console.log(myelective)
                         for (let i = 0; i < this.state.courses.length; i++) {
-                            if (this.state.courses[i].isElective == true) {
+                            if (this.state.courses[i].isElective === true) {
                                 onlyelectives.push(this.state.courses[i])
+                            }
+                            else if (this.state.courses[i].isInternal === true) {
+                                onlyinternal.push(this.state.courses[i])
                             }
                             else {
                                 onlycourses.push(this.state.courses[i])
@@ -329,55 +378,55 @@ export class verification extends Component {
         localStorage.removeItem('test')
     }
 
-    
+
     verifyProfile = async (e) => {
-        const profile={...this.state.profile}
-        profile.verified=!this.state.profile.verified
-        this.setState({profile})
+        const profile = { ...this.state.profile }
+        profile.verified = !this.state.profile.verified
+        this.setState({ profile })
         console.log(e.target.checked)
         let id = localStorage.getItem('test')
-        
-            fetch(`${serverip}/student/${id.includes('KT') ? `${id.slice(0, -3)}` : `${id}`}/?id=${id}`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Token ${this.props.auth.token}`
-                },
-                body: JSON.stringify({ "verified": !this.state.profile.verified })
-            }).then(() => {
-                fetch(`${serverip}/student/?branch=${this.state.credentials.branch}&semester=${this.state.credentials.semester[0]}`, {
-                    method: 'get',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Token ${this.props.auth.token}`
-                    },
-                }).then(res => res.json())
-                    .then(data => {
-                        data.sort((a, b) => parseInt(a.rollno) - parseInt(b.rollno));
-                        this.setState({ data: data })
-                    })
-            })
-        
 
-
-
-    }
-
-    rejectProfile = async () => {
-        const profile={...this.state.profile}
-        profile.rejected=!this.state.profile.rejected
-        this.setState({profile})
-        let id = localStorage.getItem('test')
-        fetch(`${serverip}/student/${this.state.profile.rollno}/?id=${id}`, {
+        fetch(`${serverip}/student/${id.includes('KT') ? `${id.slice(0, -3)}` : `${id}`}/?id=${id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Token ${this.props.auth.token}`
             },
-           
-                body:JSON.stringify({ "rejected":!this.state.profile.rejected, "rejectionReason": this.state.credentials.rejectionReason })
-           
-        }).then(res  => {
+            body: JSON.stringify({ "verified": !this.state.profile.verified })
+        }).then(() => {
+            fetch(`${serverip}/student/?branch=${this.state.credentials.branch}&semester=${this.state.credentials.semester[0]}`, {
+                method: 'get',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${this.props.auth.token}`
+                },
+            }).then(res => res.json())
+                .then(data => {
+                    data.sort((a, b) => parseInt(a.rollno) - parseInt(b.rollno));
+                    this.setState({ data: data })
+                })
+        })
+
+
+        { this.closeProfile() }
+
+    }
+
+    rejectProfile = async () => {
+        const profile = { ...this.state.profile }
+        profile.rejected = !this.state.profile.rejected
+        this.setState({ profile })
+        let id = localStorage.getItem('test')
+        fetch(`${serverip}/student/${id.includes('KT') ? `${id.slice(0, -3)}` : `${id}`}/?id=${id}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${this.props.auth.token}`
+            },
+
+            body: JSON.stringify({ "rejected": !this.state.profile.rejected, "rejectionReason": this.state.credentials.rejectionReason })
+
+        }).then(res => {
             if (res.status === 200 && this.state.sendemail) {
                 init("user_VELYi2AaTCL9liqwqfJH2");
 
@@ -388,20 +437,20 @@ export class verification extends Component {
                 });
             }
         })
-        .then(() => {
-            fetch(`${serverip}/student/?branch=${this.state.credentials.branch}&semester=${this.state.credentials.semester[0]}`, {
-                method: 'get',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Token ${this.props.auth.token}`
-                },
-            }).then(res => res.json())
-                .then(data => {
-                    console.log(data)
-                    data.sort((a, b) => parseInt(a.rollno) - parseInt(b.rollno));
-                    this.setState({ data: data })
-                })
-        })
+            .then(() => {
+                fetch(`${serverip}/student/?branch=${this.state.credentials.branch}&semester=${this.state.credentials.semester[0]}`, {
+                    method: 'get',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Token ${this.props.auth.token}`
+                    },
+                }).then(res => res.json())
+                    .then(data => {
+                        console.log(data)
+                        data.sort((a, b) => parseInt(a.rollno) - parseInt(b.rollno));
+                        this.setState({ data: data })
+                    })
+            })
 
         /* init("user_VELYi2AaTCL9liqwqfJH2");
 
@@ -410,8 +459,11 @@ export class verification extends Component {
             reason:this.state.credentials.rejectionReason,
             user_email: this.state.profile.email,
             }); */
-       
+
+        this.closeProfile()
     }
+
+
     render() {
 
         $(document).ready(function () {
@@ -420,6 +472,7 @@ export class verification extends Component {
                 localStorage.setItem('test', id);
             });
         });
+
 
         const filledno = this.state.data.length
         return (
@@ -483,6 +536,7 @@ export class verification extends Component {
                                     {this.state.data.map(x =>
                                         <tr>
                                             <td className="nr">{x.id}</td>
+
                                             <td>{x.studentname}</td>
                                             <td>{x.scheme}</td>
                                             <td>{x.session}</td>
@@ -491,7 +545,7 @@ export class verification extends Component {
                                             <td style={{ padding: '0' }}> <button className="use-address" onClick={this.openProfile} style={{ background: 'none', margin: '0', height: '35px', cursor: 'pointer', color: '#48c774', fontWeight: 'bold', border: 'none' }}>Open Profile</button></td>
                                             <td>
                                                 <button class="use-address button is-success is-small" onClick={this.verifyProfile}>Verify Form</button>
-                                                {/* <button className="use-address button is-danger is-small"  onClick={this.rejectProfile}>Reject Form</button> */}
+                                                <button className="use-address button is-danger is-small" onClick={this.rejectProfile}>Reject Form</button>
                                             </td>
                                             {x.verified ? <td style={{ background: '#34a85c', color: 'white' }}>Verified</td> : (x.rejected ? <td style={{ background: 'red', color: 'white' }}>Rejected</td> : <td style={{ background: 'white', color: 'black' }}>Not Verified</td>)}
                                         </tr>
@@ -499,6 +553,60 @@ export class verification extends Component {
 
                                 </tbody>
                             </table>
+
+
+                            {/* {this.state.data.map(x =>
+                                <article class="message">
+                                    <div class="message-header">
+                                        <p>{x.studentname} {x.rollno}</p>
+                                    </div>
+                                    <div class="message-body">
+                                        <div className="columns">
+                                            <div className="column">
+
+                                                <table style={{ width: '100%' }}>
+                                                    <tr><th>Father's name:</th><td>{x.fathername} </td></tr>
+                                                    <tr><th>Mother's Name:</th><td>{x.mothername} </td></tr>
+                                                    <tr><th>Gender:</th><td>{x.gender} </td></tr>
+                                                    <tr><th>DOB:</th><td>{x.dob} </td></tr>
+                                                    <tr><th>Address:</th><td>{x.address}</td></tr>
+                                                    <tr><th>Student phone no:</th><td>{x.studentphone} </td></tr>
+                                                    <tr><th>Parent phone no:</th><td>{x.parentphone} </td></tr>
+                                                    <tr><th>Student Email:</th><td>{x.email}</td></tr>
+                                                </table>
+
+                                            </div>
+                                            <div className="column">
+                                                <table>
+                                                    <tbody>
+                                                        <td><b>Branch</b></td>
+                                                        <td><b>Semester</b></td>
+                                                        <td><b>Scheme</b></td>
+                                                        <td><b>Session</b></td>
+                                                        <td><b>Elective</b></td>
+                                                        <td><b>Seat No.</b></td>
+                                                        <tr>
+                                                            <td>{x.branch}</td>
+                                                            <td>{x.semester}</td>
+                                                            <td>{x.scheme}</td>
+                                                            <td>{x.session}</td>
+                                                            <td>{x.elective}</td>
+                                                            <td>{x.seatNo}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+
+                                                <figure className="image is-150x150">
+                                                    <img className="is-rounded" style={{ width: "150px", height: '150px', display: 'block', margin: 'auto', marginBottom: '10px' }} src={''} alt="" />
+                                                </figure>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+                                </article>
+                            )} */}
+
                             {this.modalProfile()}
                         </div>
                         : <div className="hero">

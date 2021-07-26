@@ -229,7 +229,7 @@ var trialCounter = 1;
     }
 
     render() {
-        this.fetchByPincode()
+        //this.fetchByPincode()
         if (this.props.isAuthenticated) {
             return <Redirect to="/home" />;
         }

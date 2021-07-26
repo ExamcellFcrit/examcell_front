@@ -33,7 +33,7 @@
   width: 0.625em; }
 
 .title:not(:last-child),
-.subtitle:not(:last-child), .notification:not(:last-child), .table:not(:last-child), .table-container:not(:last-child), .box:not(:last-child) {
+.subtitle:not(:last-child), .notification:not(:last-child), .table:not(:last-child), .table-container:not(:last-child), .box:not(:last-child), .message:not(:last-child) {
   margin-bottom: 1.5rem; }
 
 .modal-close {
@@ -2867,6 +2867,131 @@ a.box:active {
   overflow: auto;
   padding: 20px; }
 
+.message {
+  background-color: whitesmoke;
+  border-radius: 4px;
+  font-size: 1rem; }
+  .message strong {
+    color: currentColor; }
+  .message a:not(.button):not(.tag):not(.dropdown-item) {
+    color: currentColor;
+    text-decoration: underline; }
+  .message.is-small {
+    font-size: 0.75rem; }
+  .message.is-medium {
+    font-size: 1.25rem; }
+  .message.is-large {
+    font-size: 1.5rem; }
+  .message.is-white {
+    background-color: white; }
+    .message.is-white .message-header {
+      background-color: white;
+      color: #0a0a0a; }
+    .message.is-white .message-body {
+      border-color: white; }
+  .message.is-black {
+    background-color: #fafafa; }
+    .message.is-black .message-header {
+      background-color: #0a0a0a;
+      color: white; }
+    .message.is-black .message-body {
+      border-color: #0a0a0a; }
+  .message.is-light {
+    background-color: #f9fafb; }
+    .message.is-light .message-header {
+      background-color: #f8f9fa;
+      color: rgba(0, 0, 0, 0.7); }
+    .message.is-light .message-body {
+      border-color: #f8f9fa; }
+  .message.is-dark {
+    background-color: #fafafa; }
+    .message.is-dark .message-header {
+      background-color: #363636;
+      color: #fff; }
+    .message.is-dark .message-body {
+      border-color: #363636; }
+  .message.is-primary {
+    background-color: #ebfffc; }
+    .message.is-primary .message-header {
+      background-color: #00d1b2;
+      color: #fff; }
+    .message.is-primary .message-body {
+      border-color: #00d1b2;
+      color: #00947e; }
+  .message.is-link {
+    background-color: #eef3fc; }
+    .message.is-link .message-header {
+      background-color: #3273dc;
+      color: #fff; }
+    .message.is-link .message-body {
+      border-color: #3273dc;
+      color: #2160c4; }
+  .message.is-info {
+    background-color: #eef6fc; }
+    .message.is-info .message-header {
+      background-color: #3298dc;
+      color: #fff; }
+    .message.is-info .message-body {
+      border-color: #3298dc;
+      color: #1d72aa; }
+  .message.is-success {
+    background-color: #ebfff2; }
+    .message.is-success .message-header {
+      background-color: #009434;
+      color: #fff; }
+    .message.is-success .message-body {
+      border-color: #009434;
+      color: #00db4d; }
+  .message.is-warning {
+    background-color: #fffbeb; }
+    .message.is-warning .message-header {
+      background-color: #ffd000;
+      color: rgba(0, 0, 0, 0.7); }
+    .message.is-warning .message-body {
+      border-color: #ffd000;
+      color: #947900; }
+  .message.is-danger {
+    background-color: #fdeded; }
+    .message.is-danger .message-header {
+      background-color: #e62626;
+      color: #fff; }
+    .message.is-danger .message-body {
+      border-color: #e62626;
+      color: #d21818; }
+
+.message-header {
+  align-items: center;
+  background-color: #4a4a4a;
+  border-radius: 4px 4px 0 0;
+  color: #fff;
+  display: flex;
+  font-weight: 700;
+  justify-content: space-between;
+  line-height: 1.25;
+  padding: 0.75em 1em;
+  position: relative; }
+  .message-header .delete {
+    flex-grow: 0;
+    flex-shrink: 0;
+    margin-left: 0.75em; }
+  .message-header + .message-body {
+    border-width: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0; }
+
+.message-body {
+  border-color: #dbdbdb;
+  border-radius: 4px;
+  border-style: solid;
+  border-width: 0 0 0 4px;
+  color: #4a4a4a;
+  padding: 1.25em 1.5em; }
+  .message-body code,
+  .message-body pre {
+    background-color: white; }
+  .message-body pre code {
+    background-color: transparent; }
+
 .media {
   align-items: flex-start;
   display: flex;
@@ -4819,7 +4944,7 @@ table th {
   width: 0.625em; }
 
 .title:not(:last-child),
-.subtitle:not(:last-child), .notification:not(:last-child), .table:not(:last-child), .table-container:not(:last-child), .box:not(:last-child) {
+.subtitle:not(:last-child), .notification:not(:last-child), .table:not(:last-child), .table-container:not(:last-child), .box:not(:last-child), .message:not(:last-child) {
   margin-bottom: 1.5rem; }
 
 .modal-close {

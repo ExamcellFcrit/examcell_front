@@ -105,7 +105,11 @@ export class KtSubTab extends Component {
             const kt5sem = this.props.kt5data.semester
             const kt5branch = this.props.kt5data.branch
             fetch(`${serverip}/scheme/${kt5scheme}/branch/${kt5branch}${kt5scheme}/semester/${kt5sem}${kt5branch}${kt5scheme}/course/`, {
-                method: 'Get'
+                method: 'Get',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${this.props.auth.token}`
+                }
             }).then(res => res.json())
                 .then(data => {
                     this.setState({ kt5subjects: data })
@@ -131,7 +135,11 @@ export class KtSubTab extends Component {
             const kt6sem = this.props.kt6data.semester
             const kt6branch = this.props.kt6data.branch
             fetch(`${serverip}/scheme/${kt6scheme}/branch/${kt6branch}${kt6scheme}/semester/${kt6sem}${kt6branch}${kt6scheme}/course/`, {
-                method: 'Get'
+                method: 'Get',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${this.props.auth.token}`
+                }
             }).then(res => res.json())
                 .then(data => {
                     this.setState({ kt6subjects: data })
@@ -221,7 +229,7 @@ console.log(React.version)
         const kt5sem =  "Third Year Engineering";
         const kt6sem =  "Third Year Engineering";
         const session = this.props.session;
-        const studentdp=this.props.studentdp
+        const studentdp=this.props.studentdp.image
         return (
             <div>
                 <div className="hallticket-tabs" style={{ paddingTop: '20px', marginBottom: '0px', border: '1px #e6e6e6 solid' }}>
@@ -281,7 +289,7 @@ console.log(React.version)
                                     <td colspan="2"><p>{user ? `${user.first_name}` : null}</p></td>
                                     <td rowspan="5" style={{ textAlign: "center", alignContent: 'center' }}>
                                         {/* <img src={this.state.photo ? this.state.photo[0].download_url : 'Loading...'}></img> */}
-                                        <img src={`data:image/jpeg;base64,${localStorage.getItem('imgurl')}`} alt="" />
+                                        <img src={studentdp} alt="" />
                                     </td>
                                 </tr>
                                 <tr class="sd">
@@ -378,7 +386,7 @@ console.log(React.version)
                                     <td colspan="2" ><p>{user ? `${user.first_name} ` : null}</p></td>
                                     <td rowspan="5" style={{ textAlign: "center", alignContent: 'center' }}>
                                         {/* <img src={this.state.photo ? this.state.photo[0].download_url : 'Loading...'}></img> */}
-                                        <img src={`data:image/jpeg;base64,${localStorage.getItem('imgurl')}`} alt="" />
+                                        <img src={studentdp} alt="" />
                                     </td>
                                 </tr>
                                 <tr class="sd">
@@ -474,7 +482,7 @@ console.log(React.version)
                                     <td colspan="2" ><p>{user ? `${user.first_name} ` : null}</p></td>
                                     <td rowspan="5" style={{ textAlign: "center", alignContent: 'center' }}>
                                         {/* <img src={this.state.photo ? this.state.photo[0].download_url : 'Loading...'}></img> */}
-                                        <img src={`data:image/jpeg;base64,${localStorage.getItem('imgurl')}`} alt="" />
+                                        <img src={studentdp} alt="" />
                                     </td>
                                 </tr>
                                 <tr class="sd">
@@ -571,7 +579,7 @@ console.log(React.version)
                                     <td colspan="2" ><p>{user ? `${user.first_name} ` : null}</p></td>
                                     <td rowspan="5" style={{ textAlign: "center", alignContent: 'center' }}>
                                         {/* <img src={this.state.photo ? this.state.photo[0].download_url : 'Loading...'}></img> */}
-                                        <img src={`data:image/jpeg;base64,${localStorage.getItem('imgurl')}`} alt="" />
+                                        <img src={studentdp} alt="" />
                                     </td>
                                 </tr>
                                 <tr class="sd">

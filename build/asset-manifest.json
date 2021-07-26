@@ -1,19 +1,19 @@
 {
   "files": {
-    "main.css": "/static/css/main.5b09fbcc.chunk.css",
-    "main.js": "/static/js/main.603b3e49.chunk.js",
-    "main.js.map": "/static/js/main.603b3e49.chunk.js.map",
+    "main.css": "/static/css/main.e3e32150.chunk.css",
+    "main.js": "/static/js/main.0d425b40.chunk.js",
+    "main.js.map": "/static/js/main.0d425b40.chunk.js.map",
     "runtime-main.js": "/static/js/runtime-main.c8a21426.js",
     "runtime-main.js.map": "/static/js/runtime-main.c8a21426.js.map",
     "static/css/2.2b79f114.chunk.css": "/static/css/2.2b79f114.chunk.css",
-    "static/js/2.b0ba0225.chunk.js": "/static/js/2.b0ba0225.chunk.js",
-    "static/js/2.b0ba0225.chunk.js.map": "/static/js/2.b0ba0225.chunk.js.map",
+    "static/js/2.96c063b5.chunk.js": "/static/js/2.96c063b5.chunk.js",
+    "static/js/2.96c063b5.chunk.js.map": "/static/js/2.96c063b5.chunk.js.map",
     "index.html": "/index.html",
-    "precache-manifest.8b0e5cbb33eaa9d44eeafba38c02fdba.js": "/precache-manifest.8b0e5cbb33eaa9d44eeafba38c02fdba.js",
+    "precache-manifest.655b420552c62ef0fb33249191c50278.js": "/precache-manifest.655b420552c62ef0fb33249191c50278.js",
     "service-worker.js": "/service-worker.js",
     "static/css/2.2b79f114.chunk.css.map": "/static/css/2.2b79f114.chunk.css.map",
-    "static/css/main.5b09fbcc.chunk.css.map": "/static/css/main.5b09fbcc.chunk.css.map",
-    "static/js/2.b0ba0225.chunk.js.LICENSE.txt": "/static/js/2.b0ba0225.chunk.js.LICENSE.txt",
+    "static/css/main.e3e32150.chunk.css.map": "/static/css/main.e3e32150.chunk.css.map",
+    "static/js/2.96c063b5.chunk.js.LICENSE.txt": "/static/js/2.96c063b5.chunk.js.LICENSE.txt",
     "static/media/Form filling instructions for KT Exam.pdf": "/static/media/Form filling instructions for KT Exam.84d8bf54.pdf",
     "static/media/Form filling instructions for Regular Exam.pdf": "/static/media/Form filling instructions for Regular Exam.90de6b70.pdf",
     "static/media/fcritlogo.png": "/static/media/fcritlogo.637c320c.png",
@@ -22,14 +22,13 @@
     "static/media/linkedin.svg": "/static/media/linkedin.d9049f46.svg",
     "static/media/romik.jpeg": "/static/media/romik.bca0750b.jpeg",
     "static/media/rutvik.jpg": "/static/media/rutvik.1605f4e8.jpg",
-    "static/media/sign.png": "/static/media/sign.688306dc.png",
-    "static/media/srividya.JPG": "/static/media/srividya.9c73bddd.JPG"
+    "static/media/sign.png": "/static/media/sign.688306dc.png"
   },
   "entrypoints": [
     "static/js/runtime-main.c8a21426.js",
     "static/css/2.2b79f114.chunk.css",
-    "static/js/2.b0ba0225.chunk.js",
-    "static/css/main.5b09fbcc.chunk.css",
-    "static/js/main.603b3e49.chunk.js"
+    "static/js/2.96c063b5.chunk.js",
+    "static/css/main.e3e32150.chunk.css",
+    "static/js/main.0d425b40.chunk.js"
   ]
 }

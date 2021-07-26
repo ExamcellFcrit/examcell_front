@@ -10,6 +10,8 @@ export class Timetable extends Component {
         super(props);
         this.state = {
         profile: this.props.profile,
+        onlycourses:'',
+        onlyelectives:'',
         data:this.props.data,
         credentials: { branch: props.profile.branch, semester: props.profile.semester, revscheme:props.profile.scheme },
         sort: [
@@ -32,6 +34,21 @@ export class Timetable extends Component {
         this.setState({
           data: response,
         })
+        let onlyelectives = []
+        let onlycourses = []
+        let onlyinternal = []
+        for (let i = 0; i < this.state.data.length; i++) {
+          if (this.state.data[i].isElective === true) {
+              onlyelectives.push(this.state.data[i])
+          }
+          else if (this.state.data[i].isInternal === true) {
+              onlyinternal.push(this.state.data[i])
+          }
+          else {
+              onlycourses.push(this.state.data[i])
+          }
+      }
+      this.setState({onlycourses:onlycourses,onlyelectives:onlyelectives})
         console.log(this.state.data.sort())
       }
 
@@ -56,12 +73,26 @@ export class Timetable extends Component {
         this.setState({
           data: response,
         })
-        console.log(this.state.data.sort())
+        let onlyelectives = []
+        let onlycourses = []
+        let onlyinternal = []
+        for (let i = 0; i < this.state.data.length; i++) {
+          if (this.state.data[i].isElective === true) {
+              onlyelectives.push(this.state.data[i])
+          }
+          else if (this.state.data[i].isInternal === true) {
+              onlyinternal.push(this.state.data[i])
+          }
+          else {
+              onlycourses.push(this.state.data[i])
+          }
+      }
+      this.setState({onlycourses:onlycourses,onlyelectives:onlyelectives})
       }
 
     render() {
         const profile=this.props.profile;
-        const data =this.state.data;
+        const data =this.state.onlycourses.concat(this.state.onlyelectives);
         return (
             
                 <div className="box">
