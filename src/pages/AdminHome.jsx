@@ -114,6 +114,58 @@ export class AdminHome extends Component {
         })
     }
 
+    handlechange = e => {
+        e.preventDefault();
+        const value = e.target.value
+        this.setState({
+            [e.target.name]: value
+        })
+    }
+
+    handleStudentRollno = e => {
+        e.preventDefault();
+        const value = e.target.value
+        this.setState({
+            [e.target.name]: value
+        })
+    }
+
+
+    addAccounts=()=>{
+        const start=this.state.startrollno;
+        const end =this.state.endrollno;
+        for(var i=start;i<=end;i++){
+            fetch(`${serverip}/api/auth/register`,{
+                method:'post',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${this.props.auth.token}`
+                },
+                body: JSON.stringify({ username:`${i}`,first_name:'',email:'',password:'fcrit2020' })
+            })
+            .then((res)=>res.json())
+            .then(data=>console.log(data))
+            .catch((error)=>console.log(error))
+        }
+    }
+
+    deleteAccounts=()=>{
+        const start=this.state.startrollno;
+        const end =this.state.endrollno;
+        for(var i=start;i<=end;i++){
+            fetch(`${serverip}/api/auth/register`,{
+                method:'dlete',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${this.props.auth.token}`
+                },
+                body: JSON.stringify({ username:`${i}`,first_name:'',email:'',password:'fcrit2020' })
+            })
+            .then(res=>res.json())
+            .then(data=>console.log(data))
+        }
+    }
+
     sendNotice = () => {
         fetch(`${serverip}/notice/`, {
             method: "Post",
@@ -227,6 +279,22 @@ export class AdminHome extends Component {
                                                 }) : null}
                                             </table>
                                             <button className="button is-danger is-small" onClick={this.jqccOnClick}>Delete</button>
+                                        </div>
+                                    </div>
+
+                                    <div className="box">
+                                        <div className="title">Student accounts</div>
+                                        <div className="field">
+                                            <label htmlFor="startrollno" className="lable">Start</label>
+                                            <input type="text" className="input" name="startrollno" onChange={this.handleStudentRollno} />
+                                        </div>
+                                        <div className="field">
+                                            <label htmlFor="endrollno" className="lable">End</label>
+                                            <input type="text" className="input" name="endrollno" onChange={this.handleStudentRollno} />
+                                        </div>
+                                        <div className="field">
+                                            <button className="button is-success" onClick={this.addAccounts}>Add accounts</button>
+                                            <button className="button is-success" onClick={this.deleteAccounts}>Delete accounts</button>
                                         </div>
                                     </div>
 

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import rutvik from '../assets/rutvik.jpg'
 import romik from '../assets/romik.jpeg'
+import srividya from '../assets/srividya.jpg'
 
 import github from '../assets/icons/github.svg'
 import linkedin from '../assets/icons/linkedin.svg'
@@ -76,7 +77,7 @@ export class developer extends Component {
                                     <div className="card-content">
                                         <div class="card-image">
                                             <figure className="image is-150x150">
-                                                {/* <img className="is-rounded" style={{ width: "150px", height: '150px', display: 'block', margin: 'auto', marginBottom: '10px' }} src={srividya} alt="" /> */}
+                                                <img className="is-rounded" style={{ width: "150px", height: '150px', display: 'block', margin: 'auto', marginBottom: '10px' }} src={srividya} alt="" />
                                             </figure>
                                         </div>
                                         <div class="media-content">

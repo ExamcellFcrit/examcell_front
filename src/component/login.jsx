@@ -309,7 +309,7 @@ var trialCounter = 1;
                                             </div>
 
                                         </div>
-                                        <span style={{ fontSize: '12px', display: 'flex', alignItems: 'center', marginTop: '10px' }}><i className="material-icons-outlined" style={{ cursor: 'pointer', color: 'grey' }} onClick={this.toggle}>{this.state.visible ? `visibility` : `visibility_off`}</i>{this.state.visible ? `Hide password` : `Show password`}</span>
+                                        <span style={{ fontSize: '12px', display: 'flex', alignItems: 'center', marginTop: '10px' }}><i className="material-icons-outlined" style={{ cursor: 'pointer', color: 'grey' }} onClick={this.toggle}>{this.state.visible ? `visibility_off`:`visibility` }</i>{this.state.visible ? `Hide password` : `Show password`}</span>
                                         {/* <input type="checkbox" onClick={this.toggle}/> <label style={{fontSize:'14px'}}>Show password</label> */}
 
                                     </div>

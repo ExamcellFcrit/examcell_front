@@ -806,9 +806,19 @@ export class Home extends Component {
                           <div class="field">
                             <label class="label">Update Profile picture</label>
                             <p className="help" style={{ animation: 'none' }}>Please name your image file as your roll number. ( e.g:101700.jpg )</p>
-                            <div><input type="file" onChange={(event) => {
-                              this.setState({ selectedFile: event.target.files[0] })
-                              var fileName = event.target.files[0].name.split('.')[0]
+                            <p className="help" style={{ animation: 'none' }}>Upload a suitable passport size profile picture. Same will be reflected on hallticket.</p>
+                            <div>
+                              
+                              <input type="file" onChange={(event) => {
+                               var fileName = event.target.files[0].name.split('.')[0]
+                               var fileExt =  event.target.files[0].name.split('.').pop()
+                               console.log(fileExt)
+                               let r =  Math.random().toString(36).substring(2, 10) + Math.random().toString(36).substring(2, 10);
+                               console.log("random", r);
+                               const myRenamedFile = new File([event.target.files[0]], `${fileName}_${r}.${fileExt}`,{type:'image/jpeg'});
+                               console.log(myRenamedFile);
+                               this.setState({ selectedFile: myRenamedFile })
+
                               if (fileName === `${user.username}`) {
                                 this.setState({ correctDp: true })
                               }
