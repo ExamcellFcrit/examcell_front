@@ -104,7 +104,7 @@ export class Header extends Component {
     return (
       <div>
         <ReactTooltip effect="solid" />
-        {user ? <span className="tag is-danger" style={{ animation: 'none', margin: '0', position: 'fixed', borderRadius: '0', zIndex: '98', bottom: '0', right: '0px' }}>{`Logged in as : ${user.first_name}`}</span> : null}
+        {user ? <span className="tag is-danger" style={{ animation: 'none', margin: '0', position: 'fixed', borderRadius: '0', zIndex: '98', bottom: '0', left: '0px' }}>{`Logged in as : ${user.first_name}`}</span> : null}
         <nav className="header">
           <div className="header-wrap">
             <div className="left">

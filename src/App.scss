@@ -18,3 +18,19 @@ body,html{
         font-size: 60%;
     }
 }
+.btn {
+    font-size: 20px;
+    float: right;
+    width: 100%;
+    padding: 8px;
+    background-color: #009434;
+}
+
+.bot {
+  bottom: 0;
+  right : 0;
+  position: fixed;
+  z-index: 300px;
+  width: 350px;
+  //height: 500px;
+}

@@ -6811,7 +6811,7 @@ tr {
   background: #e62626;
   content: 'Notice';
   color: white;
-  z-index: 1;
+  z-index: 0;
   justify-content: center;
   top: 0px;
   padding: 5px;

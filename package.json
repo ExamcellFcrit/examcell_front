@@ -26,7 +26,7 @@
     "ag-grid-community": "^22.1.1",
     "ag-grid-enterprise": "^22.1.1",
     "ag-grid-react": "^22.1.1",
-    "axios": "^0.21.1",
+    "axios": "^0.21.4",
     "body-parser": "^1.19.0",
     "bulma": "^0.9.0",
     "bulma-extensions": "^6.2.7",
@@ -38,7 +38,7 @@
     "jquery": "^3.5.1",
     "node-sass-chokidar": "^1.5.0",
     "npm-run-all": "^4.1.5",
-    "qrcode": "^1.4.4",
+    "qrcode": "^1.5.0",
     "react": "^17.0.1",
     "react-alert": "^6.0.1",
     "react-alert-template-basic": "^1.0.0",
@@ -53,6 +53,7 @@
     "react-router-hash-link": "^1.2.2",
     "react-router-redux": "^4.0.8",
     "react-scripts": "^3.4.3",
+    "react-simple-chatbot": "^0.6.1",
     "react-tilt": "^0.1.4",
     "react-toastify": "^5.5.0",
     "react-tooltip": "^4.2.10",
@@ -61,10 +62,11 @@
     "redux-devtools-extension": "^2.13.8",
     "redux-thunk": "^2.3.0",
     "speakeasy": "^2.0.0",
+    "styled-components": "^5.3.5",
     "tilt.js": "^1.2.1",
     "underscore": "^1.13.1",
     "url-rewrite": "^0.4.2",
-    "ws": "^7.3.1"
+    "ws": "^7.5.7"
   },
   "scripts": {
     "build-css": "node-sass-chokidar src/ -o src/",

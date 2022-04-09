@@ -23,6 +23,8 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Verification from './component/Verification';
 import ReactTooltip from 'react-tooltip';
+import SimpleForm from './component/SimpleForm';
+import App2 from './component/App2';
 
 
 toast.configure()
@@ -53,6 +55,7 @@ class App extends Component{
                     <PrivateRoute path="/adminpanel" component={AdminPanel}/>
                     <PrivateRoute path="/hallticket" component={GenerateTicket}/>
                   </Switch>  
+                  <App2/>
         </div>
         </Router>
     </Provider>
